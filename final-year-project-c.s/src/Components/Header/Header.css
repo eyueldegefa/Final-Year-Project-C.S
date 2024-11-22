@@ -4,8 +4,8 @@
     line-height: normal;
 }
  nav section{
-    position: fixed !important;
-    width: 100%;
+    position: relative !important;
+    margin-left: 15px;
  }
 .linkHover:hover{
     color: red;

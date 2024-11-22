@@ -8,7 +8,7 @@ import './Header.css';
 function Header() {
   return (
     <nav className=''>
-      <section>
+      <section className=''>
         {/* Important updates part */}
         <div className='row d-flex bg-white px-5 pt-3 w-100'>
             <div className='col-9 d-flex text-wrap'>
