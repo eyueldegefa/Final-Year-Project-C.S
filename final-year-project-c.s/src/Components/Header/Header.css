@@ -1,0 +1,12 @@
+*{
+    font-size: 12px;
+    font-weight: 700;
+    line-height: normal;
+}
+ nav section{
+    position: fixed !important;
+    width: 100%;
+ }
+.linkHover:hover{
+    color: red;
+}
