@@ -1,8 +1,9 @@
 import './App.css';
-import Banner from './Components/Banner/Banner';
 import Header from './Components/Header/Header';
 import Booking from './Components/Booking/Booking';
+import Banner from './Components/Banner/Banner';
 import Home from './Components/Home/Home';
+import Footer from './Components/Footer/Footer';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Banner />
       <Booking />
       <Home />
+      <Footer />
     </div>
   );
 }

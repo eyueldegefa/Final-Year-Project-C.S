@@ -1,0 +1,10 @@
+.largeFont{
+    font-size: 25px;
+    font-family: "PT Serif", serif;
+    font-weight: bold;
+    font-style: italic;
+}
+.forBorder{
+    border-bottom: 1px solid grey;
+    margin: 10px 30px;
+}
