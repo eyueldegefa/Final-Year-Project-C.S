@@ -1,0 +1,31 @@
+.bookingWrapper{
+    position: sticky;
+    margin-top: -170px;
+    box-shadow: 1px 1px 5px grey;
+    width: 900px;
+}
+.bottomRed{
+    border: 1px solid grey;
+}
+.bottomRed:hover{
+    box-shadow: 1px 1px 5px grey;
+    border-bottom: 2px solid red;
+}
+.inputs:hover{
+    box-shadow: 3px 3px 6px grey; 
+    border-color: red;  
+}
+@media (max-width:560px) {
+    .bookingWrapper{
+        margin-top: -260px;
+        width: 360px;
+        height: 100px;
+    }
+}
+@media (min-width:561px) {
+    .bookingWrapper{
+        margin-top: -154px;
+        height: 210px;
+    }
+}
+

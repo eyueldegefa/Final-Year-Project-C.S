@@ -1,0 +1,69 @@
+/* Font size for all on home page */
+*{
+    font-size: 12px;
+}
+/* Giving shadow */
+.homeShadow{
+    box-shadow: 1px 1px 5px #d1d1d1;
+    /* width: 365px; */
+}
+.homeShadow:hover{
+    box-shadow: 1px 10px 10px #bfbfbf;
+}
+/* For larger fonts */
+.largeFont{
+    font-size: 25px;
+    font-family: "PT Serif", serif;
+    font-weight: bold;
+    font-style: italic;
+}
+/* Discount area */
+.discountPromo{
+    margin-top: -350px;
+    color: white;
+    margin-bottom: 150px;
+}
+.discountPromo .more{
+    margin-top: 150px;
+}
+/* Class option area */
+.clasLeft img{
+    height: 510px;
+    box-shadow: 1px 1px 5px grey;
+    float: right;
+}
+.classRight img{
+    height: 252px;
+    width: auto;
+}
+/* Discount and Class responsive */
+@media (min-width:672px) {
+    .friendSmall{
+        height: 480px;
+    }
+    .classRight .o{
+        width: 200px;
+    }
+}
+@media (min-width:1080px) {
+    .classRight .o{
+        width: 250px;
+    }
+}
+/* About section */
+.homeAbout{
+    padding: 20px 200px;
+    justify-content: center;
+}
+/* Adjusting For another screen size that did not show as we want */
+@media (max-width:920px) {
+    img {
+        width: 310px;
+    }
+    .homeAbout{
+        overflow-x: scroll;
+    }
+    .homeAbout img{
+        width: 100px;
+    }
+}
