@@ -16,7 +16,7 @@
 }
 @media (max-width:560px) {
     .bookingWrapper{
-        margin-top: -260px;
+        margin-top: -200px;
         width: 360px;
         height: 100px;
     }

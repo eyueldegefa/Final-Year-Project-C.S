@@ -3,8 +3,15 @@
     font-family: "PT Serif", serif;
     font-weight: bold;
     font-style: italic;
+    color: white;
 }
 .forBorder{
     border-bottom: 1px solid grey;
     margin: 10px 30px;
+}
+.footerWrapper p{
+    color: grey;
+}
+.footerWrapper p:hover{
+    color: white;
 }

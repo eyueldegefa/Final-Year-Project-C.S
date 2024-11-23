@@ -98,14 +98,14 @@ function Home() {
         {/* Train Class Area */}
         <div className='class row'>
             <div className='clasLeft col-md-12 col-lg-6'>
-                <img className='d-none d-lg-block' src={classs} alt="#" />
-                <img className='d-lg-none w-100' src={classSmall} alt="#" />
+                <img className='d-none d-lg-block homeShadow border' src={classs} alt="#" />
+                <img className='d-lg-none w-100 homeShadow border' src={classSmall} alt="#" />
             </div>
             <div className='classRight col-md-12 col-lg-6 row gap-2 justify-content-center'>
-                <img className='o col-md-6 p-1 shhomeShadowow' src={food1} alt="#" />
-                <img className='o col-md-6 p-1 shhomeShadowow' src={food2} alt="#" />
-                <img className='o col-md-6 p-1 shhomeShadowow' src={food3} alt="#" />
-                <img className='o col-md-6 p-1 shhomeShadowow' src={food4} alt="#" />
+                <img className='o col-md-6 p-1 homeShadow border' src={food1} alt="#" />
+                <img className='o col-md-6 p-1 homeShadow border' src={food2} alt="#" />
+                <img className='o col-md-6 p-1 homeShadow border' src={food3} alt="#" />
+                <img className='o col-md-6 p-1 homeShadow border' src={food4} alt="#" />
             </div>
         </div>
 
