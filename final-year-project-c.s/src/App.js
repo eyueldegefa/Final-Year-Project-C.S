@@ -4,6 +4,7 @@ import Booking from './Components/Booking/Booking';
 import Banner from './Components/Banner/Banner';
 import Home from './Components/Home/Home';
 import Footer from './Components/Footer/Footer';
+import Login from './Pages/Login';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Booking />
       <Home />
       <Footer />
+      <Login />
     </div>
   );
 }

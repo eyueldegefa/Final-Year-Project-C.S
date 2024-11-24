@@ -19,12 +19,12 @@ function Home() {
     <section>
         {/* Featured Destination*/}
         <div className='my-5'>
-            <h3 className='largeFont text-center'>Featured destinations from Addis Ababa</h3>
+            <h3 className='largeFont text-center text-dark'>Featured destinations from Addis Ababa</h3>
             <div className='row d-flex gap-5 m-5 justify-content-lg-center'>
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
                     <img  className='w-100' src={awash}  alt="#" />
                     <div className='text-center pt-5 px-3'>
-                        <p className='largeFont'>Awash-weldia</p>
+                        <p className='largeFont text-dark'>Awash-weldia</p>
                         <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
                         <p>from 1,230 ETB</p>
                     </div>
@@ -32,7 +32,7 @@ function Home() {
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
                     <img  className='w-100' src={djbouti} alt="#" />
                     <div className='text-center pt-5 px-3'>
-                        <p className='largeFont'>Djibouti</p>
+                        <p className='largeFont text-dark'>Djibouti</p>
                         <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
                         <p>from 1,230 ETB</p>
                     </div>
@@ -40,7 +40,7 @@ function Home() {
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
                     <img  className='w-100' src={awash}  alt="#" />
                     <div className='text-center pt-5 px-3'>
-                        <p className='largeFont'>Awash-weldia</p>
+                        <p className='largeFont text-dark'>Awash-weldia</p>
                         <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
                         <p>from 1,230 ETB</p>
                     </div>
@@ -52,7 +52,7 @@ function Home() {
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
                     <img  className='w-100' src={awash}  alt="#" />
                     <div className='text-center pt-5 px-3'>
-                        <p className='largeFont'>Awash-weldia</p>
+                        <p className='largeFont text-dark'>Awash-weldia</p>
                         <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
                         <p>from 1,230 ETB</p>
                     </div>
@@ -60,7 +60,7 @@ function Home() {
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
                     <img  className='w-100' src={djbouti} alt="#" />
                     <div className='text-center pt-5 px-3'>
-                        <p className='largeFont'>Djibouti</p>
+                        <p className='largeFont text-dark'>Djibouti</p>
                         <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
                         <p>from 1,230 ETB</p>
                     </div>
@@ -68,7 +68,7 @@ function Home() {
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
                     <img  className='w-100' src={awash}  alt="#" />
                     <div className='text-center pt-5 px-3'>
-                        <p className='largeFont'>Awash-weldia</p>
+                        <p className='largeFont text-dark'>Awash-weldia</p>
                         <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
                         <p>from 1,230 ETB</p>
                     </div>
@@ -112,7 +112,7 @@ function Home() {
         {/* About Area */}
         <div className='text-center my-5 container'>
             <div className=''>
-                <h3 className='largeFont'>About us</h3>
+                <h3 className='largeFont text-dark'>About us</h3>
                 <p>Learn more about our history, our business and sustainability initiatives</p>
             </div>
             <div className='homeAbout d-flex gap-5'>
