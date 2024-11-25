@@ -16,14 +16,14 @@
 }
 @media (max-width:560px) {
     .bookingWrapper{
-        margin-top: -200px;
+        margin-top: -110px;
         width: 360px;
         height: 100px;
     }
 }
 @media (min-width:561px) {
     .bookingWrapper{
-        margin-top: -154px;
+        margin-top: -170px;
         height: 210px;
     }
 }
