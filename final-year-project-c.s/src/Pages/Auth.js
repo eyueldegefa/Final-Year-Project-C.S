@@ -1,5 +1,5 @@
-import { auth } from '../Pages/Config/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, googleProvider } from '../Pages/Config/firebase';
+import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import { useState } from 'react';
 
 export const Auth = () => {
@@ -14,13 +14,21 @@ export const Auth = () => {
         } 
     };
 
-    // const signInWithGoogle = async () => {
-    //     try {
-    //         await signInWithPopup(auth, googleProvider);
-    //     } catch (err) {
-    //         console.error(err);
-    //     } 
-    // };
+    const signInWithGoogle = async () => {
+        try {
+            await signInWithPopup(auth, googleProvider);
+        } catch (err) {
+            console.error(err);
+        } 
+    };
+
+    const logOut = async () => {
+        try {
+            await signOut(auth);
+        } catch (err) {
+            console.error(err);
+        } 
+    };
     return (
         <div>
             <input 
@@ -32,7 +40,8 @@ export const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
             />
             <button onClick={signIn}>Sign in</button>
-            {/* <button onClick={signInWithGoogle}>Sign in</button> */}
+            <button onClick={signInWithGoogle}>Sign in</button>
+            <button onClick={logOut}>Logout</button>
         </div>
     );
 }
