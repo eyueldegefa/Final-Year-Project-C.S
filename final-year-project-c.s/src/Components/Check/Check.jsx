@@ -12,28 +12,66 @@ const Check = () => {
     setLoading(true);
     try {
       const trainsRef = collection(db, "trains");
+
+      // const normalizedCriteria = {
+      //   source: searchCriteria.source.trim(),
+      //   destination: searchCriteria.destination.trim(),
+      //   date: searchCriteria.date.trim(),
+      // };
+      const normalizedCriteria = {
+        source: searchCriteria.source.trim(),
+        destination: searchCriteria.destination.trim(),
+        date: searchCriteria.date, // Raw date value from input
+      };
+      
+      
       const q = query(
         trainsRef,
-        where("source", "==", searchCriteria.source),
-        where("destination", "==", searchCriteria.destination),
-        where("date", "==", searchCriteria.date)
+        where("source", "==", normalizedCriteria.source),
+        where("destination", "==", normalizedCriteria.destination),
+        where("date", "==", normalizedCriteria.date) // Adjust this if Timestamp
       );
+      
+      // const q = query(
+      //   trainsRef,
+      //   where("source", "==", searchCriteria.source),
+      //   where("destination", "==", searchCriteria.destination),
+      //   where("date", "==", searchCriteria.date)
+      // );
   
       const querySnapshot = await getDocs(q);
-  
-      if (querySnapshot.empty) {
-        alert("No trains found for the given criteria.");
-        setSearchResults([]);
-      } else {
-        const results = querySnapshot.docs.map((doc) => doc.data());
-        setSearchResults(results);
-      }
-    } catch (error) {
-      console.error("Error details:", error); // Log detailed error
-      alert(`Error fetching train data: ${error.message}`); // Show user-friendly message
+
+    if (querySnapshot.empty) {
+      console.log("No results for query:", normalizedCriteria);
+      alert("No trains found for the given criteria.");
+      setSearchResults([]);
+    } else {
+      const results = querySnapshot.docs.map((doc) => doc.data());
+      console.log("Query results:", results);
+      setSearchResults(results);
     }
-    setLoading(false);
-  };
+  } catch (error) {
+    console.error("Error fetching train data:", error);
+    alert(`Error fetching train data: ${error.message}`);
+  }
+
+  setLoading(false);
+};
+  //     const querySnapshot = await getDocs(q);
+  
+  //     if (querySnapshot.empty) {
+  //       alert("No trains found for the given criteria.");
+  //       setSearchResults([]);
+  //     } else {
+  //       const results = querySnapshot.docs.map((doc) => doc.data());
+  //       setSearchResults(results);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error details:", error); // Log detailed error
+  //     alert(`Error fetching train data: ${error.message}`); // Show user-friendly message
+  //   }
+  //   setLoading(false);
+  // };
   
 
   return (
