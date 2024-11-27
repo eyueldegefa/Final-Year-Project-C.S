@@ -5,6 +5,7 @@ import Banner from './Components/Banner/Banner';
 import Home from './Components/Home/Home';
 import Footer from './Components/Footer/Footer';
 import { Auth } from './Pages/Auth';
+import Check from './Components/Check/Check';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Booking />
       <Home />
       <Auth />
+      <Check />
       <Footer />
     </div>
   );
