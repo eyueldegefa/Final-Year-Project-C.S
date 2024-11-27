@@ -11,24 +11,30 @@ const Check = () => {
   const handleSearch = async (searchCriteria) => {
     setLoading(true);
     try {
-      const trainsRef = collection(db, "Trains");
+      const trainsRef = collection(db, "trains");
       const q = query(
         trainsRef,
         where("source", "==", searchCriteria.source),
         where("destination", "==", searchCriteria.destination),
         where("date", "==", searchCriteria.date)
       );
-
+  
       const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => doc.data());
-
-      setSearchResults(results);
+  
+      if (querySnapshot.empty) {
+        alert("No trains found for the given criteria.");
+        setSearchResults([]);
+      } else {
+        const results = querySnapshot.docs.map((doc) => doc.data());
+        setSearchResults(results);
+      }
     } catch (error) {
-      console.error("Error fetching trains:", error);
-      alert("Error fetching train data. Please try again.");
+      console.error("Error details:", error); // Log detailed error
+      alert(`Error fetching train data: ${error.message}`); // Show user-friendly message
     }
     setLoading(false);
   };
+  
 
   return (
     <div>
