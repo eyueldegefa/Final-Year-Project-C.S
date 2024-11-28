@@ -4,6 +4,7 @@ import { db } from "../../Pages/Config/firebase"; // Import Firebase Firestore c
 import TrainSearch from "../TrainSearch/TrainSearch";
 import SearchResults from "../SearchResult/SearchResult";
 
+
 const Check = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);

@@ -12,8 +12,9 @@ const SearchResults = ({ trains }) => {
       <ul>
         {trains.map((train, index) => (
           <li key={index}>
-            <strong>{train.name}</strong> - {train.departure} to {train.arrival} <br />
+            <strong>{train.name || train.name }</strong> - {train.departure} to {train.arrival} <br />
             Seats: {train.seatsAvailable} | Price: ${train.price}
+            <button onClick={() => SearchResults(train)}>Book Now</button>
           </li>
         ))}
       </ul>
