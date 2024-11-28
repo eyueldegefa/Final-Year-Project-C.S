@@ -1,9 +1,16 @@
 // src/components/SearchResults.js
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const SearchResults = ({ trains }) => {
+
+    const navigate = useNavigate();
   if (trains.length === 0) {
     return <p>No trains available for the selected route and date.</p>;
+  } else{
+    const handleBook = (train) => {
+      navigate("/booking", { state: { train } });
+    };
   }
 
   return (
