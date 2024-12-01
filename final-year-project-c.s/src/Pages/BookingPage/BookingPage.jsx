@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../Pages/Config/firebase"; // Adjust the path to your Firebase config
 
 const BookingPage = () => {
@@ -12,20 +12,9 @@ const BookingPage = () => {
   const [passengerPhone, setPassengerPhone] = useState("");
   const [passengerEmail, setPassengerEmail] = useState("");
 
-  const handleBooking = async (e) => {
-    e.preventDefault();
-
-    // Validation
-    if (!passengerName) {
-      alert("Please enter your name.");
-      return;
-    }
-    if (!passengerAge) {
-      alert("Please enter your age.");
-      return;
-    }
-    if (!passengerPhone) {
-      alert("Please enter your phone number.");
+  const handleBooking = async () => {
+    if (!passengerName || !passengerAge || !passengerPhone) {
+      alert("Please fill in all fields.");
       return;
     }
 
@@ -35,17 +24,12 @@ const BookingPage = () => {
         trainId: train.id,
         trainName: train.name,
         passengerName,
-        passengerAge: parseInt(passengerAge, 10),
+        passengerAge,
         passengerPhone,
         passengerEmail,
         bookedAt: new Date(),
       });
       alert("Booking successful!");
-      // Reset form fields
-      setPassengerName("");
-      setPassengerAge("");
-      setPassengerPhone("");
-      setPassengerEmail("");
     } catch (error) {
       console.error("Error booking:", error);
       alert("Failed to book the train. Please try again.");
@@ -53,23 +37,21 @@ const BookingPage = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Book Train: {train.name}</h1>
-      <h2>
-        From {train.source} To {train.destination}
-      </h2>
-      <p>Departure: {train.departure}</p>
-      <p>Arrival: {train.arrival}</p>
-      <p>Price: ${train.price}</p>
+    <div>
+      <h1>Book Train: {train?.name}</h1>
+      <h2>From {train?.source} To {train?.destination}</h2>
+      <p>Departure: {train?.departure}</p>
+      <p>Arrival: {train?.arrival}</p>
+      <p>Price: ${train?.price}</p>
 
-      <form onSubmit={handleBooking}>
+      <form>
         <div>
           <label>Passenger Name:</label>
           <input
             type="text"
             value={passengerName}
-            placeholder="Enter your full name"
             onChange={(e) => setPassengerName(e.target.value)}
+            placeholder="Enter your full name"
             required
           />
         </div>
@@ -78,8 +60,8 @@ const BookingPage = () => {
           <input
             type="number"
             value={passengerAge}
-            placeholder="Enter your age"
             onChange={(e) => setPassengerAge(e.target.value)}
+            placeholder="Enter your age"
             required
           />
         </div>
@@ -88,22 +70,24 @@ const BookingPage = () => {
           <input
             type="tel"
             value={passengerPhone}
-            placeholder="Enter your phone number"
             onChange={(e) => setPassengerPhone(e.target.value)}
+            placeholder="Enter your phone number"
             required
           />
         </div>
         <div>
-          <label>Passenger Email:</label>
+          <label>Email:</label>
           <input
             type="email"
             value={passengerEmail}
-            placeholder="Enter your email"
             onChange={(e) => setPassengerEmail(e.target.value)}
+            placeholder="Enter your email address"
             required
           />
         </div>
-        <button type="submit">Confirm Booking</button>
+        <button type="button" onClick={handleBooking}>
+          Confirm Booking
+        </button>
       </form>
     </div>
   );
