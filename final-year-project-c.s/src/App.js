@@ -26,14 +26,14 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Header from "./Components/Header/Header";
-import Footer from "./Components/Footer/Footer";
+// import Header from "./Components/Header/Header";
+// import Footer from "./Components/Footer/Footer";
 import Banner from "./Components/Banner/Banner";
 import Booking from "./Components/Booking/Booking";
 import Home from "./Components/Home/Home";
-import { Auth } from "./Pages/Auth";
-import Check from "./Components/Check/Check";
-import BookingPage from "./Pages/BookingPage/BookingPage";
+// import { Auth } from "./Pages/Auth";
+// import Check from "./Components/Check/Check";
+// import BookingPage from "./Pages/BookingPage/BookingPage";
 
 function App() {
   return (
@@ -48,9 +48,9 @@ function App() {
             </>
           }
         />
-        <Route path="/booking" element={<BookingPage />} />
+        {/* <Route path="/booking" element={<BookingPage />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/check" element={<Check />} />
+        <Route path="/check" element={<Check />} /> */}
       </Routes>
       {/* <Footer /> */}
     </Router>
