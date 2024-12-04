@@ -116,7 +116,7 @@ const BookingPage = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/trains") // Adjust endpoint as needed
+      .get("http://localhost:5656/api/trains") // Adjust endpoint as needed
       .then((response) => {
         setTrainDetails(response.data);
       })
