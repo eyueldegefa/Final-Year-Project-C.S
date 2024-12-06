@@ -34,6 +34,7 @@
 // export default Booking
 
 
+
 import React, { useState } from "react";
 import axios from "axios";
 import TrainIcon from "@mui/icons-material/Train";
@@ -49,7 +50,7 @@ function Booking() {
     destination: "",
     date: "",
     passengerNumber: 1,
-    class: "Economy",
+    class: ""
   });
 
   const [searchResults, setSearchResults] = useState([]);
@@ -61,31 +62,20 @@ function Booking() {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Validate input fields
-  const validateForm = () => {
-    const { source, destination, date, passengerNumber } = formData;
-    if (!source || !destination || !date || passengerNumber <= 0) {
-      setError("Please fill in all required fields.");
-      return false;
-    }
-    return true;
-  };
-  
   // Handle form submission
   const handleSearch = async () => {
-    if (!validateForm()) return;
-  
     try {
-      const response = await axios.get("http://localhost:7676/api/search-trains", {
-        params: formData,
-      });
+      console.log("Form Data Sent:", formData); // Debugging
+      const response = await axios.post("http://localhost:7676/api/search-trains", formData);
       setSearchResults(response.data);
-      setError(""); // Clear any previous error messages
+      setError(""); // Clear previous errors
     } catch (err) {
+      console.error("Error details:", err.response?.data || err.message); // Debugging
       setError(err.response?.data?.error || "An error occurred while searching for trains.");
       setSearchResults([]);
     }
-  };  
+    console.log("Form Data Sent:", formData);
+  };
 
   return (
     <section className="container bookingWrapper bg-white text-dark pb-5 text-center">
@@ -97,8 +87,7 @@ function Booking() {
           <BookmarksIcon /> Manage booking / Check-in
         </p>
         <p className="col-4 py-4 bottomRed">
-          <DoubleArrowRoundedIcon />
-          Multi-city
+          <DoubleArrowRoundedIcon /> Multi-city
         </p>
       </div>
 
@@ -145,6 +134,7 @@ function Booking() {
             value={formData.class}
             onChange={handleChange}
           >
+            <option value="">Select Class</option>
             <option value="Economy">Economy</option>
             <option value="Business">Business</option>
             <option value="First Class">First Class</option>

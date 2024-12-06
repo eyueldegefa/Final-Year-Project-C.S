@@ -1,8 +1,12 @@
 const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 require('dotenv').config();
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json());
 const PORT = 7676;
 
 // Serve static files from the "public" folder
@@ -27,8 +31,7 @@ db.connect((err) => {
 
 // API Route: Fetch all train data
 app.get("/trains", (req, res) => {
-  const query = "SELECT * FROM trains"; // Replace with your table name
-
+  const query = "SELECT * FROM trains"; 
   db.query(query, (err, results) => {
     if (err) {
       console.error("Error fetching train data:", err);
@@ -40,47 +43,40 @@ app.get("/trains", (req, res) => {
 });
 
 // API Endpoint: Search Trains
-app.get("/search-trains", (req, res) => {
-  const { source, destination, date, travelClass, passengerCount } = req.query;
+app.get("/api/search-trains", (req, res) => {
+  const { source, destination, travel_date, passengerNumber, class: travelClass } = req.body;
 
-  // Validate required fields
-  if (!source || !destination || !date || !travelClass || !passengerCount) {
+  // Validate input fields
+  if (!source || !destination || !travel_date || !passengerNumber || !travelClass) {
     return res.status(400).json({ error: "Missing required search fields." });
   }
 
-  // SQL Query
+  // Query to search for available trains
   const query = `
-    SELECT * 
-    FROM trains
-    WHERE source = ?
-      AND destination = ?
-      AND travel_date = ?
-      AND class = ?
-      AND seats_available >= ?
+    SELECT 
+      train_id, name, source, destination, departure_time, arrival_time, seats_available, price
+    FROM 
+      trains
+    WHERE 
+      source = ? AND 
+      destination = ? AND 
+      seats_available >= ? AND 
+      travel_date = ?
   `;
 
-  // Query Parameters
-  const values = [source, destination, date, travelClass, passengerCount];
-
-  // Execute Query
-  db.query(query, values, (err, results) => {
+  db.query(query, [source, destination, passengerNumber, travel_date], (err, results) => {
     if (err) {
-      console.error("Error executing query:", err);
-      return res.status(500).json({
-        error: "An error occurred while searching for trains.",
-        details: err.message,
-      });
+      console.error("Error executing query:", err.message);
+      return res.status(500).json({ error: "An error occurred while retrieving trains." });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ message: "No trains found for the specified criteria." });
+      return res.status(404).json({ error: "No trains found for the given criteria." });
     }
-
+    console.log("Executing query:", query, [source, destination, passengerNumber, travel_date]);
     res.json(results);
   });
 });
-
-
 
 
 // Start the server
