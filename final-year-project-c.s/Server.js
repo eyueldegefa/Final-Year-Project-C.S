@@ -26,7 +26,7 @@ db.connect((err) => {
 });
 
 // API Route: Fetch all train data
-app.get("/api/trains", (req, res) => {
+app.get("/trains", (req, res) => {
   const query = "SELECT * FROM trains"; // Replace with your table name
 
   db.query(query, (err, results) => {
@@ -38,6 +38,49 @@ app.get("/api/trains", (req, res) => {
     res.json(results); // Send train data as JSON
   });
 });
+
+// API Endpoint: Search Trains
+app.get("/search-trains", (req, res) => {
+  const { source, destination, date, travelClass, passengerCount } = req.query;
+
+  // Validate required fields
+  if (!source || !destination || !date || !travelClass || !passengerCount) {
+    return res.status(400).json({ error: "Missing required search fields." });
+  }
+
+  // SQL Query
+  const query = `
+    SELECT * 
+    FROM trains
+    WHERE source = ?
+      AND destination = ?
+      AND travel_date = ?
+      AND class = ?
+      AND seats_available >= ?
+  `;
+
+  // Query Parameters
+  const values = [source, destination, date, travelClass, passengerCount];
+
+  // Execute Query
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({
+        error: "An error occurred while searching for trains.",
+        details: err.message,
+      });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "No trains found for the specified criteria." });
+    }
+
+    res.json(results);
+  });
+});
+
+
 
 
 // Start the server
