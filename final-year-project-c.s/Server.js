@@ -43,40 +43,25 @@ app.get("/trains", (req, res) => {
 });
 
 // API Endpoint: Search Trains
-app.get("/api/search-trains", (req, res) => {
-  const { source, destination, travel_date, passengerNumber, class: travelClass } = req.body;
+app.post("/api/search-trains", (req, res) => {
+  const { source, destination, date } = req.body;
 
-  // Validate input fields
-  if (!source || !destination || !travel_date || !passengerNumber || !travelClass) {
-    return res.status(400).json({ error: "Missing required search fields." });
+  // Validate input
+  if (!source || !destination || !date) {
+    return res.status(400).json({ error: "Source, destination, and date are required." });
   }
 
-  // Query to search for available trains
-  const query = `
-    SELECT 
-      train_id, name, source, destination, departure_time, arrival_time, seats_available, price
-    FROM 
-      trains
-    WHERE 
-      source = ? AND 
-      destination = ? AND 
-      seats_available >= ? AND 
-      travel_date = ?
-  `;
-
-  db.query(query, [source, destination, passengerNumber, travel_date], (err, results) => {
+  // Query
+  const query = "SELECT * FROM trains WHERE source = ? AND destination = ? AND date = ?";
+  db.query(query, [source, destination, date], (err, results) => {
     if (err) {
-      console.error("Error executing query:", err.message);
-      return res.status(500).json({ error: "An error occurred while retrieving trains." });
+      console.error("Error fetching trains:", err);
+      return res.status(500).json({ error: "Failed to fetch train data." });
     }
-
-    if (results.length === 0) {
-      return res.status(404).json({ error: "No trains found for the given criteria." });
-    }
-    console.log("Executing query:", query, [source, destination, passengerNumber, travel_date]);
-    res.json(results);
+    res.json(results); // Return the train data
   });
 });
+
 
 
 // Start the server
