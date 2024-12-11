@@ -212,7 +212,7 @@ function Booking() {
   const handleSearch = async () => {
     try {
       console.log("Searching trains with:", formData); // Debugging
-      const response = await axios.post("http://localhost:7676/api/search-trains", formData);
+      const response = await axios.post("http://localhost:7/api/search-trains", formData);
       setSearchResults(response.data);
       setError(""); // Clear previous errors
     } catch (err) {
