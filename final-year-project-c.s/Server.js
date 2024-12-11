@@ -7,7 +7,7 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-const PORT = 7676;
+const PORT = 7878;
 
 // Serve static files from the "public" folder
 app.use(express.static("build"));
