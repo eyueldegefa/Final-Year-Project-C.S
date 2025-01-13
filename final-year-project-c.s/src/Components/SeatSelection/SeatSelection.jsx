@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./SeatSelection.css"; // Ensure CSS is included for styling
 
 function SeatSelection() {
   const location = useLocation();
@@ -14,15 +15,17 @@ function SeatSelection() {
   useEffect(() => {
     if (train && train.id) {
       axios
-        .get(`http://localhost:7/api/train-seats/${train.id}`) // Backend endpoint to fetch seat info
+        .get(`http://localhost:7676/api/train-seats/${train.id}`) // Backend endpoint to fetch seat info
         .then((response) => setSeats(response.data))
         .catch((err) => setError("Failed to load seat data."));
     }
   }, [train]);
 
-  const handleSeatSelect = (seat) => {
-    setSelectedSeat(seat);
-    setError(""); // Clear previous errors
+  const handleSeatSelect = (seatId) => {
+    if (!seats.find((seat) => seat.id === seatId).isBooked) {
+      setSelectedSeat(seatId);
+      setError(""); // Clear any previous errors
+    }
   };
 
   const handleSubmit = () => {
@@ -40,9 +43,9 @@ function SeatSelection() {
       <h1>Seat Selection</h1>
       {train && (
         <div>
-          <p>Train: {train.name}</p>
-          <p>From: {train.source}</p>
-          <p>To: {train.destination}</p>
+          <p><strong>Train:</strong> {train.name}</p>
+          <p><strong>From:</strong> {train.source}</p>
+          <p><strong>To:</strong> {train.destination}</p>
         </div>
       )}
 
@@ -53,12 +56,14 @@ function SeatSelection() {
         <div className="seat-grid">
           {seats.map((seat) => (
             <button
-              key={seat.id}
-              className={`seat ${seat.isBooked ? "booked" : selectedSeat === seat.id ? "selected" : ""}`}
-              onClick={() => !seat.isBooked && handleSeatSelect(seat.id)}
-              disabled={seat.isBooked}
+              key={seat.seat_id}
+              className={`seat ${
+                seat.booked ? "booked" : selectedSeat === seat.seat_id ? "selected" : ""
+              }`}
+              onClick={() => handleSeatSelect(seat.seat_id)}
+              disabled={seat.booked}
             >
-              {seat.number}
+              {seat.seat_number}
             </button>
           ))}
         </div>

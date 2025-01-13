@@ -65,7 +65,7 @@ app.post("/api/search-trains", (req, res) => {
 // Seat selection
 app.get("/api/train-seats/:trainId", (req, res) => {
   const { trainId } = req.params;
-  const query = "SELECT * FROM seats WHERE train_id = ?";
+  const query = "SELECT seat_id, seat_number, booked FROM seats WHERE train_id = ?";
   db.query(query, [trainId], (err, results) => {
     if (err) {
       console.error("Error fetching seat data:", err);
