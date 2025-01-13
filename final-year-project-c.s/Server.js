@@ -7,7 +7,7 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-const PORT = 7878;
+const PORT = 7676;
 
 // Serve static files from the "public" folder
 app.use(express.static("build"));
@@ -61,6 +61,21 @@ app.post("/api/search-trains", (req, res) => {
     res.json(results); // Return the train data
   });
 });
+
+// Seat selection
+app.get("/api/train-seats/:trainId", (req, res) => {
+  const { trainId } = req.params;
+  const query = "SELECT * FROM seats WHERE train_id = ?";
+  db.query(query, [trainId], (err, results) => {
+    if (err) {
+      console.error("Error fetching seat data:", err);
+      res.status(500).json({ error: "Failed to fetch seat data" });
+      return;
+    }
+    res.json(results);
+  });
+});
+
 
 
 

@@ -188,8 +188,10 @@
 
 // export default Booking;
 
+//the working one
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // For navigation
 
 function Booking() {
   const [formData, setFormData] = useState({
@@ -200,6 +202,7 @@ function Booking() {
 
   const [searchResults, setSearchResults] = useState([]);
   const [error, setError] = useState("");
+  const navigate = useNavigate(); // Hook for navigation
 
   // Handle input changes
   const handleChange = (e) => {
@@ -207,11 +210,11 @@ function Booking() {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission
+  // Handle train search
   const handleSearch = async () => {
     try {
       console.log("Searching trains with:", formData); // Debugging
-      const response = await axios.post("http://localhost:7/api/search-trains", formData);
+      const response = await axios.post("http://localhost:7676/api/search-trains", formData);
       setSearchResults(response.data);
       setError(""); // Clear previous errors
     } catch (err) {
@@ -221,6 +224,11 @@ function Booking() {
     }
   };
 
+  // Handle "Book Now" button click
+  const handleBookNow = (train) => {
+    navigate("/personal-details", { state: { train } }); // Navigate to the PersonalDetails page
+  };
+  
   return (
     <div>
       <h1>Search Trains</h1>
@@ -276,6 +284,14 @@ function Booking() {
                 <td>{train.date}</td>
                 <td>{train.price}</td>
                 <td>{train.seatsAvailable}</td>
+                <td>
+                  <button
+                    className=""
+                    onClick={() => handleBookNow(train)}
+                  >
+                    Book Now
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -288,3 +304,143 @@ function Booking() {
 }
 
 export default Booking;
+
+
+
+// import React, { useState } from "react";
+// import axios from "axios";
+// import { useNavigate } from "react-router-dom"; // For navigation
+// import TrainIcon from "@mui/icons-material/Train";
+// import BookmarksIcon from "@mui/icons-material/Bookmarks";
+// import DoubleArrowRoundedIcon from "@mui/icons-material/DoubleArrowRounded";
+// import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+// import "../../App.css";
+// import "./Booking.css";
+
+// function Booking() {
+//   const [formData, setFormData] = useState({
+//     source: "",
+//     destination: "",
+//     date: "",
+//   });
+//   const [searchResults, setSearchResults] = useState([]);
+//   const [error, setError] = useState("");
+//   const navigate = useNavigate(); // Hook for navigation
+
+//   // Handle input changes
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData({ ...formData, [name]: value });
+//   };
+
+//   // Handle train search
+//   const handleSearch = async () => {
+//     try {
+//       const response = await axios.post("http://localhost:7676/api/search-trains", formData);
+//       setSearchResults(response.data);
+//       setError(""); // Clear previous errors
+//     } catch (err) {
+//       setError(err.response?.data?.error || "An error occurred while searching for trains.");
+//       setSearchResults([]);
+//     }
+//   };
+
+//   // Handle "Book Now" button click
+//   const handleBookNow = (train) => {
+//     navigate("/book-train", { state: { train } }); // Navigate to the booking page with train details
+//   };
+
+//   return (
+//     <section className="container bookingWrapper bg-white text-dark pb-5 text-center">
+//       <div className="d-flex row">
+//         <p className="col-4 py-4 bottomRed">
+//           <TrainIcon /> Search trains
+//         </p>
+//         <p className="col-4 py-4 bottomRed">
+//           <BookmarksIcon /> Manage booking / Check-in
+//         </p>
+//         <p className="col-4 py-4 bottomRed">
+//           <DoubleArrowRoundedIcon /> Multi-city
+//         </p>
+//       </div>
+
+//       <div className="text-center gap-3 d-none d-md-block">
+//         <div>
+//           <input
+//             className="inputs py-3 px-5"
+//             type="text"
+//             name="source"
+//             placeholder="From station"
+//             value={formData.source}
+//             onChange={handleChange}
+//           />
+//           <CompareArrowsIcon />
+//           <input
+//             className="inputs py-3 px-5"
+//             type="text"
+//             name="destination"
+//             placeholder="To station"
+//             value={formData.destination}
+//             onChange={handleChange}
+//           />
+//           <input
+//             className="inputs py-3 px-5 ms-4 text-secondary"
+//             type="date"
+//             name="date"
+//             value={formData.date}
+//             onChange={handleChange}
+//           />
+//         </div>
+//         <button className="inputs buttons bg-danger py-3 text-white rounded fs-5 mt-3" onClick={handleSearch}>
+//           Search
+//         </button>
+//       </div>
+
+//       {/* Display search results */}
+//       <div className="mt-5">
+//         {error && <p className="text-danger">{error}</p>}
+//         {searchResults.length > 0 ? (
+//           <table className="table table-striped">
+//             <thead>
+//               <tr>
+//                 <th>Train Name</th>
+//                 <th>Source</th>
+//                 <th>Destination</th>
+//                 <th>Departure Time</th>
+//                 <th>Arrival Time</th>
+//                 <th>Seats Available</th>
+//                 <th>Price</th>
+//                 <th>Actions</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {searchResults.map((train) => (
+//                 <tr key={train.train_id}>
+//                   <td>{train.name}</td>
+//                   <td>{train.source}</td>
+//                   <td>{train.destination}</td>
+//                   <td>{train.departure_time}</td>
+//                   <td>{train.arrival_time}</td>
+//                   <td>{train.seats_available}</td>
+//                   <td>{train.price}</td>
+//                   <td>
+//                     <button
+//                       className="btn btn-primary"
+//                       onClick={() => handleBookNow(train)}
+//                     >
+//                       Book Now
+//                     </button>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         ) : (
+//           !error && <p>No results found. Try a different search.</p>
+//         )}
+//       </div>
+//     </section>
+//   );
+// }
+
+// export default Booking;
