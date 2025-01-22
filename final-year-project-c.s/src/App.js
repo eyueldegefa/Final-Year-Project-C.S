@@ -32,7 +32,8 @@ import Banner from "./Components/Banner/Banner";
 import Booking from "./Components/Booking/Booking";
 import Home from "./Components/Home/Home";
 import PersonalDetails from "./Components/PersonalDetails/PersonalDetails"; // Import the component
-import SeatSelection from "./Components/SeatSelection/SeatSelection"; // Placeholder for the next step
+import SearchResults from "./Components/SearchResult/SearchResults";
+import Success from "./Components/Success/Success";
 // import { Auth } from "./Pages/Auth";
 // import Check from "./Components/Check/Check";
 // import BookingPage from "./Pages/BookingPage/BookingPage";
@@ -51,8 +52,9 @@ function App() {
             </>
           }
         />
-        <Route path="/personal-details" element={<PersonalDetails />} /> {/* Personal details form */}
-        <Route path="/seat-selection" element={<SeatSelection />} /> {/* Seat selection (next step) */}
+        <Route path="/search-results" element={<SearchResults />} />
+        <Route path="/personal-details/:trainId" element={<PersonalDetails />} />    {/* Personal details form */}
+        <Route path="/success" element={<Success />} />
         {/* <Route path="/booking" element={<BookingPage />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/check" element={<Check />} /> */}

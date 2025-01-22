@@ -56,99 +56,127 @@
 
 // PersonalDetails.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-const PersonalDetails = ({ selectedTrain }) => {
+const PersonalDetails = () => {
+  const { trainId } = useParams(); // Extract trainId from URL
   const navigate = useNavigate();
+  const location = useLocation();
+  const trainDetails = location.state?.train;
 
-  const [formData, setFormData] = useState({
+  const [details, setDetails] = useState({
     passenger_name: "",
     passenger_age: "",
     passenger_phone: "",
     passenger_email: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state
+
+  console.log("Train details received:", trainDetails);
+  console.log("Train ID from URL:", trainId);
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    setDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log("Form submitted:", formData);
-    console.log("Selected Train:", selectedTrain);
-  
+  // Confirm booking
+  const confirmBooking = async () => {
     if (
-      !formData.passenger_name ||
-      !formData.passenger_age ||
-      !formData.passenger_phone ||
-      !formData.passenger_email
+      !details.passenger_name ||
+      !details.passenger_age ||
+      !details.passenger_phone ||
+      !details.passenger_email
     ) {
-      alert("Please fill in all fields.");
+      alert("Please fill in all the fields before confirming the booking.");
       return;
     }
-  
-    console.log("Navigating to seat selection with data:", selectedTrain, formData);
-    navigate("//seat-selection", {
-      state: { selectedTrain, passengerDetails: formData },
-    });
+
+    setIsSubmitting(true); // Set loading state
+    try {
+      const response = await fetch("http://localhost:7676/api/confirm-booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          train_id: trainId, // Use trainId from URL
+          ...details,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Booking confirmed! Check your email for details.");
+        navigate("/success", { state: { bookingDetails: data } });
+      } else {
+        alert(data.error || "Failed to confirm booking.");
+      }
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      alert("An error occurred while confirming your booking.");
+    } finally {
+      setIsSubmitting(false); // Reset loading state
+    }
   };
-  
 
   return (
-    <div className="personal-details-container">
-      <h2>Enter Personal Details</h2>
-      <form onSubmit={handleSubmit}>
+    <div>
+      <h1>Personal Details for Train ID: {trainId}</h1>
+      {trainDetails && (
         <div>
-          <label>Passenger Name:</label>
-          <input
-            type="text"
-            name="passenger_name"
-            value={formData.passenger_name}
-            onChange={handleChange}
-            required
-          />
+          <p>Train Name: {trainDetails.name}</p>
+          <p>Source: {trainDetails.source}</p>
+          <p>Destination: {trainDetails.destination}</p>
+          <p>Departure Time: {trainDetails.departure_time}</p>
+          <p>Arrival Time: {trainDetails.arrival_time}</p>
         </div>
-        <div>
-          <label>Passenger Age:</label>
-          <input
-            type="number"
-            name="passenger_age"
-            value={formData.passenger_age}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Passenger Phone:</label>
-          <input
-            type="text"
-            name="passenger_phone"
-            value={formData.passenger_phone}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Passenger Email:</label>
-          <input
-            type="email"
-            name="passenger_email"
-            value={formData.passenger_email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Proceed to Seat Selection</button>
+      )}
+      <form>
+        <input
+          type="text"
+          name="passenger_name"
+          placeholder="Name"
+          value={details.passenger_name}
+          onChange={handleChange}
+        />
+        <input
+          type="number"
+          name="passenger_age"
+          placeholder="Age"
+          value={details.passenger_age}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="passenger_phone"
+          placeholder="Phone"
+          value={details.passenger_phone}
+          onChange={handleChange}
+        />
+        <input
+          type="email"
+          name="passenger_email"
+          placeholder="Email"
+          value={details.passenger_email}
+          onChange={handleChange}
+        />
+        <button type="button" onClick={confirmBooking} disabled={isSubmitting}>
+          {isSubmitting ? "Confirming..." : "Confirm Booking"}
+        </button>
       </form>
     </div>
   );
 };
 
 export default PersonalDetails;
+
+
+
+
+
 
 

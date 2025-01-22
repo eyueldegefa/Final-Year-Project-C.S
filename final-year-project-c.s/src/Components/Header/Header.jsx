@@ -7,7 +7,7 @@ import './Header.css';
 
 function Header() {
   return (
-    <nav className=''>
+    <nav className='header-wrapper'>
       <section className=''>
         {/* Important updates part */}
         <div className='row d-flex bg-white px-5 pt-3 w-100'>
