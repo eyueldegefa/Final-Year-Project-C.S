@@ -1,510 +1,36 @@
-// const express = require("express");
-// const cors = require("cors");
-// const bodyParser = require("body-parser");
-// const mysql = require("mysql2");
-// const nodemailer = require("nodemailer");
-// require("dotenv").config();
-
-// const app = express();
-// const PORT = 7676;
-
-// // -------------------------------
-// // Middleware
-// // -------------------------------
-// app.use(cors());
-// app.use(bodyParser.json());
-// app.use(express.static("build")); // Serve static files from the "build" folder
-
-// // -------------------------------
-// // MySQL Connection
-// // -------------------------------
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root", // MySQL username
-//   password: process.env.DB_PASSWORD, // Password from .env
-//   database: "train_booking", // Database name
-// });
-
-// // Connect to the database
-// db.connect((err) => {
-//   if (err) {
-//     console.error("Error connecting to the database:", err);
-//     return;
-//   }
-//   console.log("Connected to the MySQL database.");
-// });
-
-// // Wrap connection in promises
-// const promiseDb = db.promise();
-
-// // -------------------------------
-// // API Routes
-// // -------------------------------
-
-// // 1. Search Trains
-// app.post("/api/search-trains", async (req, res) => {
-//   const { source, destination, date } = req.body;
-
-//   if (!source || !destination || !date) {
-//     return res.status(400).json({ error: "Source, destination, and date are required." });
-//   }
-
-//   try {
-//     const [results] = await promiseDb.query(
-//       "SELECT * FROM trains WHERE source = ? AND destination = ? AND date = ?",
-//       [source, destination, date]
-//     );
-//     res.json(results);
-//   } catch (err) {
-//     console.error("Error fetching trains:", err);
-//     res.status(500).json({ error: "Failed to fetch train data." });
-//   }
-// });
-
-// // 2. Fetch Train Seats
-// app.get("/api/train-seats/:trainId", async (req, res) => {
-//   const { trainId } = req.params;
-//   console.log("Received trainId:", trainId); // Debugging log
-
-//   try {
-//     const [rows] = await db.promise().query("SELECT * FROM seats WHERE train_id = ?", [trainId]);
-//     if (rows.length === 0) {
-//       return res.status(404).json({ error: "No seats found for this train." });
-//     }
-//     res.json(rows);
-//   } catch (error) {
-//     res.status(500).json({ error: "Failed to fetch seats." });
-//   }
-// });
-
-
-// // 3. Book a Seat
-// app.post("/book", async (req, res) => {
-//   const {
-//     train_id,
-//     passenger_name,
-//     passenger_age,
-//     passenger_phone,
-//     passenger_email,
-//     selected_seat,
-//   } = req.body;
-
-//   if (
-//     !train_id ||
-//     !passenger_name ||
-//     !passenger_age ||
-//     !passenger_phone ||
-//     !passenger_email ||
-//     !selected_seat
-//   ) {
-//     return res.status(400).send("All booking details are required.");
-//   }
-
-//   if (typeof passenger_age !== "number" || passenger_age <= 0) {
-//     return res.status(400).send("Passenger age must be a positive number.");
-//   }
-//   if (!/^\d{10}$/.test(passenger_phone)) {
-//     return res.status(400).send("Invalid phone number format.");
-//   }
-//   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(passenger_email)) {
-//     return res.status(400).send("Invalid email address.");
-//   }
-
-//   try {
-//     // Start a transaction
-//     await promiseDb.beginTransaction();
-
-//     // Step 1: Mark the seat as booked
-//     const [seatUpdateResult] = await promiseDb.query(
-//       "UPDATE seats SET booked = 1 WHERE train_id = ? AND seat_number = ? AND isBooked = 0",
-//       [train_id, selected_seat]
-//     );
-
-//     if (seatUpdateResult.affectedRows === 0) {
-//       await promiseDb.rollback();
-//       return res.status(400).send("Seat already booked or invalid.");
-//     }
-
-//     // Step 2: Insert booking details
-//     await promiseDb.query(
-//       `INSERT INTO bookings 
-//       (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, selected_seat, booked_at) 
-//       VALUES (?, ?, ?, ?, ?, ?, NOW())`,
-//       [train_id, passenger_name, passenger_age, passenger_phone, passenger_email, selected_seat]
-//     );
-
-//     // Commit the transaction
-//     await promiseDb.commit();
-//     res.status(200).send("Seat booked successfully!");
-//   } catch (err) {
-//     console.error("Error during booking transaction:", err);
-//     await promiseDb.rollback();
-//     res.status(500).send("Failed to book the seat.");
-//   }
-// });
-
-
-// // -------------------------------
-// // Error Handling Middleware
-// // -------------------------------
-// app.use((err, req, res, next) => {
-//   console.error(err.stack);
-//   res.status(500).send("Something went wrong!");
-// });
-
-// // -------------------------------
-// // Start Server
-// // -------------------------------
-// app.listen(PORT, () => {
-//   console.log(`Server running on http://localhost:${PORT}`);
-// });
-
-// const express = require("express");
-// const cors = require("cors");
-// const bodyParser = require("body-parser");
-// const mysql = require("mysql2/promise");
-// const nodemailer = require("nodemailer"); // For email functionality
-// require("dotenv").config();
-
-// const app = express();
-// const PORT = 7676;
-
-// // -------------------------------
-// // Middleware
-// // -------------------------------
-// app.use(cors());
-// app.use(bodyParser.json());
-// app.use(express.static("build")); // Serve static files from the "build" folder
-
-// // -------------------------------
-// // MySQL Connection
-// // -------------------------------
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root", // MySQL username
-//   password: process.env.DB_PASSWORD, // Password from .env
-//   database: "train_booking", // Database name
-// });
-
-// // Connect to the database
-// db.connect((err) => {
-//   if (err) {
-//     console.error("Error connecting to the database:", err);
-//     return;
-//   }
-//   console.log("Connected to the MySQL database.");
-// });
-
-// // Wrap connection in promises
-// const promiseDb = db.promise();
-
-// // -------------------------------
-// // Nodemailer Configuration
-// // -------------------------------
-// let transporter = nodemailer.createTransport({
-//   service: "Gmail", // Use your email service provider
-//   auth: {
-//     user: process.env.EMAIL_USER, // Your email
-//     pass: process.env.EMAIL_PASS, // Your email password
-//   },
-// });
-
-// // -------------------------------
-// // API Routes
-// // -------------------------------
-
-// // 1. Search Trains
-// app.post("/api/search-trains", async (req, res) => {
-//   const { source, destination, date } = req.body;
-
-//   if (!source || !destination || !date) {
-//     return res.status(400).json({ error: "Source, destination, and date are required." });
-//   }
-
-//   try {
-//     const [results] = await promiseDb.query(
-//       "SELECT train_id, name, source, destination, departure_time AS departure, arrival_time AS arrival, date, price, seats_available AS seatsAvailable, class FROM trains WHERE source = ? AND destination = ? AND date = ?",
-//       [source, destination, date]
-//     );
-//     res.json(results);
-//   } catch (err) {
-//     console.error("Error fetching trains:", err);
-//     res.status(500).json({ error: "Failed to fetch train data." });
-//   }
-// });
-
-
-// // 2. Confirm Booking and Send Email
-// app.post("/api/confirm-booking", async (req, res) => {
-//   const { train_id, passenger_name, passenger_age, passenger_phone, passenger_email } = req.body;
-
-//   if (!train_id || !passenger_name || !passenger_age || !passenger_phone || !passenger_email) {
-//     return res.status(400).json({ error: "All fields are required." });
-//   }
-
-//   try {
-//     const connection = await mysql.createConnection(db);
-
-//     // Insert booking into the database
-//     const [result] = await connection.execute(
-//       "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at) VALUES (?, ?, ?, ?, ?, NOW())",
-//       [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
-//     );
-
-
-//     // Fetch train details for the email
-//     const [trainDetails] = await connection.execute(
-//       "SELECT name, source, destination, departure_time, arrival_time, date FROM trains WHERE train_id = ?",
-//       [train_id]
-//     );
-
-//     if (trainDetails.length === 0) {
-//       return res.status(404).json({ error: "Train not found." });
-//     }
-
-//     const train = trainDetails[0];
-
-
-//         // Send confirmation email
-//         const mailOptions = {
-//           from: process.env.EMAIL_USER,
-//           to: passenger_email,
-//           subject: "Booking Confirmation",
-//           text: `
-//                 Dear ${passenger_name},
-                
-//                 Thank you for booking your train ticket with us! Here are your booking details:
-                
-//                 Train Name: ${train.name}
-//                 From: ${train.source}
-//                 To: ${train.destination}
-//                 Departure: ${train.departure_time} on ${train.date}
-//                 Arrival: ${train.arrival_time}
-                
-//                 We look forward to serving you!
-                
-//                 Regards,
-//                 Train Booking Service `,                         
-//               };
-    
-//         await transporter.sendMail(mailOptions);
-    
-//         res.json({ message: "Booking confirmed and email sent!" });
-//       } catch (error) {
-//         console.error("Error confirming booking:", error);
-//         res.status(500).json({ error: "Failed to confirm booking." });
-//       }
-//     });
-
-
-// // -------------------------------
-// // Error Handling Middleware
-// // -------------------------------
-// app.use((err, req, res, next) => {
-//   console.error(err.stack);
-//   res.status(500).send("Something went wrong!");
-// });
-
-// // -------------------------------
-// // Start Server
-// // -------------------------------
-// app.listen(PORT, () => {
-//   console.log(`Server running on http://localhost:${PORT}`);
-// });
-
-// New -----------------------------------------------
-// const express = require("express");
-// const cors = require("cors");
-// const bodyParser = require("body-parser");
-// const mysql = require("mysql2/promise"); // Ensure promise-based API
-// const nodemailer = require("nodemailer");
-// require("dotenv").config();
-
-// const app = express();
-// const PORT = 7676;
-
-// // -------------------------------
-// // Middleware
-// // -------------------------------
-// app.use(cors());
-// app.use(bodyParser.json());
-// app.use(express.static("build")); // Serve static files from the "build" folder
-
-// // -------------------------------
-// // MySQL Connection
-// // -------------------------------
-// const dbConfig = {
-//   host: "localhost",
-//   user: "root", // MySQL username
-//   password: process.env.DB_PASSWORD, // Password from .env
-//   database: "train_booking", // Database name
-// };
-
-// // Create a reusable connection pool
-// const db = mysql.createPool(dbConfig);
-
-// // -------------------------------
-// // Nodemailer Configuration
-// // -------------------------------
-// const transporter = nodemailer.createTransport({
-//   host: process.env.HOST,
-//   port: process.env.PORT,
-//   service: process.env.service, // Use your email service provider
-//   secure: false,
-//   auth: {
-//     user: process.env.USER, // Your email
-//     pass: process.env.PASSWORD, // Your email password or app password
-//   },
-// });
-
-// // -------------------------------
-// // API Routes
-// // -------------------------------
-
-// // 1. Search Trains
-// app.post("/api/search-trains", async (req, res) => {
-//   const { source, destination, date } = req.body;
-
-//   if (!source || !destination || !date) {
-//     return res.status(400).json({ error: "Source, destination, and date are required." });
-//   }
-
-//   try {
-//     const [results] = await db.execute(
-//       "SELECT train_id, name, source, destination, departure_time AS departure, arrival_time AS arrival, date, price, seats_available AS seatsAvailable, class FROM trains WHERE source = ? AND destination = ? AND date = ?",
-//       [source, destination, date]
-//     );
-//     res.json(results);
-//   } catch (err) {
-//     console.error("Error fetching trains:", err);
-//     res.status(500).json({ error: "Failed to fetch train data." });
-//   }
-// });
-
-// // 2. Confirm Booking and Send Email
-// app.post("/api/confirm-booking", async (req, res) => {
-//   const { train_id, passenger_name, passenger_age, passenger_phone, passenger_email } = req.body;
-
-//   if (!train_id || !passenger_name || !passenger_age || !passenger_phone || !passenger_email) {
-//     return res.status(400).json({ error: "All fields are required." });
-//   }
-
-//   try {
-//     // Insert booking into the database
-//     const [insertResult] = await db.execute(
-//       "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at) VALUES (?, ?, ?, ?, ?, NOW())",
-//       [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
-//     );
-
-//     // Fetch train details for the email
-//     const [trainDetails] = await db.execute(
-//       "SELECT name, source, destination, departure_time, arrival_time, date FROM trains WHERE train_id = ?",
-//       [train_id]
-//     );
-
-//     if (trainDetails.length === 0) {
-//       return res.status(404).json({ error: "Train not found." });
-//     }
-
-//     const train = trainDetails[0];
-
-//     // Send confirmation email
-//     const mailOptions = {
-//       from: process.env.USER,
-//       to: passenger_email,
-//       subject: "Booking Confirmation",
-//       text: `
-//           Dear ${passenger_name},
-          
-//           Thank you for booking your train ticket with us! Here are your booking details:
-          
-//           Train Name: ${train.name}
-//           From: ${train.source}
-//           To: ${train.destination}
-//           Departure: ${train.departure_time} on ${train.date}
-//           Arrival: ${train.arrival_time}
-          
-//           We look forward to serving you!
-          
-//           Regards,
-//           Train Booking Service`,
-//               };
-
-//     await transporter.sendMail(mailOptions);
-
-//     res.json({ message: "Booking confirmed and email sent!" });
-//   } catch (error) {
-//     console.error("Error confirming booking:", error);
-//     res.status(500).json({ error: "Failed to confirm booking." });
-//   }
-// });
-
-// // -------------------------------
-// // Error Handling Middleware
-// // -------------------------------
-// app.use((err, req, res, next) => {
-//   console.error(err.stack);
-//   res.status(500).send("Something went wrong!");
-// });
-
-// // -------------------------------
-// // Start Server
-// // -------------------------------
-// app.listen(PORT, () => {
-//   console.log(`Server running on http://localhost:${PORT}`);
-// });
-
-
-// New Second
 const express = require("express"); 
 const cors = require("cors");
+const bcrypt = require("bcrypt"); // For password hashing
+const jwt = require("jsonwebtoken"); // For token-based authentication
 const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
-const SibApiV3Sdk = require("sib-api-v3-sdk");
 require("dotenv").config();
 
 const app = express();
 const PORT = 7676;
-
+const secretKey = "yourSecretKey"; // Replace with a secure key for JWT signing
 // -------------------------------
 // Middleware
 // -------------------------------
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json());  // Middleware to parse JSON requests
 app.use(express.static("build")); // Serve static files from the "build" folder
 
 // -------------------------------
 // MySQL Connection
 // -------------------------------
-// MySQL Connection Pool (Preferred for better performance and resource management)
-const db = mysql.createPool({
+const dbConfig = {
   host: "localhost",
-  user: "root", // Replace with your MySQL username
-  password: process.env.DB_PASSWORD, // Ensure this is set in your .env file
-  database: "train_booking", // Replace with your database name
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+  user: "root", // MySQL username
+  password: process.env.DB_PASSWORD, // Password from .env
+  database: "train_booking", // Database name
+};
 
-// Test the database connection
-(async () => {
-  try {
-    const connection = await db.getConnection();
-    console.log("Connected to the MySQL database.");
-    connection.release(); // Release the connection back to the pool
-  } catch (err) {
-    console.error("Error connecting to the database:", err);
-  }
-})();
-
-// -------------------------------
-// Brevo (formerly SendinBlue) Configuration
-// -------------------------------
-var defaultClient = SibApiV3Sdk.ApiClient.instance;
-var apiKey = defaultClient.authentications["api-key"];
-apiKey.apiKey = process.env.BREVO_API_KEY; // Your Brevo API key
-var apiInstance = new SibApiV3Sdk.EmailCampaignsApi();
+// Function to create a MySQL connection
+async function createDbConnection() {
+  const connection = await mysql.createConnection(dbConfig);
+  return connection;
+}
 
 // -------------------------------
 // API Routes
@@ -519,10 +45,12 @@ app.post("/api/search-trains", async (req, res) => {
   }
 
   try {
-    const [results] = await db.query(
+    const connection = await createDbConnection();
+    const [results] = await connection.execute(
       "SELECT train_id, name, source, destination, departure_time AS departure, arrival_time AS arrival, date, price, seats_available AS seatsAvailable, class FROM trains WHERE source = ? AND destination = ? AND date = ?",
       [source, destination, date]
     );
+    connection.end();
     res.json(results);
   } catch (err) {
     console.error("Error fetching trains:", err);
@@ -530,7 +58,7 @@ app.post("/api/search-trains", async (req, res) => {
   }
 });
 
-// 2. Confirm Booking and Send Email
+// 2. Confirm Booking
 app.post("/api/confirm-booking", async (req, res) => {
   const { train_id, passenger_name, passenger_age, passenger_phone, passenger_email } = req.body;
 
@@ -539,7 +67,7 @@ app.post("/api/confirm-booking", async (req, res) => {
   }
 
   try {
-    const connection = await mysql.createConnection(db);
+    const connection = await createDbConnection();
 
     // Insert booking into the database
     const [result] = await connection.execute(
@@ -547,38 +75,120 @@ app.post("/api/confirm-booking", async (req, res) => {
       [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
     );
 
-    res.json({ message: "Booking confirmed!" });
+    // Fetch train details
+    const [trainDetails] = await connection.execute(
+      "SELECT name, source, destination, departure_time, arrival_time, date FROM trains WHERE train_id = ?",
+      [train_id]
+    );
+
+    connection.end();
+
+    if (trainDetails.length === 0) {
+      return res.status(404).json({ error: "Train not found." });
+    }
+
+    res.json({ message: "Booking confirmed!", bookingId: result.insertId, trainDetails: trainDetails[0] });
   } catch (error) {
     console.error("Error confirming booking:", error);
     res.status(500).json({ error: "Failed to confirm booking." });
   }
 });
 
-// 3. Create Email Campaign (Brevo)
-app.post("/api/create-email-campaign", async (req, res) => {
-  const { name, subject, senderName, senderEmail, htmlContent, listIds, scheduledAt } = req.body;
+// -----------------------------------------------------------------------
 
-  if (!name || !subject || !senderName || !senderEmail || !htmlContent || !listIds || !scheduledAt) {
-    return res.status(400).json({ error: "All fields are required." });
+// Middleware to authenticate JWT tokens
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"]; // Retrieve token from Authorization header
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+      return res.status(401).json({ message: "Access denied" });
   }
+
+  // Verify token
+  jwt.verify(token, secretKey, (err, admin) => {
+      if (err) {
+          return res.status(403).json({ message: "Invalid token" });
+      }
+      req.admin = admin; // Attach admin info to request
+      next();
+  });
+}
+
+// ----------------------------------------------------------------------------
+
+// Admin Login: Authenticate admin and generate a JWT token
+app.post("/api/admin/login", async (req, res) => {
+  const { username, password } = req.body; // Extract username and password from request body
 
   try {
-    const emailCampaigns = new SibApiV3Sdk.CreateEmailCampaign();
-    emailCampaigns.name = name;
-    emailCampaigns.subject = subject;
-    emailCampaigns.sender = { name: senderName, email: senderEmail };
-    emailCampaigns.type = "classic";
-    emailCampaigns.htmlContent = htmlContent;
-    emailCampaigns.recipients = { listIds: listIds };
-    emailCampaigns.scheduledAt = scheduledAt;
+      // Check if admin exists in the database
+      const [admin] = await dbConfig.query("SELECT * FROM Admins WHERE username = ?", [username]);
 
-    const data = await apiInstance.createEmailCampaign(emailCampaigns);
-    res.json({ message: "Email campaign created successfully!", data });
-  } catch (error) {
-    console.error("Error creating email campaign:", error);
-    res.status(500).json({ error: "Failed to create email campaign." });
+      if (admin.length === 0) {
+          return res.status(404).json({ message: "Admin not found" });
+      }
+
+      // Verify the provided password with the stored hashed password
+      const isPasswordValid = await bcrypt.compare(password, admin[0].password);
+      if (!isPasswordValid) {
+          return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Generate a JWT token for authentication
+      const token = jwt.sign({ id: admin[0].id }, secretKey, { expiresIn: "1h" });
+      res.status(200).json({ message: "Login successful", token });
+  } catch (err) {
+      res.status(500).json({ message: "Error logging in", error: err.message });
   }
 });
+
+// -----------------------------------------------------
+
+// Add a train to the database
+app.post("/api/admin/add-train", authenticateToken, async (req, res) => {
+  const { name, source, destination, departure, arrival, price, seatsAvailable } = req.body;
+
+  try {
+      // Insert train details into the database
+      const result = await dbConfig.query(
+          "INSERT INTO Trains (name, source, destination, departure, arrival, price, seatsAvailable) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          [name, source, destination, departure, arrival, price, seatsAvailable]
+      );
+      res.status(201).json({ message: "Train added successfully", trainId: result[0].insertId });
+  } catch (err) {
+      res.status(500).json({ message: "Error adding train", error: err.message });
+  }
+});
+
+// ------------------------------------------------------------------------------
+
+// Get all trains
+app.get("/api/admin/trains", authenticateToken, async (req, res) => {
+  try {
+      const [trains] = await dbConfig.query("SELECT * FROM Trains");
+      res.status(200).json(trains);
+  } catch (err) {
+      res.status(500).json({ message: "Error retrieving trains", error: err.message });
+  }
+});
+
+// ------------------------------------------------------------------------------------
+
+// Delete a train from the database
+app.delete("/api/admin/delete-train/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      // Delete train by ID
+      await dbConfig.query("DELETE FROM Trains WHERE id = ?", [id]);
+      res.status(200).json({ message: "Train deleted successfully" });
+  } catch (err) {
+      res.status(500).json({ message: "Error deleting train", error: err.message });
+  }
+});
+
+
 
 // -------------------------------
 // Error Handling Middleware
