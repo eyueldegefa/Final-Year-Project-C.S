@@ -313,11 +313,154 @@
 // });
 
 // New -----------------------------------------------
-const express = require("express");
+// const express = require("express");
+// const cors = require("cors");
+// const bodyParser = require("body-parser");
+// const mysql = require("mysql2/promise"); // Ensure promise-based API
+// const nodemailer = require("nodemailer");
+// require("dotenv").config();
+
+// const app = express();
+// const PORT = 7676;
+
+// // -------------------------------
+// // Middleware
+// // -------------------------------
+// app.use(cors());
+// app.use(bodyParser.json());
+// app.use(express.static("build")); // Serve static files from the "build" folder
+
+// // -------------------------------
+// // MySQL Connection
+// // -------------------------------
+// const dbConfig = {
+//   host: "localhost",
+//   user: "root", // MySQL username
+//   password: process.env.DB_PASSWORD, // Password from .env
+//   database: "train_booking", // Database name
+// };
+
+// // Create a reusable connection pool
+// const db = mysql.createPool(dbConfig);
+
+// // -------------------------------
+// // Nodemailer Configuration
+// // -------------------------------
+// const transporter = nodemailer.createTransport({
+//   host: process.env.HOST,
+//   port: process.env.PORT,
+//   service: process.env.service, // Use your email service provider
+//   secure: false,
+//   auth: {
+//     user: process.env.USER, // Your email
+//     pass: process.env.PASSWORD, // Your email password or app password
+//   },
+// });
+
+// // -------------------------------
+// // API Routes
+// // -------------------------------
+
+// // 1. Search Trains
+// app.post("/api/search-trains", async (req, res) => {
+//   const { source, destination, date } = req.body;
+
+//   if (!source || !destination || !date) {
+//     return res.status(400).json({ error: "Source, destination, and date are required." });
+//   }
+
+//   try {
+//     const [results] = await db.execute(
+//       "SELECT train_id, name, source, destination, departure_time AS departure, arrival_time AS arrival, date, price, seats_available AS seatsAvailable, class FROM trains WHERE source = ? AND destination = ? AND date = ?",
+//       [source, destination, date]
+//     );
+//     res.json(results);
+//   } catch (err) {
+//     console.error("Error fetching trains:", err);
+//     res.status(500).json({ error: "Failed to fetch train data." });
+//   }
+// });
+
+// // 2. Confirm Booking and Send Email
+// app.post("/api/confirm-booking", async (req, res) => {
+//   const { train_id, passenger_name, passenger_age, passenger_phone, passenger_email } = req.body;
+
+//   if (!train_id || !passenger_name || !passenger_age || !passenger_phone || !passenger_email) {
+//     return res.status(400).json({ error: "All fields are required." });
+//   }
+
+//   try {
+//     // Insert booking into the database
+//     const [insertResult] = await db.execute(
+//       "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at) VALUES (?, ?, ?, ?, ?, NOW())",
+//       [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
+//     );
+
+//     // Fetch train details for the email
+//     const [trainDetails] = await db.execute(
+//       "SELECT name, source, destination, departure_time, arrival_time, date FROM trains WHERE train_id = ?",
+//       [train_id]
+//     );
+
+//     if (trainDetails.length === 0) {
+//       return res.status(404).json({ error: "Train not found." });
+//     }
+
+//     const train = trainDetails[0];
+
+//     // Send confirmation email
+//     const mailOptions = {
+//       from: process.env.USER,
+//       to: passenger_email,
+//       subject: "Booking Confirmation",
+//       text: `
+//           Dear ${passenger_name},
+          
+//           Thank you for booking your train ticket with us! Here are your booking details:
+          
+//           Train Name: ${train.name}
+//           From: ${train.source}
+//           To: ${train.destination}
+//           Departure: ${train.departure_time} on ${train.date}
+//           Arrival: ${train.arrival_time}
+          
+//           We look forward to serving you!
+          
+//           Regards,
+//           Train Booking Service`,
+//               };
+
+//     await transporter.sendMail(mailOptions);
+
+//     res.json({ message: "Booking confirmed and email sent!" });
+//   } catch (error) {
+//     console.error("Error confirming booking:", error);
+//     res.status(500).json({ error: "Failed to confirm booking." });
+//   }
+// });
+
+// // -------------------------------
+// // Error Handling Middleware
+// // -------------------------------
+// app.use((err, req, res, next) => {
+//   console.error(err.stack);
+//   res.status(500).send("Something went wrong!");
+// });
+
+// // -------------------------------
+// // Start Server
+// // -------------------------------
+// app.listen(PORT, () => {
+//   console.log(`Server running on http://localhost:${PORT}`);
+// });
+
+
+// New Second
+const express = require("express"); 
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const mysql = require("mysql2/promise"); // Ensure promise-based API
-const nodemailer = require("nodemailer");
+const mysql = require("mysql2/promise");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
 require("dotenv").config();
 
 const app = express();
@@ -333,35 +476,35 @@ app.use(express.static("build")); // Serve static files from the "build" folder
 // -------------------------------
 // MySQL Connection
 // -------------------------------
-const dbConfig = {
+// MySQL Connection Pool (Preferred for better performance and resource management)
+const db = mysql.createPool({
   host: "localhost",
-  user: "root", // MySQL username
-  password: process.env.DB_PASSWORD, // Password from .env
-  database: "train_booking", // Database name
-};
+  user: "root", // Replace with your MySQL username
+  password: process.env.DB_PASSWORD, // Ensure this is set in your .env file
+  database: "train_booking", // Replace with your database name
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
-// Connect to the database
-dbConfig.connect((err) => {
-  if (err) {
+// Test the database connection
+(async () => {
+  try {
+    const connection = await db.getConnection();
+    console.log("Connected to the MySQL database.");
+    connection.release(); // Release the connection back to the pool
+  } catch (err) {
     console.error("Error connecting to the database:", err);
-    return;
   }
-  console.log("Connected to the MySQL database.");
-});
-
-// Create a reusable connection pool
-const db = mysql.createPool(dbConfig);
+})();
 
 // -------------------------------
-// Nodemailer Configuration
+// Brevo (formerly SendinBlue) Configuration
 // -------------------------------
-const transporter = nodemailer.createTransport({
-  service: "Gmail", // Use your email service provider
-  auth: {
-    user: process.env.EMAIL_USER, // Your email
-    pass: process.env.EMAIL_PASS, // Your email password or app password
-  },
-});
+var defaultClient = SibApiV3Sdk.ApiClient.instance;
+var apiKey = defaultClient.authentications["api-key"];
+apiKey.apiKey = process.env.BREVO_API_KEY; // Your Brevo API key
+var apiInstance = new SibApiV3Sdk.EmailCampaignsApi();
 
 // -------------------------------
 // API Routes
@@ -376,7 +519,7 @@ app.post("/api/search-trains", async (req, res) => {
   }
 
   try {
-    const [results] = await db.execute(
+    const [results] = await db.query(
       "SELECT train_id, name, source, destination, departure_time AS departure, arrival_time AS arrival, date, price, seats_available AS seatsAvailable, class FROM trains WHERE source = ? AND destination = ? AND date = ?",
       [source, destination, date]
     );
@@ -396,52 +539,44 @@ app.post("/api/confirm-booking", async (req, res) => {
   }
 
   try {
+    const connection = await mysql.createConnection(db);
+
     // Insert booking into the database
-    const [insertResult] = await db.execute(
+    const [result] = await connection.execute(
       "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at) VALUES (?, ?, ?, ?, ?, NOW())",
       [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
     );
 
-    // Fetch train details for the email
-    const [trainDetails] = await db.execute(
-      "SELECT name, source, destination, departure_time, arrival_time, date FROM trains WHERE train_id = ?",
-      [train_id]
-    );
-
-    if (trainDetails.length === 0) {
-      return res.status(404).json({ error: "Train not found." });
-    }
-
-    const train = trainDetails[0];
-
-    // Send confirmation email
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: passenger_email,
-      subject: "Booking Confirmation",
-      text: `
-            Dear ${passenger_name},
-            
-            Thank you for booking your train ticket with us! Here are your booking details:
-            
-            Train Name: ${train.name}
-            From: ${train.source}
-            To: ${train.destination}
-            Departure: ${train.departure_time} on ${train.date}
-            Arrival: ${train.arrival_time}
-            
-            We look forward to serving you!
-            
-            Regards,
-            Train Booking Service`,
-                };
-
-    await transporter.sendMail(mailOptions);
-
-    res.json({ message: "Booking confirmed and email sent!" });
+    res.json({ message: "Booking confirmed!" });
   } catch (error) {
     console.error("Error confirming booking:", error);
     res.status(500).json({ error: "Failed to confirm booking." });
+  }
+});
+
+// 3. Create Email Campaign (Brevo)
+app.post("/api/create-email-campaign", async (req, res) => {
+  const { name, subject, senderName, senderEmail, htmlContent, listIds, scheduledAt } = req.body;
+
+  if (!name || !subject || !senderName || !senderEmail || !htmlContent || !listIds || !scheduledAt) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    const emailCampaigns = new SibApiV3Sdk.CreateEmailCampaign();
+    emailCampaigns.name = name;
+    emailCampaigns.subject = subject;
+    emailCampaigns.sender = { name: senderName, email: senderEmail };
+    emailCampaigns.type = "classic";
+    emailCampaigns.htmlContent = htmlContent;
+    emailCampaigns.recipients = { listIds: listIds };
+    emailCampaigns.scheduledAt = scheduledAt;
+
+    const data = await apiInstance.createEmailCampaign(emailCampaigns);
+    res.json({ message: "Email campaign created successfully!", data });
+  } catch (error) {
+    console.error("Error creating email campaign:", error);
+    res.status(500).json({ error: "Failed to create email campaign." });
   }
 });
 
