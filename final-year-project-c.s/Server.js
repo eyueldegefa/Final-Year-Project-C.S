@@ -1,36 +1,34 @@
-const express = require("express"); 
+const express = require("express");
 const cors = require("cors");
-const bcrypt = require("bcrypt"); // For password hashing
-const jwt = require("jsonwebtoken"); // For token-based authentication
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 require("dotenv").config();
 
 const app = express();
 const PORT = 7676;
-const secretKey = "yourSecretKey"; // Replace with a secure key for JWT signing
+const secretKey = process.env.JWT_SECRET;
+
 // -------------------------------
 // Middleware
 // -------------------------------
 app.use(cors());
-app.use(bodyParser.json());  // Middleware to parse JSON requests
-app.use(express.static("build")); // Serve static files from the "build" folder
+app.use(bodyParser.json());
+app.use(express.static("build"));
 
 // -------------------------------
 // MySQL Connection
 // -------------------------------
 const dbConfig = {
   host: "localhost",
-  user: "root", // MySQL username
-  password: process.env.DB_PASSWORD, // Password from .env
-  database: "train_booking", // Database name
+  user: "root",
+  password: process.env.DB_PASSWORD,
+  database: "train_booking",
 };
 
-// Function to create a MySQL connection
-async function createDbConnection() {
-  const connection = await mysql.createConnection(dbConfig);
-  return connection;
-}
+// Function to create a MySQL connection pool
+const dbPool = mysql.createPool(dbConfig);
 
 // -------------------------------
 // API Routes
@@ -45,12 +43,10 @@ app.post("/api/search-trains", async (req, res) => {
   }
 
   try {
-    const connection = await createDbConnection();
-    const [results] = await connection.execute(
+    const [results] = await dbPool.query(
       "SELECT train_id, name, source, destination, departure_time AS departure, arrival_time AS arrival, date, price, seats_available AS seatsAvailable, class FROM trains WHERE source = ? AND destination = ? AND date = ?",
       [source, destination, date]
     );
-    connection.end();
     res.json(results);
   } catch (err) {
     console.error("Error fetching trains:", err);
@@ -67,21 +63,15 @@ app.post("/api/confirm-booking", async (req, res) => {
   }
 
   try {
-    const connection = await createDbConnection();
-
-    // Insert booking into the database
-    const [result] = await connection.execute(
+    const [result] = await dbPool.query(
       "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at) VALUES (?, ?, ?, ?, ?, NOW())",
       [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
     );
 
-    // Fetch train details
-    const [trainDetails] = await connection.execute(
+    const [trainDetails] = await dbPool.query(
       "SELECT name, source, destination, departure_time, arrival_time, date FROM trains WHERE train_id = ?",
       [train_id]
     );
-
-    connection.end();
 
     if (trainDetails.length === 0) {
       return res.status(404).json({ error: "Train not found." });
@@ -94,113 +84,158 @@ app.post("/api/confirm-booking", async (req, res) => {
   }
 });
 
-// -----------------------------------------------------------------------
-
-// Middleware to authenticate JWT tokens
+// Middleware for JWT Authentication
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"]; // Retrieve token from Authorization header
+  const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-      return res.status(401).json({ message: "Access denied" });
+    return res.status(401).json({ message: "Access denied" });
   }
 
-  // Verify token
   jwt.verify(token, secretKey, (err, admin) => {
-      if (err) {
-          return res.status(403).json({ message: "Invalid token" });
-      }
-      req.admin = admin; // Attach admin info to request
-      next();
+    if (err) {
+      return res.status(403).json({ message: "Invalid token" });
+    }
+    req.admin = admin;
+    next();
   });
 }
 
-// ----------------------------------------------------------------------------
-
-// Admin Login: Authenticate admin and generate a JWT token
+// Admin Login: Authenticate and generate a JWT token
 app.post("/api/admin/login", async (req, res) => {
-  const { username, password } = req.body; // Extract username and password from request body
+  const { username, password } = req.body;
 
   try {
-      // Check if admin exists in the database
-      const [admin] = await dbConfig.query("SELECT * FROM Admins WHERE username = ?", [username]);
+    const [admin] = await dbPool.query("SELECT * FROM Admins WHERE username = ?", [username]);
 
-      if (admin.length === 0) {
-          return res.status(404).json({ message: "Admin not found" });
-      }
+    if (admin.length === 0) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
 
-      // Verify the provided password with the stored hashed password
-      const isPasswordValid = await bcrypt.compare(password, admin[0].password);
-      if (!isPasswordValid) {
-          return res.status(401).json({ message: "Invalid credentials" });
-      }
+    const isPasswordValid = await bcrypt.compare(password, admin[0].password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid credentials." });
+    }
 
-      // Generate a JWT token for authentication
-      const token = jwt.sign({ id: admin[0].id }, secretKey, { expiresIn: "1h" });
-      res.status(200).json({ message: "Login successful", token });
+    const token = jwt.sign({ id: admin[0].id }, secretKey, { expiresIn: "1h" });
+    res.json({ message: "Login successful.", token });
   } catch (err) {
-      res.status(500).json({ message: "Error logging in", error: err.message });
+    console.error("Error logging in:", err);
+    res.status(500).json({ error: "Login failed." });
   }
 });
 
-// -----------------------------------------------------
-
-// Add a train to the database
+// Add Train
 app.post("/api/admin/add-train", authenticateToken, async (req, res) => {
   const { name, source, destination, departure, arrival, price, seatsAvailable } = req.body;
 
   try {
-      // Insert train details into the database
-      const result = await dbConfig.query(
-          "INSERT INTO Trains (name, source, destination, departure, arrival, price, seatsAvailable) VALUES (?, ?, ?, ?, ?, ?, ?)",
-          [name, source, destination, departure, arrival, price, seatsAvailable]
-      );
-      res.status(201).json({ message: "Train added successfully", trainId: result[0].insertId });
+    const [result] = await dbPool.query(
+      "INSERT INTO trains (name, source, destination, departure_time, arrival_time, price, seats_available) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [name, source, destination, departure, arrival, price, seatsAvailable]
+    );
+    res.status(201).json({ message: "Train added successfully.", trainId: result.insertId });
   } catch (err) {
-      res.status(500).json({ message: "Error adding train", error: err.message });
+    console.error("Error adding train:", err);
+    res.status(500).json({ error: "Failed to add train." });
   }
 });
 
-// ------------------------------------------------------------------------------
-
-// Get all trains
+// Get All Trains
 app.get("/api/admin/trains", authenticateToken, async (req, res) => {
   try {
-      const [trains] = await dbConfig.query("SELECT * FROM Trains");
-      res.status(200).json(trains);
+    const [trains] = await dbPool.query("SELECT * FROM trains");
+    res.json(trains);
   } catch (err) {
-      res.status(500).json({ message: "Error retrieving trains", error: err.message });
+    console.error("Error fetching trains:", err);
+    res.status(500).json({ error: "Failed to fetch trains." });
   }
 });
 
-// ------------------------------------------------------------------------------------
-
-// Delete a train from the database
+// Delete Train
 app.delete("/api/admin/delete-train/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
 
   try {
-      // Delete train by ID
-      await dbConfig.query("DELETE FROM Trains WHERE id = ?", [id]);
-      res.status(200).json({ message: "Train deleted successfully" });
+    await dbPool.query("DELETE FROM trains WHERE train_id = ?", [id]);
+    res.json({ message: "Train deleted successfully." });
   } catch (err) {
-      res.status(500).json({ message: "Error deleting train", error: err.message });
+    console.error("Error deleting train:", err);
+    res.status(500).json({ error: "Failed to delete train." });
+  }
+});
+
+// Get all passengers (bookings)
+app.get("/api/admin/passengers", authenticateToken, async (req, res) => {
+  try {
+      const connection = await dbPool();
+      const [passengers] = await connection.execute(
+          "SELECT * FROM Bookings"
+      );
+      connection.end();
+      res.status(200).json(passengers);
+  } catch (err) {
+      console.error("Error fetching passengers:", err);
+      res.status(500).json({ message: "Error retrieving passenger data" });
+  }
+});
+
+// Update passenger details by booking ID
+app.put("/api/admin/passenger/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { passenger_name, passenger_age, passenger_phone, passenger_email } = req.body;
+
+  try {
+      const connection = await dbPool();
+      const [result] = await connection.execute(
+          "UPDATE Bookings SET passenger_name = ?, passenger_age = ?, passenger_phone = ?, passenger_email = ? WHERE booking_id = ?",
+          [passenger_name, passenger_age, passenger_phone, passenger_email, id]
+      );
+      connection.end();
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: "Passenger not found" });
+      }
+
+      res.status(200).json({ message: "Passenger data updated successfully" });
+  } catch (err) {
+      console.error("Error updating passenger data:", err);
+      res.status(500).json({ message: "Error updating passenger data" });
+  }
+});
+
+// Delete passenger data by booking ID
+app.delete("/api/admin/passenger/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const connection = await dbPool();
+      const [result] = await connection.execute(
+          "DELETE FROM Bookings WHERE booking_id = ?",
+          [id]
+      );
+      connection.end();
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ message: "Passenger not found" });
+      }
+
+      res.status(200).json({ message: "Passenger deleted successfully" });
+  } catch (err) {
+      console.error("Error deleting passenger data:", err);
+      res.status(500).json({ message: "Error deleting passenger data" });
   }
 });
 
 
-
-// -------------------------------
 // Error Handling Middleware
-// -------------------------------
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Something went wrong!");
+  res.status(500).json({ error: "Something went wrong!" });
 });
 
-// -------------------------------
 // Start Server
-// -------------------------------
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

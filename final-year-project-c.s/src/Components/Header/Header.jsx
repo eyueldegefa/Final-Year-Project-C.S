@@ -2,6 +2,7 @@ import React from 'react'
 import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Link } from 'react-router-dom';
 import '../../App.css';
 import './Header.css';
 
@@ -31,7 +32,9 @@ function Header() {
             </div>
             <div className='d-flex col-sm-4 col-md-3 gap-5 justify-content-end'>
               <SearchIcon className='linkHover' /> 
-              <div className='d-flex gap-1 linkHover'><AccountCircleIcon /><p className='pt-1'>LOG IN</p></div>
+              <Link to="/admin/login">
+                <div className='d-flex gap-1 linkHover'><AccountCircleIcon /><p className='pt-1'>LOG IN</p></div>
+              </Link>
             </div>
         </div>
       </section>
