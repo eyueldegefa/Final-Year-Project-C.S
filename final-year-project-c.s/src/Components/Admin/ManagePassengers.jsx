@@ -13,14 +13,15 @@ const ManagePassengers = () => {
   useEffect(() => {
     const fetchPassengers = async () => {
       try {
-        const response = await axios.get("/api/admin/passengers", {
+        const response = await axios.get("http://localhost:7676/api/admin/passengers", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`, // Fetch admin token from localStorage
           },
         });
         setPassengers(response.data);
       } catch (error) {
         console.error("Error fetching passengers:", error);
+        alert("Failed to fetch passenger data. Please check your connection or try again.");
       }
     };
 
@@ -31,6 +32,25 @@ const ManagePassengers = () => {
   const filteredPassengers = passengers.filter((passenger) =>
     passenger.passenger_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Delete passenger handler
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this passenger?")) return;
+
+    try {
+      await axios.delete(`http://localhost:7676/api/admin/passenger/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      });
+      // Update the passenger list after deletion
+      setPassengers((prev) => prev.filter((passenger) => passenger.id !== id));
+      alert("Passenger deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting passenger:", error);
+      alert("Failed to delete passenger. Please try again.");
+    }
+  };
 
   return (
     <div className="p-4">
@@ -79,7 +99,7 @@ const ManagePassengers = () => {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => alert(`Delete passenger ${passenger.id}`)}
+                      onClick={() => handleDelete(passenger.id)}
                     >
                       Delete
                     </Button>

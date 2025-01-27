@@ -166,18 +166,16 @@ app.delete("/api/admin/delete-train/:id", authenticateToken, async (req, res) =>
   }
 });
 
-// Get all passengers (bookings)
+// Get all passengers(Bookings)
 app.get("/api/admin/passengers", authenticateToken, async (req, res) => {
   try {
-      const connection = await dbPool();
-      const [passengers] = await connection.execute(
-          "SELECT * FROM Bookings"
-      );
-      connection.end();
-      res.status(200).json(passengers);
+    const connection = await dbPool();
+    const [passengers] = await connection.execute("SELECT * FROM passengers");
+    connection.end();
+    res.status(200).json(passengers);
   } catch (err) {
-      console.error("Error fetching passengers:", err);
-      res.status(500).json({ message: "Error retrieving passenger data" });
+    console.error("Error fetching passengers:", err);
+    res.status(500).json({ message: "Error retrieving passengers" });
   }
 });
 
@@ -205,28 +203,21 @@ app.put("/api/admin/passenger/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// Delete passenger data by booking ID
+// Delete passenger by ID
 app.delete("/api/admin/passenger/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
 
   try {
-      const connection = await dbPool();
-      const [result] = await connection.execute(
-          "DELETE FROM Bookings WHERE booking_id = ?",
-          [id]
-      );
-      connection.end();
-
-      if (result.affectedRows === 0) {
-          return res.status(404).json({ message: "Passenger not found" });
-      }
-
-      res.status(200).json({ message: "Passenger deleted successfully" });
+    const connection = await dbPool();
+    await connection.execute("DELETE FROM passengers WHERE id = ?", [id]);
+    connection.end();
+    res.status(200).json({ message: "Passenger deleted successfully" });
   } catch (err) {
-      console.error("Error deleting passenger data:", err);
-      res.status(500).json({ message: "Error deleting passenger data" });
+    console.error("Error deleting passenger:", err);
+    res.status(500).json({ message: "Error deleting passenger" });
   }
 });
+
 
 
 // Error Handling Middleware
