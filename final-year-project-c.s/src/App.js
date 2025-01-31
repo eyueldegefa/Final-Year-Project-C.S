@@ -13,7 +13,7 @@ import AdminLogin from "./Components/Admin/AdminLogin";
 import AdminDashboard from "./Components/Admin/AdminDashboard";
 import ManagePassengers from "./Components/Admin/ManagePassengers";
 import ManageTrains from "./Components/Admin/ManageTrains";
-import AddTrainForm from "./Components/Admin/AddTrainForm";
+import AddNewTrain from "./Components/Admin/AddNewTrain";
 // import { Auth } from "./Pages/Auth";
 // import Check from "./Components/Check/Check";
 // import BookingPage from "./Pages/BookingPage/BookingPage";
@@ -39,7 +39,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/manage-passengers" element={<ManagePassengers />} />
         <Route path="/admin/manage-trains" element={<ManageTrains />} />
-        <Route path="/admin/add-train" element={<AddTrainForm />} />
+        <Route path="/admin/add-train" element={<AddNewTrain />} />
         {/* <Route path="/booking" element={<BookingPage />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/check" element={<Check />} /> */}

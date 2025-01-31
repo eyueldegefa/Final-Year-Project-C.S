@@ -115,15 +115,16 @@ app.delete("/api/admin/delete-passenger/:id", async (req, res) => {
 // ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------
 // Fetch All Trains (Admin)
-app.get("/api/admin/trains", async (req, res) => {
+app.get('/api/admin/trains', async (req, res) => {
   try {
-      const trains = await dbPool.query("SELECT * FROM trains");
+      const [trains] = await dbPool.query("SELECT * FROM trains");
       res.json(trains);
   } catch (error) {
       console.error("Error fetching trains:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // Delete train by ID
 app.delete('/api/admin/delete-train/:id', async (req, res) => {
@@ -157,20 +158,25 @@ app.put('/api/admin/update-train/:id', async (req, res) => {
   }
 });
 
-// Add New Train
-app.post("/api/admin/add-train", async (req, res) => {
-  const { name, source, destination, departure, arrival, price, seatsAvailable } = req.body;
+// Add a new train
+app.post('/api/admin/add-train', async (req, res) => {
+  const { train_name, source, destination, departure_time, arrival_time, seats_available, price, date, class: train_class } = req.body;
+  const query = `
+      INSERT INTO trains (name, source, destination, departure_time, arrival_time, seats_available, price, date, class)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  const values = [train_name, source, destination, departure_time, arrival_time, seats_available, price, date, train_class];
+
   try {
-    const [result] = await dbPool.query(
-      "INSERT INTO trains (name, source, destination, departure_time, arrival_time, price, seats_available) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [name, source, destination, departure, arrival, price, seatsAvailable]
-    );
-    res.status(201).json({ message: "Train added successfully.", trainId: result.insertId });
+      await dbPool.query(query, values);
+      res.status(201).send({ message: 'Train added successfully!' });
   } catch (err) {
-    console.error("Error adding train:", err);
-    res.status(500).json({ error: "Failed to add train." });
+      console.error('Error adding train:', err);
+      res.status(500).send({ error: 'Failed to add train' });
   }
 });
+
+
 
 
 // Start Server
