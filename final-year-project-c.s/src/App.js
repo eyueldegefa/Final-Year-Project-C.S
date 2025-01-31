@@ -11,6 +11,7 @@ import SearchResults from "./Components/SearchResult/SearchResults";
 import Success from "./Components/Success/Success";
 import AdminLogin from "./Components/Admin/AdminLogin";
 import AdminDashboard from "./Components/Admin/AdminDashboard";
+import ManagePassengers from "./Components/Admin/ManagePassengers";
 import ManageTrains from "./Components/Admin/ManageTrains";
 import AddTrainForm from "./Components/Admin/AddTrainForm";
 // import { Auth } from "./Pages/Auth";
@@ -36,6 +37,7 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/success" element={<Success />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/manage-passengers" element={<ManagePassengers />} />
         <Route path="/admin/manage-trains" element={<ManageTrains />} />
         <Route path="/admin/add-train" element={<AddTrainForm />} />
         {/* <Route path="/booking" element={<BookingPage />} />

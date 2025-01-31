@@ -20,7 +20,7 @@ const SearchResults = () => {
         console.log("Fetching trains with criteria:", searchCriteria); // Debugging
         const response = await axios.post("http://localhost:7676/api/search-trains", searchCriteria);
         setSearchResults(response.data);
-        setError(""); // Clear any previous errors
+        setError("");
       } catch (err) {
         console.error("Error fetching trains:", err.response?.data || err.message);
         setError(err.response?.data?.error || "Failed to fetch search results.");
