@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function AdminDashboard() {
+function AdminDashboard() {
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold">Admin Dashboard</h1>
@@ -13,3 +13,5 @@ export default function AdminDashboard() {
         </div>
     );
 }
+
+export default AdminDashboard;
