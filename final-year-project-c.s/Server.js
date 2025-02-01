@@ -57,6 +57,132 @@ const dbPool = mysql.createPool(dbConfig);
 // };
 
 // ------------------------------------------------------------------------------------------
+app.post("/api/search-trains", async (req, res) => {
+    const { source, destination, date } = req.body;
+  
+    try {
+      const connection = await mysql.createConnection(dbConfig);
+      const [rows] = await connection.execute(
+        "SELECT train_id, name, source, destination, departure_time, arrival_time, date, price, seats_available, class FROM trains WHERE source = ? AND destination = ? AND date = ?",
+        [source, destination, date]
+      );
+  
+      res.json(rows);
+    } catch (error) {
+      console.error("Error fetching trains:", error);
+      res.status(500).json({ error: "Failed to fetch train data." });
+    }
+  });
+  
+//   app.post("/api/confirm-booking", async (req, res) => {
+//     const { train_id, passenger_name, passenger_age, passenger_phone, passenger_email } = req.body;
+  
+//     try {
+//       const connection = await mysql.createConnection(dbConfig);
+//       await connection.execute(
+//         "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at) VALUES (?, ?, ?, ?, ?, NOW())",
+//         [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
+//       );
+  
+//       res.json({ message: "Booking confirmed." });
+//     } catch (error) {
+//       console.error("Error confirming booking:", error);
+//       res.status(500).json({ error: "Failed to confirm booking." });
+//     }
+//   });
+
+// app.post("/api/confirm-booking", async (req, res) => {
+//     const { train_id, passenger_name, passenger_age, passenger_phone, passenger_email, selectedSeats } = req.body;
+  
+//     try {
+//       const connection = await mysql.createConnection(dbConfig);
+//       await connection.execute(
+//         "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at) VALUES (?, ?, ?, ?, ?, NOW())",
+//         [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
+//       );
+  
+//       // Update seat status to 'reserved'
+//       for (const seatId of selectedSeats) {
+//         await connection.execute(
+//           "UPDATE seats SET status = 'reserved' WHERE id = ?",
+//           [seatId]
+//         );
+//       }
+  
+//       res.json({ message: "Booking confirmed." });
+//     } catch (error) {
+//       console.error("Error confirming booking:", error);
+//       res.status(500).json({ error: "Failed to confirm booking." });
+//     }
+//   });
+  
+// Fetch seats for a specific train
+app.get('/seats/:trainId', async (req, res) => {
+    const trainId = req.params.trainId;
+    // console.log(`Fetching seats for train ID: ${trainId}`);
+  
+    try {
+      const connection = await dbPool.getConnection();
+      const [rows] = await connection.query('SELECT * FROM seats WHERE train_id = ?', [trainId]);
+      connection.release(); // Release the connection back to the pool
+  
+      console.log("Seats fetched:", rows);
+      res.send(rows);
+    } catch (error) {
+      console.error("Error fetching seats:", error);
+      res.status(500).json({ error: "Failed to fetch seat data." });
+    }
+  });
+  
+  // Update seat status
+  app.post('/seats/update', (req, res) => {
+    const { seatId, status } = req.body;
+    const sql = 'UPDATE seats SET status = ? WHERE id = ?';
+    dbPool.query(sql, [status, seatId], (err, result) => {
+      if (err) throw err;
+      res.send('Seat status updated');
+    });
+  });
+  
+//   Confirm booking
+app.post("/api/confirm-booking", async (req, res) => {
+    const { train_id, passenger_name, passenger_age, passenger_phone, passenger_email, selectedSeats } = req.body;
+  
+    try {
+      const connection = await dbPool.getConnection();
+  
+      // Step 1: Insert booking details into the bookings table
+      const [bookingResult] = await connection.execute(
+        "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at) VALUES (?, ?, ?, ?, ?, NOW())",
+        [train_id, passenger_name, passenger_age, passenger_phone, passenger_email]
+      );
+  
+      const bookingId = bookingResult.insertId; // Get the ID of the newly inserted booking
+  
+      // Step 2: Update the seats table with the booking_id and mark seats as reserved
+      for (const seatId of selectedSeats) {
+        await connection.execute(
+          "UPDATE seats SET status = 'reserved', booking_id = ? WHERE seat_id = ?", // Updated to use 'seat_id'
+          [bookingId, seatId]
+        );
+  
+        // Step 3: Update the bookings table with the seat_id
+        await connection.execute(
+          "UPDATE bookings SET seat_id = ? WHERE booking_id = ?", // Updated to use 'seat_id'
+          [seatId, bookingId]
+        );
+      }
+  
+      connection.release(); // Release the connection back to the pool
+  
+      res.json({ message: "Booking confirmed.", bookingId });
+    } catch (error) {
+      console.error("Error confirming booking:", error);
+      res.status(500).json({ error: "Failed to confirm booking." });
+    }
+  });
+
+// ------------------------------------------------------------------------------------------
 // Fetch All Passengers (Admin)
 app.get("/api/admin/passengers", async (req, res) => {
   try {
@@ -176,7 +302,36 @@ app.post('/api/admin/add-train', async (req, res) => {
   }
 });
 
-
+// ------------------------------------------------------------------
+// Fetch all seats
+app.get('/api/seats', (req, res) => {
+    dbPool.query('SELECT * FROM seats', (error, results) => {
+      if (error) {
+        return res.status(500).json({ message: 'Error fetching seats' });
+      }
+      res.json(results);
+    });
+  });
+  
+  // Update seat status
+  app.post('/api/seats/:id/book', (req, res) => {
+    const { id } = req.params;
+    const { bookedBy } = req.body;
+  
+    dbPool.query(
+      'UPDATE seats SET isBooked = TRUE, bookedBy = ? WHERE id = ?',
+      [bookedBy, id],
+      (error, results) => {
+        if (error) {
+          return res.status(500).json({ message: 'Error updating seat' });
+        }
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: 'Seat not found' });
+        }
+        res.json({ message: 'Seat booked successfully' });
+      }
+    );
+  });
 
 
 // Start Server

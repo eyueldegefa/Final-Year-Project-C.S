@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const SearchResults = () => {
+const TrainSearch = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState([]);
@@ -86,4 +86,4 @@ const SearchResults = () => {
   );
 };
 
-export default SearchResults;
+export default TrainSearch;

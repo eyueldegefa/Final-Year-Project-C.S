@@ -6,14 +6,15 @@ import Footer from "./Components/Footer/Footer";
 import Banner from "./Components/Banner/Banner";
 import Booking from "./Components/Booking/Booking";
 import Home from "./Components/Home/Home";
-import PersonalDetails from "./Components/PersonalDetails/PersonalDetails"; // Import the component
-import SearchResults from "./Components/SearchResult/SearchResults";
+import TrainSearch from "./Components/TrainSearch/TrainSearch";
+import PersonalDetails from "./Components/PersonalDetails/PersonalDetails"; 
 import Success from "./Components/Success/Success";
 import AdminLogin from "./Components/Admin/AdminLogin";
 import AdminDashboard from "./Components/Admin/AdminDashboard";
 import ManagePassengers from "./Components/Admin/ManagePassengers";
 import ManageTrains from "./Components/Admin/ManageTrains";
 import AddNewTrain from "./Components/Admin/AddNewTrain";
+import SeatMap from "./Components/SeatMap/SeatMap";
 // import { Auth } from "./Pages/Auth";
 // import Check from "./Components/Check/Check";
 // import BookingPage from "./Pages/BookingPage/BookingPage";
@@ -28,12 +29,14 @@ function App() {
               <Banner />
               <Booking />
               <Home />
+              {/* <SeatMap /> */}
               <Footer />
             </>
           }
         />
-        <Route path="/search-results" element={<SearchResults />} />
-        <Route path="/personal-details/:trainId" element={<PersonalDetails />} />    {/* Personal details form */}
+        <Route path="/search-results" element={<TrainSearch />} />
+        <Route path="/personal-details/:trainId" element={<PersonalDetails />} /> 
+        <Route path="/seat-selection/:trainId" element={<SeatMap />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/success" element={<Success />} />
         <Route path="/admin" element={<AdminDashboard />} />
