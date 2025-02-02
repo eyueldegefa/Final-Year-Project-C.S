@@ -5,16 +5,17 @@ function ManagePassengers() {
     const [passengers, setPassengers] = useState([]);
     const [editingPassenger, setEditingPassenger] = useState(null);
     const [formData, setFormData] = useState({
-        passenger_name: '',
-        passenger_age: '',
+        passengerf_name: '',
+        passengerl_name: '',
+        passenger_dateofbirth: '',
         passenger_phone: '',
         passenger_email: ''
     });
-    const [paymentStatusFilter, setPaymentStatusFilter] = useState(''); // State for payment status filter
+    const [paymentStatusFilter, setPaymentStatusFilter] = useState('');
 
     useEffect(() => {
         fetchPassengers();
-    }, [paymentStatusFilter]); // Fetch passengers when the filter changes
+    }, [paymentStatusFilter]);
 
     const fetchPassengers = async () => {
         try {
@@ -34,7 +35,7 @@ function ManagePassengers() {
 
         try {
             await axios.delete(`http://localhost:7676/api/admin/delete-passenger/${id}`);
-            setPassengers(passengers.filter(passenger => passenger.id !== id));
+            setPassengers(passengers.filter(passenger => passenger.booking_id !== id));
             alert("Passenger deleted successfully!");
         } catch (err) {
             console.error("Error deleting passenger:", err);
@@ -42,8 +43,14 @@ function ManagePassengers() {
     };
 
     const handleEditClick = (passenger) => {
-        setEditingPassenger(passenger.id);
-        setFormData(passenger);
+        setEditingPassenger(passenger.booking_id);
+        setFormData({
+            passengerf_name: passenger.passengerf_name,
+            passengerl_name: passenger.passengerl_name,
+            passenger_dateofbirth: passenger.passenger_dateofbirth,
+            passenger_phone: passenger.passenger_phone,
+            passenger_email: passenger.passenger_email
+        });
     };
 
     const handleChange = (e) => {
@@ -55,10 +62,10 @@ function ManagePassengers() {
         try {
             await axios.put(`http://localhost:7676/api/admin/update-passenger/${editingPassenger}`, formData);
             setPassengers(passengers.map(passenger =>
-                passenger.id === editingPassenger ? { ...passenger, ...formData } : passenger
+                passenger.booking_id === editingPassenger ? { ...passenger, ...formData } : passenger
             ));
             alert("Passenger updated successfully!");
-            setEditingPassenger(null); // Close the editing form after update
+            setEditingPassenger(null);
         } catch (err) {
             console.error("Error updating passenger:", err);
             alert("Failed to update passenger!");
@@ -66,57 +73,62 @@ function ManagePassengers() {
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold">Manage Passengers</h1>
+        <div className="p-4 bg-dark text-white">
+            <h1 className="text-2xl font-bold text-center">Manage Passengers</h1>
 
-            {/* Filter by Payment Status */}
-            <div className="mt-4">
-                <label htmlFor="paymentStatusFilter" className="block text-sm font-medium text-gray-700">
-                    Filter by Payment Status
-                </label>
-                <select
-                    id="paymentStatusFilter"
-                    value={paymentStatusFilter}
-                    onChange={(e) => setPaymentStatusFilter(e.target.value)}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                >
-                    <option value="">All</option>
-                    <option value="paid">Paid</option>
-                    <option value="pending">Pending</option>
-                    <option value="expired">Expired</option>
-                </select>
+            <div className="mt-4 d-flex justify-content-between">
+                <div>
+                    <label htmlFor="paymentStatusFilter" className="block text-sm font-medium text-gray-700">
+                        Filter by Payment Status
+                    </label>
+                    <select
+                        id="paymentStatusFilter"
+                        value={paymentStatusFilter}
+                        onChange={(e) => setPaymentStatusFilter(e.target.value)}
+                        className="mt-1 py-3 block w-full p-2 border border-gray bg-white text-dark"
+                    >
+                        <option value="">All</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+                <div className='align-center '>
+                    <label htmlFor="">Search by booking reference</label>
+                    <input className='bg-white py-3 text-dark' type="text" placeholder='Search by Booking-reference' />
+                </div>
             </div>
 
-            {/* Passengers Table */}
             <table className="mt-4 border-collapse border border-gray-300">
                 <thead>
-                    <tr>
-                        <th className="border border-gray-300 p-2">Name</th>
-                        <th className="border border-gray-300 p-2">Age</th>
-                        <th className="border border-gray-300 p-2">Phone</th>
+                    <tr className=''>
+                        <th className="border border-gray-300 p-2 w-50">First Name</th>
+                        <th className="border border-gray-300 p-2">Last Name</th>
+                        <th className="border border-gray-300 p-2">Date of Birth</th>
                         <th className="border border-gray-300 p-2">Email</th>
-                        <th className="border border-gray-300 p-2">Payment Status</th>
+                        <th className="border border-gray-300 p-2">Phone</th>
                         <th className="border border-gray-300 p-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {passengers.map(passenger => (
-                        <tr key={passenger.id}>
-                            <td className="border border-gray-300 p-2">{passenger.passenger_name}</td>
-                            <td className="border border-gray-300 p-2">{passenger.passenger_age}</td>
-                            <td className="border border-gray-300 p-2">{passenger.passenger_phone}</td>
+                        <tr key={passenger.booking_id}>
+                            <td className="border border-gray-300 p-2">{passenger.passengerf_name}</td>
+                            <td className="border border-gray-300 p-2">{passenger.passengerl_name}</td>
+                            <td className="border border-gray-300 p-2">{passenger.passenger_dateofbirth}</td>
                             <td className="border border-gray-300 p-2">{passenger.passenger_email}</td>
-                            <td className="border border-gray-300 p-2">{passenger.payment_status}</td>
+                            <td className="border border-gray-300 p-2">{passenger.passenger_phone}</td>
                             <td className="border border-gray-300 p-2">
-                                <button onClick={() => handleEditClick(passenger)} className="text-blue-500 mr-2">Edit</button>
-                                <button onClick={() => deletePassenger(passenger.id)} className="text-red-500">Delete</button>
+                                <div className='d-flex'>
+                                    <button onClick={() => handleEditClick(passenger)} className="m-1 bg-success">Edit</button>
+                                    <button onClick={() => deletePassenger(passenger.booking_id)} className="m-1 bg-danger">Delete</button>
+                                </div>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
-            {/* Edit Passenger Form */}
             {editingPassenger && (
                 <div className="mt-4 p-4 border border-gray-300 rounded">
                     <h2 className="text-xl font-bold">Edit Passenger</h2>

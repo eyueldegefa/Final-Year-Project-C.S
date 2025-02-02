@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Admin.css';
 
 function AddNewTrain({ onTrainAdded }) {
     const [formData, setFormData] = useState({
@@ -43,10 +44,10 @@ function AddNewTrain({ onTrainAdded }) {
     };
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Add New Train</h1>
+        <div className="p-4 add-train-wrapper">
+            <h1 className="text-2xl font-bold mb-4 text-center">Add New Train</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Train Name</label>
                     <input
                         type="text"
@@ -57,7 +58,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Source</label>
                     <input
                         type="text"
@@ -68,7 +69,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Destination</label>
                     <input
                         type="text"
@@ -79,7 +80,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Departure Time</label>
                     <input
                         type="time"
@@ -90,7 +91,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Arrival Time</label>
                     <input
                         type="time"
@@ -101,7 +102,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Seats Available</label>
                     <input
                         type="number"
@@ -112,7 +113,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Price</label>
                     <input
                         type="number"
@@ -123,7 +124,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Date</label>
                     <input
                         type="date"
@@ -134,7 +135,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <div className='d-flex'>
+                <div className='d-flex my-3'>
                     <label className="block text-sm font-medium">Class</label>
                     <input
                         type="text"
@@ -145,7 +146,7 @@ function AddNewTrain({ onTrainAdded }) {
                         required
                     />
                 </div>
-                <button type="submit" className="bg-success px-4 py-2 rounded">
+                <button type="submit" className="py-2 ">
                     Add Train
                 </button>
             </form>

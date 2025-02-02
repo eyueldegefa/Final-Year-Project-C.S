@@ -4,10 +4,12 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const cron = require("node-cron");
-const chapa = require("chapa")("your-chapa-secret-key"); // Ensure you have the correct Chapa secret key
+const chapa = require("chapa").default;
+const axios = require("axios");
 
 const app = express();
 const PORT = 7676;
+const CHAPA_SECRET_KEY = process.env.CHAPA_SECRET_KEY || 'CHASECK_TEST-ub2djNjB6gXgWgSJGTPtSHu3BKahzhNV';
 
 // Middleware
 app.use(
@@ -42,7 +44,6 @@ cron.schedule("*/5 * * * *", async () => {
   }
 });
 
-// ------------------------------------------------------------------------------------------
 // Search Trains
 app.post("/api/search-trains", async (req, res) => {
   const { source, destination, date } = req.body;
@@ -80,47 +81,78 @@ app.get("/seats/:trainId", async (req, res) => {
 
 // Confirm Booking
 app.post("/api/confirm-booking", async (req, res) => {
-  const { train_id, passenger_name, passenger_age, passenger_phone, passenger_email, selectedSeats } = req.body;
+  const {
+    train_id,
+    passengerf_name,
+    passengerl_name,
+    passenger_dateofbirth,
+    passenger_phone,
+    passenger_email,
+    selectedSeats,
+    amount,
+  } = req.body;
+
+  // Debug: Log the request body
+  console.log("Request body:", req.body);
+
+  // Validate required fields
+  if (
+    !train_id ||
+    !passengerf_name ||
+    !passengerl_name ||
+    !passenger_dateofbirth ||
+    !passenger_phone ||
+    !passenger_email ||
+    !selectedSeats ||
+    !amount
+  ) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
 
   try {
     const connection = await dbPool.getConnection();
-
-    // Generate a unique booking reference code
     const bookingReference = `BOOK-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-
-    // Set expiry time (e.g., 10 minutes from now)
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Step 1: Insert booking details into the bookings table
+    // Insert booking details into the bookings table
     const [bookingResult] = await connection.execute(
-      "INSERT INTO bookings (train_id, passenger_name, passenger_age, passenger_phone, passenger_email, booked_at, booking_reference, expires_at, payment_status) VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, 'pending')",
-      [train_id, passenger_name, passenger_age, passenger_phone, passenger_email, bookingReference, expiresAt]
+      "INSERT INTO bookings (train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, booked_at, booking_reference, expires_at, payment_status, amount) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, 'pending', ?)",
+      [
+        train_id,
+        passengerf_name,
+        passengerl_name,
+        passenger_dateofbirth,
+        passenger_phone,
+        passenger_email,
+        bookingReference,
+        expiresAt,
+        amount,
+      ]
     );
 
-    const bookingId = bookingResult.insertId; // Get the ID of the newly inserted booking
+    const bookingId = bookingResult.insertId;
 
-    // Step 2: Update the seats table with the booking_id and mark seats as reserved
+    // Update the seats table with the booking_id and mark seats as reserved
     for (const seatId of selectedSeats) {
       await connection.execute(
         "UPDATE seats SET status = 'reserved', booking_id = ? WHERE seat_id = ?",
         [bookingId, seatId]
       );
 
-      // Step 3: Update the bookings table with the seat_id
+      // Update the bookings table with the seat_id
       await connection.execute(
         "UPDATE bookings SET seat_id = ? WHERE booking_id = ?",
         [seatId, bookingId]
       );
     }
 
-    connection.release(); // Release the connection back to the pool
+    connection.release();
 
-    // Return booking details, including the reference code
     res.json({
       message: "Booking confirmed.",
       bookingId,
       bookingReference,
-      passengerDetails: { passenger_name, passenger_age, passenger_phone, passenger_email },
+      passengerDetails: { passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email },
       trainDetails: { train_id },
       selectedSeats,
     });
@@ -130,38 +162,100 @@ app.post("/api/confirm-booking", async (req, res) => {
   }
 });
 
+
+// Chapa Payment Integration
 // Chapa Payment Integration
 app.post("/api/payment", async (req, res) => {
-  const { bookingReference, amount, currency, email } = req.body;
+  const { bookingReference, amount, currency, email, firstName, lastName, phoneNumber } = req.body;
 
   try {
     const paymentData = {
-      amount,
-      currency,
-      email,
+      amount: amount.toString(), // Convert amount to string
+      currency: currency || "ETB", // Default to ETB if not provided
+      email: email || "firstgroup545@gmail.com", // Default email if not provided
+      first_name: firstName || "User", // Default first name if not provided
+      last_name: lastName || "Test", // Default last name if not provided
+      phone_number: phoneNumber || "0912345678", // Default phone number if not provided
       tx_ref: bookingReference, // Use booking reference as transaction reference
-      callback_url: "http://localhost:7676/payment-callback",
-      return_url: "http://localhost:3000/success",
+      callback_url: "http://localhost:7676/payment-callback", // Replace with your callback URL
+      return_url: "http://localhost:7676/success", // Replace with your return URL
+      customization: {
+        title: "Train Booking", // Ensure this is 16 characters or less
+        description: "Booking Payment", // Ensure this contains only allowed characters
+      },
     };
 
-    const response = await chapa.initialize(paymentData);
-    res.json({ paymentUrl: response.data.checkout_url });
+    const response = await axios.post(
+      "https://api.chapa.co/v1/transaction/initialize",
+      paymentData,
+      {
+        headers: {
+          Authorization: `Bearer ${CHAPA_SECRET_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.data.status === "success") {
+      res.json({ paymentUrl: response.data.data.checkout_url });
+    } else {
+      res.status(500).json({ error: "Failed to initialize payment." });
+    }
   } catch (error) {
-    console.error("Payment error:", error);
+    console.error("Payment error:", error.response ? error.response.data : error.message);
     res.status(500).json({ error: "Payment failed." });
   }
 });
 
-// ------------------------------------------------------------------------------------------
+// Callback 
+app.post("/payment-callback", async (req, res) => {
+  const { tx_ref, status } = req.body;
+
+  if (status === "success") {
+    try {
+      const connection = await dbPool.getConnection();
+
+      // Step 1: Update the booking status to "paid"
+      await connection.execute(
+        "UPDATE bookings SET payment_status = 'paid' WHERE booking_reference = ?",
+        [tx_ref]
+      );
+
+      // Step 2: Insert payment details into the payments table
+      const [booking] = await connection.execute(
+        "SELECT * FROM bookings WHERE booking_reference = ?",
+        [tx_ref]
+      );
+
+      if (booking.length > 0) {
+        const { booking_id, train_id, passengerf_name, passengerl_name, passenger_email, passenger_phone, amount } = booking[0];
+
+        await connection.execute(
+          "INSERT INTO payments (booking_id, train_id, passenger_name, passenger_email, passenger_phone, amount, payment_status, payment_date) VALUES (?, ?, ?, ?, ?, ?, 'paid', NOW())",
+          [booking_id, train_id, `${passengerf_name} ${passengerl_name}`, passenger_email, passenger_phone, amount]
+        );
+      }
+
+      connection.release();
+      console.log(`Payment for booking ${tx_ref} was successful. Database updated.`);
+    } catch (error) {
+      console.error("Error updating database after payment:", error);
+    }
+  } else {
+    console.log(`Payment for booking ${tx_ref} failed.`);
+  }
+
+  res.sendStatus(200); // Always send a response to Chapa
+});
+
 // Fetch All Passengers (Admin)
 app.get("/api/admin/passengers", async (req, res) => {
-  const { payment_status } = req.query; // Get the payment_status query parameter
+  const { payment_status } = req.query;
 
   try {
     let query = "SELECT * FROM bookings";
     const params = [];
 
-    // Add filtering by payment status if provided
     if (payment_status) {
       query += " WHERE payment_status = ?";
       params.push(payment_status);
@@ -178,14 +272,14 @@ app.get("/api/admin/passengers", async (req, res) => {
 // Update a Passenger
 app.put("/api/admin/update-passenger/:id", async (req, res) => {
   const { id } = req.params;
-  const { passenger_name, passenger_age, passenger_phone, passenger_email } = req.body;
+  const { passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email } = req.body;
 
   try {
     const [result] = await dbPool.query(
       `UPDATE bookings 
-       SET passenger_name = ?, passenger_age = ?, passenger_phone = ?, passenger_email = ? 
-       WHERE id = ?`,
-      [passenger_name, passenger_age, passenger_phone, passenger_email, id]
+       SET passengerf_name = ?, passengerl_name = ?, passenger_dateofbirth = ?, passenger_phone = ?, passenger_email = ? 
+       WHERE booking_id = ?`,
+      [passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, id]
     );
 
     if (result.affectedRows > 0) {
@@ -204,7 +298,7 @@ app.delete("/api/admin/delete-passenger/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const [result] = await dbPool.query("DELETE FROM bookings WHERE id = ?", [id]);
+    const [result] = await dbPool.query("DELETE FROM bookings WHERE booking_id = ?", [id]);
 
     if (result.affectedRows > 0) {
       res.json({ message: "Passenger deleted successfully!" });
@@ -217,7 +311,6 @@ app.delete("/api/admin/delete-passenger/:id", async (req, res) => {
   }
 });
 
-// ------------------------------------------------------------------------------------------
 // Fetch All Trains (Admin)
 app.get("/api/admin/trains", async (req, res) => {
   try {
@@ -279,7 +372,6 @@ app.post("/api/admin/add-train", async (req, res) => {
   }
 });
 
-// ------------------------------------------------------------------------------------------
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

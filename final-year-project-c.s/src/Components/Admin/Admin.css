@@ -1,0 +1,30 @@
+*{
+    background-color: #212529;
+    color: white;
+}
+.admin-links {
+    text-decoration: none;
+    color: white;
+    font-size: 25px;
+}
+.add-train-wrapper{
+    width: 400px;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 10px 10px 10px 10px #17181a;
+}
+.add-train-wrapper label{
+    align-content: center;
+}
+.add-train-wrapper input{
+    background: whitesmoke
+}
+.add-train-wrapper button{
+    border-radius: 10px;
+    width: 250px;
+    background-color: rgb(5, 144, 5);
+}
+.add-train-wrapper button:hover{
+    background-color: green;
+    color: #000;
+}
