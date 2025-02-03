@@ -81,89 +81,7 @@ app.get("/seats/:trainId", async (req, res) => {
 });
 
 // Confirm Booking
-// app.post("/api/confirm-booking", async (req, res) => {
-//   const {
-//     train_id,
-//     passengerf_name,
-//     passengerl_name,
-//     passenger_dateofbirth,
-//     passenger_phone,
-//     passenger_email,
-//     selectedSeats,
-//     amount,
-//   } = req.body;
-
-//   // Debug: Log the request body
-//   console.log("Request body:", req.body);
-
-//   // Validate required fields
-//   if (
-//     !train_id ||
-//     !passengerf_name ||
-//     !passengerl_name ||
-//     !passenger_dateofbirth ||
-//     !passenger_phone ||
-//     !passenger_email ||
-//     !selectedSeats ||
-//     !amount
-//   ) {
-//     return res.status(400).json({ error: "All fields are required." });
-//   }
-
-//   try {
-//     const connection = await dbPool.getConnection();
-//     const amount = 3000; //fixed amount for now
-//     const bookingReference = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-//     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-
-//     // Insert booking details into the bookings table
-//     const [bookingResult] = await connection.execute(
-//       "INSERT INTO bookings (train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, booked_at, booking_reference, expires_at, payment_status, amount) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, 'pending', ?)",
-//       [
-//         train_id,
-//         passengerf_name,
-//         passengerl_name,
-//         passenger_dateofbirth,
-//         passenger_phone,
-//         passenger_email,
-//         bookingReference,
-//         expiresAt,
-//         amount,
-//       ]
-//     );
-
-//     const bookingId = bookingResult.insertId;
-
-//     // Update the seats table with the booking_id and mark seats as reserved
-//     for (const seatId of selectedSeats) {
-//       await connection.execute(
-//         "UPDATE seats SET status = 'reserved', booking_id = ? WHERE seat_id = ?",
-//         [bookingId, seatId]
-//       );
-
-//       // Update the bookings table with the seat_id
-//       await connection.execute(
-//         "UPDATE bookings SET seat_id = ? WHERE booking_id = ?",
-//         [seatId, bookingId]
-//       );
-//     }
-
-//     connection.release();
-
-//     res.json({
-//       message: "Booking confirmed.",
-//       bookingId,
-//       bookingReference,
-//       passengerDetails: { passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email },
-//       trainDetails: { train_id },
-//       selectedSeats,
-//     });
-//   } catch (error) {
-//     console.error("Error confirming booking:", error);
-//     res.status(500).json({ error: "Failed to confirm booking." });
-//   }
-// });
-
+// ----------------------------------------------------------------------------------------
 // confirm booking
 app.post("/api/confirm-booking", async (req, res) => {
   const { train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, selectedSeats } = req.body;
@@ -177,12 +95,16 @@ app.post("/api/confirm-booking", async (req, res) => {
     // Set expiry time (e.g., 10 minutes from now)
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    const amount = 3000; //fixed amount for now
+    var payment_status = 'pending';
+
+    const booked_at = Date.now();
+
+    const amount = "3000"; //fixed amount for now
 
     // Step 1: Insert booking details into the bookings table
     const [bookingResult] = await connection.execute(
-      "INSERT INTO bookings (train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, booked_at, booking_reference, expires_at, payment_status, amount) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, 'pending', ?)",
-      [train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, bookingReference, expiresAt, amount]
+      "INSERT INTO bookings (train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, booked_at, booking_reference, expires_at, payment_status, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email,booked_at, bookingReference, expiresAt, payment_status, amount]
     );
 
     const bookingId = bookingResult.insertId; // Get the ID of the newly inserted booking
@@ -226,13 +148,13 @@ app.post("/api/payment", async (req, res) => {
     const paymentData = {
       amount: amount.toString(), // Convert amount to string
       currency: currency || "ETB", // Default to ETB if not provided
-      email: passenger_email || "firstgroup545@gmail.com", // Default email if not provided
-      first_name: passengerf_name || "User", // Default first name if not provided
-      last_name: passengerl_name || "Test", // Default last name if not provided
+      email: passenger_email || "firstgroup@gmail.com", // Default email if not provided
+      first_name: passengerf_name || "Group", // Default first name if not provided
+      last_name: passengerl_name || "One", // Default last name if not provided
       phone_number: passenger_phone || "0912345678", // Default phone number if not provided
       tx_ref: bookingReference, // Use booking reference as transaction reference
-      callback_url: "http://localhost:7676/payment-callback", // Replace with your callback URL
-      return_url: "http://localhost:7676/success", // Replace with your return URL
+      callback_url: "http://localhost:7676/payment/success", // Replace with your callback URL
+      return_url: "http://localhost:7676/", // Replace with your return URL
       customization: {
         title: "Train Booking", // Ensure this is 16 characters or less
         description: "Booking Payment", // Ensure this contains only allowed characters
@@ -261,29 +183,8 @@ app.post("/api/payment", async (req, res) => {
   }
 });
 
-// Callback 
-app.post("/payment-callback", async (req, res) => {
-  const { tx_ref, status } = req.body;
-
-  if (status === "success") {
-    try {
-      const connection = await dbPool.getConnection();
-      await connection.execute(
-        "UPDATE bookings SET payment_status = 'paid' WHERE booking_reference = ?",
-        [tx_ref]
-      );
-      connection.release();
-      console.log(`Payment for booking ${tx_ref} was successful. Database updated.`);
-    } catch (error) {
-      console.error("Error updating database after payment:", error);
-    }
-  } else {
-    console.log(`Payment for booking ${tx_ref} failed.`);
-  }
-
-  res.sendStatus(200);
-});
-//  success callback 
+// ---------------------------------------------------------------------------------
+// //  success callback 
 app.post("/api/payment/success", async (req, res) => {
   const { tx_ref } = req.body; // Extract transaction reference from Chapa
 
