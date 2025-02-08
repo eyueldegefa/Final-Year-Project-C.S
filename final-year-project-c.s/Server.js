@@ -154,7 +154,7 @@ app.post("/api/payment", async (req, res) => {
       phone_number: passenger_phone || "0912345678", // Default phone number if not provided
       tx_ref: bookingReference, // Use booking reference as transaction reference
       callback_url: "http://localhost:7676/payment/success", // Replace with your callback URL
-      return_url: "http://localhost:7676/", // Replace with your return URL
+      return_url: "http://localhost:3000/success", // Replace with your return URL
       customization: {
         title: "Train Booking", // Ensure this is 16 characters or less
         description: "Booking Payment", // Ensure this contains only allowed characters

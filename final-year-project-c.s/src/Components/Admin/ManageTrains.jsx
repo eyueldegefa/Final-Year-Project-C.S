@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import './Admin.css';
 function ManageTrains() {
     const [trains, setTrains] = useState([]);
     const [editingTrain, setEditingTrain] = useState(null);

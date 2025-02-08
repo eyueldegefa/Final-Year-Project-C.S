@@ -1,26 +1,53 @@
+*{
+    background-color: #222;
+    color: white;
+}
+.admin-content {
+    margin: 0;
+    padding: 0;
+    margin-left: 20%;
+    width: 80%;
+    overflow-y: auto;
+    background: #f4f4f4; /* Light gray background */
+    min-height: 100vh;
+}
+
+.admin-dashboard img {
+    height: 400px;
+}
 .admin-links {
+    width: 20%;
+    background: #222; /* Darker background */
+    padding: 20px;
+    position: fixed;
+    /* height: 100vh; */
+    /* overflow-y: auto; */
+}
+
+.admin-links .nav-link {
+    display: block;
+    font-size: 18px;
     text-decoration: none;
     color: white;
-    font-size: 25px;
+    padding: 15px;
+    transition: background 0.3s, color 0.3s;
 }
-.add-train-wrapper{
-    width: 400px;
-    justify-content: center;
-    text-align: center;
-    box-shadow: 10px 10px 10px 10px #17181a;
-}
-.add-train-wrapper label{
-    align-content: center;
-}
-.add-train-wrapper input{
-    background: whitesmoke
-}
-.add-train-wrapper button{
+
+/* Change background and text color when active */
+.admin-links .nav-link.active {
+    background: rgb(6, 6, 215); /* Green background */
+    color: white;
     border-radius: 10px;
-    width: 250px;
-    background-color: rgb(5, 144, 5);
 }
-.add-train-wrapper button:hover{
-    background-color: green;
-    color: #000;
+
+/* Dashboard Link Background Changes When Navigating Away */
+.dashboard-inactive {
+    background: #222 !important;
+    color: white;
 }
+
+.admin-links .nav-link:hover {
+    background: rgb(6, 6, 215) !important;
+    border-radius: 10px;
+}
+

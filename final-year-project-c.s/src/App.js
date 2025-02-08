@@ -13,6 +13,7 @@ import VerifyBooking from "./Components/VerifyBooking/VerifyBooking";
 import Payment from "./Components/Payment/Payment";
 import Success from "./Components/Success/Success";
 import AdminLogin from "./Components/Admin/AdminLogin";
+import AdminLayout from "./Components/Admin/AdminLayout";
 import AdminDashboard from "./Components/Admin/AdminDashboard";
 import ManagePassengers from "./Components/Admin/ManagePassengers";
 import ManageTrains from "./Components/Admin/ManageTrains";
@@ -45,10 +46,17 @@ function App() {
         <Route path="/payment" element={<Payment />} /> 
         <Route path="/success" element={<Success />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        {/* <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/manage-passengers" element={<ManagePassengers />} />
         <Route path="/admin/manage-trains" element={<ManageTrains />} />
-        <Route path="/admin/add-train" element={<AddNewTrain />} />
+        <Route path="/admin/add-train" element={<AddNewTrain />} /> */}
+                        {/* Admin Section with Static Sidebar */}
+        <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="manage-passengers" element={<ManagePassengers />} />
+            <Route path="manage-trains" element={<ManageTrains />} />
+            <Route path="add-train" element={<AddNewTrain />} />
+        </Route>
         {/* <Route path="/booking" element={<BookingPage />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/check" element={<Check />} /> */}

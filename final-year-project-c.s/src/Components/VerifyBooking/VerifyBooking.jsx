@@ -121,22 +121,42 @@
 // export default VerifyBooking;
 
 
-import React from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import React, { useRef } from "react"; 
+import { useNavigate, useLocation } from "react-router-dom";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const VerifyBooking = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { bookingDetails } = location.state || {};
 
+  // Fix: Declare the ref at the component level
+  const pageRef = useRef();
+
   if (!bookingDetails) {
     return <div>No booking details found.</div>;
   }
 
+  const handleDownload = async () => {
+    if (!pageRef.current) return;
+
+    const element = pageRef.current;
+    const canvas = await html2canvas(element);
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgWidth = 210;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+    pdf.save("downloaded-page.pdf");
+  };
+
   const { bookingReference, passengerDetails, trainDetails, selectedSeats } = bookingDetails;
 
   return (
-    <div style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "10px", maxWidth: "400px", margin: "auto" }}>
+    <div ref={pageRef} style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "10px", maxWidth: "400px", margin: "auto" }}>
       <h2>Booking Confirmed!</h2>
       <h3>Booking Reference: {bookingReference}</h3>
       <div>
@@ -158,8 +178,9 @@ const VerifyBooking = () => {
         </ul>
       </div>
       <button onClick={() => window.print()}>Print Ticket</button>
+      <button onClick={handleDownload}>Download Ticket</button>
       <button onClick={() => navigate("/payment", { state: { bookingReference, passengerDetails, trainDetails, selectedSeats } })}>
-                      Proceed to Payment
+        Proceed to Payment
       </button>
     </div>
   );

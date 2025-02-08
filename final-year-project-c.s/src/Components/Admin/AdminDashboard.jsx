@@ -1,15 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import './Admin.css';
+import AdminBanner from '../../Images/banner2.jpg';
 
 function AdminDashboard() {
     return (
-        <div className="p-4 bg-dark">
-            <h1 className="font-bold text-center text-white">Admin Dashboard</h1>
-            <div className="">
-                <Link to="/admin/manage-passengers" className="d-block my-5 admin-links ">Passengers Data</Link>
-                <Link to="/admin/manage-trains" className="d-block my-5 admin-links">Manage Trains</Link>
-                <Link to="/admin/add-train" className="d-block my-5 admin-links">Add New Train</Link>
+        <div className="bg-dark admin-dashboard">
+            
+            <img src={AdminBanner} alt="Image" />
+            <div className='text-white d-flex'>
+                <p>Total Passengers</p>
+                <p>Trains</p>
+                <p>Destinations</p>
             </div>
         </div>
     );
