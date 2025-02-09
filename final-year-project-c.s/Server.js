@@ -154,7 +154,7 @@ app.post("/api/payment", async (req, res) => {
       phone_number: passenger_phone || "0912345678", // Default phone number if not provided
       tx_ref: bookingReference, // Use booking reference as transaction reference
       callback_url: "http://localhost:7676/payment/success", // Replace with your callback URL
-      return_url: "http://localhost:3000/success", // Replace with your return URL
+      return_url: "http://localhost:7676", // Replace with your return URL
       customization: {
         title: "Train Booking", // Ensure this is 16 characters or less
         description: "Booking Payment", // Ensure this contains only allowed characters
@@ -163,7 +163,7 @@ app.post("/api/payment", async (req, res) => {
 
     const response = await axios.post(
       "https://api.chapa.co/v1/transaction/initialize",
-      paymentData,
+      paymentData, 
       {
         headers: {
           Authorization: `Bearer ${CHAPA_SECRET_KEY}`,
@@ -255,6 +255,34 @@ app.get("/api/admin/passengers", async (req, res) => {
   }
 });
 
+//Search by booking reference
+app.get('/api/admin/passengers/search', async (req, res) => {
+  const { booking_reference } = req.query;
+  
+  console.log("Received booking_reference:", booking_reference);  // Log for debugging
+  
+  if (!booking_reference) {
+      return res.status(400).json({ message: 'Booking reference is required.' });
+  }
+
+  try {
+      // Assuming your database query might look like this
+      const query = "SELECT * FROM bookings WHERE booking_reference = ?";
+      const [rows] = await dbPool.execute(query, [booking_reference]);
+
+      if (rows.length === 0) {
+          return res.status(404).json({ message: 'Passenger not found.' });
+      }
+
+      res.json(rows);
+  } catch (err) {
+      console.error("Error in database query:", err);
+      res.status(500).json({ message: 'Error fetching passenger' });
+  }
+});
+
+
+
 // Update a Passenger
 app.put("/api/admin/update-passenger/:id", async (req, res) => {
   const { id } = req.params;
@@ -341,22 +369,41 @@ app.put("/api/admin/update-train/:id", async (req, res) => {
 });
 
 // Add a New Train
-app.post("/api/admin/add-train", async (req, res) => {
-  const { train_name, source, destination, departure_time, arrival_time, seats_available, price, date, class: train_class } = req.body;
-  const query = `
-      INSERT INTO trains (name, source, destination, departure_time, arrival_time, seats_available, price, date, class)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-  const values = [train_name, source, destination, departure_time, arrival_time, seats_available, price, date, train_class];
+// app.post("/api/admin/add-train", async (req, res) => {
+//   const { train_name, source, destination, departure_time, arrival_time, seats_available, price, date, class: train_class } = req.body;
+//   const query = `
+//       INSERT INTO trains (name, source, destination, departure_time, arrival_time, seats_available, price, date, class)
+//       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+//   `;
+//   const values = [train_name, source, destination, departure_time, arrival_time, seats_available, price, date, train_class];
+
+//   try {
+//     await dbPool.query(query, values);
+//     res.status(201).send({ message: "Train added successfully!" });
+//   } catch (err) {
+//     console.error("Error adding train:", err);
+//     res.status(500).send({ error: "Failed to add train" });
+//   }
+// });
+
+app.post('/api/admin/add-train', async (req, res) => {
+  console.log("Received Data:", req.body); // Debugging
+  const { name, source, destination, departure_time, arrival_time, seats_available, price, date, class: trainClass } = req.body;
+
+  if (!name) {
+      return res.status(400).json({ error: "Train name is required!" });
+  }
 
   try {
-    await dbPool.query(query, values);
-    res.status(201).send({ message: "Train added successfully!" });
-  } catch (err) {
-    console.error("Error adding train:", err);
-    res.status(500).send({ error: "Failed to add train" });
+      const sql = `INSERT INTO trains (name, source, destination, departure_time, arrival_time, seats_available, price, date, class) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      await dbPool.query(sql, [name, source, destination, departure_time, arrival_time, seats_available, price, date, trainClass]);
+      res.json({ message: "Train added successfully!" });
+  } catch (error) {
+      console.error("Error adding train:", error);
+      res.status(500).json({ error: "Database error" });
   }
 });
+
 
 // Start Server
 app.listen(PORT, () => {

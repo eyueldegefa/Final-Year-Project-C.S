@@ -66,9 +66,9 @@ const TrainSearch = () => {
                   <td>{train.name}</td>
                   <td>{train.source}</td>
                   <td>{train.destination}</td>
-                  <td>{train.departure_time}</td>
-                  <td>{train.arrival_time}</td>
-                  <td>{train.date}</td>
+                  <td>{train.departure_time.slice(0, 5)}</td>
+                  <td>{train.arrival_time.slice(0, 5)}</td>
+                  <td>{new Date(train.date).toLocaleDateString}</td>
                   <td>{train.price}</td>
                   <td>{train.seats_available}</td>
                   <td>

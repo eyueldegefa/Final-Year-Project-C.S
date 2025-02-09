@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import SearchIcon from '@mui/icons-material/Search';
 import './Admin.css';
 
 function ManagePassengers() {
     const [passengers, setPassengers] = useState([]);
     const [editingPassenger, setEditingPassenger] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const [formData, setFormData] = useState({
         passengerf_name: '',
         passengerl_name: '',
@@ -30,6 +32,25 @@ function ManagePassengers() {
         }
     };
 
+    const searchPassenger = async () => {
+        if (!searchQuery) {
+            fetchPassengers();
+            return;
+        }
+        
+        try {
+            const encodedSearchQuery = encodeURIComponent(searchQuery);  // URL encode the search query
+            console.log("Search URL:", `http://localhost:7676/api/admin/passengers/search?booking_reference=${encodedSearchQuery}`); // Log the request URL
+            const response = await axios.get(`http://localhost:7676/api/admin/passengers/search?booking_reference=${encodedSearchQuery}`);
+            console.log("Search Response:", response.data); // Log the response data
+            setPassengers(response.data);
+        } catch (err) {
+            console.error("Error searching passenger:", err);
+        }
+    };
+    
+    
+
     const deletePassenger = async (id) => {
         const confirmDelete = window.confirm("⚠️ Are you sure you want to delete this Passenger?");
         if (!confirmDelete) return;
@@ -47,7 +68,7 @@ function ManagePassengers() {
         setEditingPassenger(passenger.booking_id);
         setFormData({
             passengerf_name: passenger.passengerf_name,
-            passengerl_name: passenger.passengerl_name,
+            passenger_l_name: passenger.passenger_l_name,
             passenger_dateofbirth: passenger.passenger_dateofbirth,
             passenger_phone: passenger.passenger_phone,
             passenger_email: passenger.passenger_email
@@ -77,8 +98,8 @@ function ManagePassengers() {
         <div className="p-4 bg-dark text-white">
             <h1 className="text-2xl font-bold text-center">Manage Passengers</h1>
 
-            <div className="mt-4 d-flex justify-content-between">
-                <div>
+            <div className="mt-4 d-flex">
+                <div className='m-2'>
                     <label htmlFor="paymentStatusFilter" className="block text-sm font-medium text-gray-700">
                         Filter by Payment Status
                     </label>
@@ -86,7 +107,7 @@ function ManagePassengers() {
                         id="paymentStatusFilter"
                         value={paymentStatusFilter}
                         onChange={(e) => setPaymentStatusFilter(e.target.value)}
-                        className="mt-1 py-3 block w-full p-2 border border-gray bg-white text-dark"
+                        className="mt-1 py-3 block w-full p-2 border border-primary bg-white text-dark"
                     >
                         <option value="">All</option>
                         <option value="paid">Paid</option>
@@ -94,32 +115,43 @@ function ManagePassengers() {
                         <option value="expired">Expired</option>
                     </select>
                 </div>
-                <div className='align-center '>
-                    <label htmlFor="">Search by booking reference</label>
-                    <input className='bg-white py-3 text-dark' type="text" placeholder='Search by Booking-reference' />
+                <div className='align-center m-2'>
+                    <label htmlFor="search">Search by booking reference</label>
+                    <div className='d-flex'>
+                        <input
+                            className='bg-white p-3 text-dark border border-primary mt-1'
+                            type="text"
+                            placeholder='Search by Booking-reference'
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <button className='w-25 m-1 bg-primary' onClick={searchPassenger}><SearchIcon /></button>
+                    </div>
                 </div>
             </div>
 
-            <table className="mt-4 border-collapse border border-gray-300">
+            {passengers.length === 0 && <p>No passenger found with this booking reference.</p>}
+
+            <table className="mt-4 border border-gray">
                 <thead>
-                    <tr className=''>
-                        <th className="border border-gray-300 p-2 w-50">First Name</th>
-                        <th className="border border-gray-300 p-2">Last Name</th>
-                        <th className="border border-gray-300 p-2">Date of Birth</th>
-                        <th className="border border-gray-300 p-2">Email</th>
-                        <th className="border border-gray-300 p-2">Phone</th>
-                        <th className="border border-gray-300 p-2">Actions</th>
+                    <tr>
+                        <th className="border border-gray p-2">First Name</th>
+                        <th className="border border-gray p-2">Last Name</th>
+                        <th className="border border-gray p-2">Date of Birth</th>
+                        <th className="border border-gray p-2">Email</th>
+                        <th className="border border-gray p-2">Phone</th>
+                        <th className="border border-gray p-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {passengers.map(passenger => (
                         <tr key={passenger.booking_id}>
-                            <td className="border border-gray-300 p-2">{passenger.passengerf_name}</td>
-                            <td className="border border-gray-300 p-2">{passenger.passengerl_name}</td>
-                            <td className="border border-gray-300 p-2">{passenger.passenger_dateofbirth}</td>
-                            <td className="border border-gray-300 p-2">{passenger.passenger_email}</td>
-                            <td className="border border-gray-300 p-2">{passenger.passenger_phone}</td>
-                            <td className="border border-gray-300 p-2">
+                            <td className="border border-gray p-2">{passenger.passengerf_name}</td>
+                            <td className="border border-gray p-2">{passenger.passengerl_name}</td>
+                            <td className="border border-gray p-2">{new Date(passenger.passenger_dateofbirth).toLocaleDateString()}</td>
+                            <td className="border border-gray p-2">{passenger.passenger_email}</td>
+                            <td className="border border-gray p-2">{passenger.passenger_phone}</td>
+                            <td className="border border-gray p-2">
                                 <div className='d-flex'>
                                     <button onClick={() => handleEditClick(passenger)} className="m-1 bg-success">Edit</button>
                                     <button onClick={() => deletePassenger(passenger.booking_id)} className="m-1 bg-danger">Delete</button>

@@ -123,6 +123,7 @@
 
 import React, { useRef } from "react"; 
 import { useNavigate, useLocation } from "react-router-dom";
+import moment from "moment";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
@@ -168,6 +169,11 @@ const VerifyBooking = () => {
       <div>
         <h4>Train Details:</h4>
         <p><strong>Train ID:</strong> {trainDetails.train_id}</p>
+        <p><strong>Source:</strong>{trainDetails.source}</p>
+        <p><strong>Destination:</strong>{trainDetails.destination}</p>
+        <p>{trainDetails.departure_time.slice(0, 5)}</p>
+        <p>{trainDetails.arrival_time.slice(0, 5)}</p>
+        <p>{new Date(trainDetails.date).toLocaleDateString}</p>
       </div>
       <div>
         <h4>Selected Seats:</h4>

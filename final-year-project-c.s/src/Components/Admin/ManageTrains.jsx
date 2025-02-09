@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import './Admin.css';
+
 function ManageTrains() {
     const [trains, setTrains] = useState([]);
     const [editingTrain, setEditingTrain] = useState(null);
+    const [showAddForm, setShowAddForm] = useState(false);
     const [formData, setFormData] = useState({
-        name: '', source: '', destination: '', departure_time: '', arrival_time: '', price: '', seats_available: ''
+        name: '', source: '', destination: '', departure_time: '', arrival_time: '', price: '', seats_available: '', date: '', class: ''
     });
 
     useEffect(() => {
@@ -24,7 +27,7 @@ function ManageTrains() {
     const deleteTrain = async (id) => {
         const confirmDelete = window.confirm("⚠️ Are you sure you want to delete this Train?");
         if (!confirmDelete) return;
-        
+
         try {
             await axios.delete(`http://localhost:7676/api/admin/delete-train/${id}`);
             setTrains(trains.filter(train => train.train_id !== id));
@@ -37,21 +40,55 @@ function ManageTrains() {
     const handleEditClick = (train) => {
         setEditingTrain(train.train_id);
         setFormData(train);
+        setShowAddForm(true);
     };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const updateTrain = async (e) => {
+    const handleAddTrain = async (e) => {
         e.preventDefault();
+        console.log("Adding Train:", formData);
+
+        if (!formData.name) {
+            alert("⚠️ Train name is required!");
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:7676/api/admin/add-train', formData, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            console.log("Add Train Response:", response.data); 
+            alert('Train added successfully!');
+            fetchTrains();
+
+            setFormData({ name: '', source: '', destination: '', departure_time: '', arrival_time: '', price: '', seats_available: '', date: '', class: '' });
+            setShowAddForm(false);
+        } catch (err) {
+            console.error('Error adding train:', err);
+            alert('Failed to add train!');
+        }
+    };
+
+    const handleEditTrain = async (e) => {
+        e.preventDefault();
+        console.log("Editing Train:", formData);
+
+        if (!editingTrain) {
+            alert("⚠️ No train selected for editing!");
+            return;
+        }
+
         try {
             await axios.put(`http://localhost:7676/api/admin/update-train/${editingTrain}`, formData);
-            setTrains(trains.map(train =>
-                train.train_id === editingTrain ? { ...train, ...formData } : train
-            ));
+            setTrains(trains.map(train => (train.train_id === editingTrain ? { ...train, ...formData } : train)));
+
             alert("Train updated successfully!");
-            setEditingTrain(null); // Close the editing form after update
+            setEditingTrain(null);
+            setShowAddForm(false);
         } catch (err) {
             console.error("Error updating train:", err);
             alert("Failed to update train!");
@@ -60,56 +97,77 @@ function ManageTrains() {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold">Manage Trains</h1>
-            <table className="mt-4 border-collapse border border-gray-300">
-                <thead>
-                    <tr>
-                        <th className="border border-gray-300 p-2">Name</th>
-                        <th className="border border-gray-300 p-2">Source</th>
-                        <th className="border border-gray-300 p-2">Destination</th>
-                        <th className="border border-gray-300 p-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {trains.map((train) => (
-                        <tr key={train.train_id}>
-                            <td className="border border-gray-300 p-2">{train.name}</td>
-                            <td className="border border-gray-300 p-2">{train.source}</td>
-                            <td className="border border-gray-300 p-2">{train.destination}</td>
-                            <td className="border border-gray-300 p-2">
-                                <button onClick={() => handleEditClick(train)} className="text-blue-500 mr-2">Edit</button>
-                                <button onClick={() => deleteTrain(train.train_id)} className="text-red-500">Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <h1 className="text-2xl font-bold text-center">Manage Trains</h1>
 
-            {editingTrain && (
-                <div className="mt-4 p-4 border border-gray-300 rounded">
-                    <h2 className="text-xl font-bold">Edit Train</h2>
-                    <form onSubmit={updateTrain}>
+            <button onClick={() => {
+                setShowAddForm(!showAddForm);
+                setEditingTrain(null);
+                setFormData({ name: '', source: '', destination: '', departure_time: '', arrival_time: '', price: '', seats_available: '', date: '', class: '' });
+            }} className="bg-primary text-white p-2 my-3 w-25">
+                <AddTwoToneIcon /> {showAddForm ? "Close Form" : "Add New Train"}
+            </button>
+
+            {showAddForm && (
+                <div className="mt-4 border border-gray p-4">
+                    <h2 className="text-xl font-bold text-primary text-center">{editingTrain ? "Edit Train" : "Add New Train"}</h2>
+                    <form onSubmit={editingTrain ? handleEditTrain : handleAddTrain} className="space-y-4">
                         {Object.keys(formData).map((key) => (
-                            <div key={key} className="mb-2">
+                            <div key={key} className='d-flex my-3'>
                                 <label className="block text-sm font-medium">{key.replace('_', ' ')}</label>
                                 <input
+                                    type={
+                                        key === "date" ? "date" :
+                                        key.includes("time") ? "time" :
+                                        key.includes("price") || key.includes("seats") ? "number" : "text"
+                                    }
                                     name={key}
-                                    value={formData[key]}
+                                    value={formData[key] || ''}
                                     onChange={handleChange}
                                     className="w-full border border-gray-300 p-2 rounded"
                                     required
                                 />
                             </div>
                         ))}
-                        <button type="submit" className="bg-green-500 p-2 rounded">Update Train</button>
-                        <button onClick={() => setEditingTrain(null)} className="ml-2 bg-gray-500 p-2 rounded">Cancel</button>
+                        <button type="submit" className="py-2 bg-green-500 text-white p-2 rounded">
+                            {editingTrain ? "Update Train" : "Add Train"}
+                        </button>
                     </form>
                 </div>
             )}
+
+            <table className="mt-4 border border-gray w-full">
+                <thead>
+                    <tr>
+                        <th className="border border-gray p-2">Name</th>
+                        <th className="border border-gray p-2">Source</th>
+                        <th className="border border-gray p-2">Destination</th>
+                        <th className="border border-gray p-2">Date</th>
+                        <th className="border border-gray p-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {trains.length > 0 ? (
+                        trains.map((train) => (
+                            <tr key={train.train_id}>
+                                <td className="border border-gray p-2">{train.name}</td>
+                                <td className="border border-gray p-2">{train.source}</td>
+                                <td className="border border-gray p-2">{train.destination}</td>
+                                <td className="border border-gray p-2">{new Date(train.date).toLocaleDateString()}</td>
+                                <td className="border border-gray p-2">
+                                    <button onClick={() => handleEditClick(train)} className="text-success mr-2">Edit</button>
+                                    <button onClick={() => deleteTrain(train.train_id)} className="text-danger">Delete</button>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="5" className="border border-gray p-2 text-center">No trains available</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
         </div>
     );
 }
 
 export default ManageTrains;
-
-
