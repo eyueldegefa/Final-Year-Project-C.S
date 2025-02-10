@@ -53,16 +53,17 @@ const TrainSearch = () => {
             return (
               <div key={train.train_id} className="train-card">
                 <div className="train-info d-flex w-75">
-                  <div className="left-side">
-                    <p>{new Date(train.date).toLocaleDateString()}</p>
-                    <p className="fw-bold">{train.source}</p>
-                    <p>{train.departure_time.slice(0, 5)} </p>
+                  <div className="left-side text-end me-2">
+                    <h3>{new Date(train.date).toLocaleDateString()}</h3>
+                    <h3 className="fw-bold">{train.source}</h3>
+                    <h3>{train.departure_time.slice(0, 5)} </h3>
+                    
                   </div>
-                  <div><RemoveIcon className="line"/> <TrainRoundedIcon/> <RemoveIcon className="line"/></div>
-                  <div className="right-side">
-                    <p>{new Date(train.date).toLocaleDateString()}</p>
-                    <p className="fw-bold">{train.destination}</p>
-                    <p>{train.arrival_time.slice(0, 5)}</p>
+                  <hr /><TrainRoundedIcon/> <hr />
+                  <div className="right-side ms-2">
+                    <h3>{new Date(train.date).toLocaleDateString()}</h3>
+                    <h3 className="fw-bold">{train.destination}</h3>
+                    <h3>{train.arrival_time.slice(0, 5)}</h3>
                   </div>
                 </div>
                 <div className="train-details w-25">

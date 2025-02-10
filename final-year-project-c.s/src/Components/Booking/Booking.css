@@ -2,7 +2,8 @@
     position: sticky;
     margin-top: 70px;
     box-shadow: 1px 1px 5px grey;
-    width: 900px;
+    width: 1000px;
+    margin: auto;
 }
 .bottomRed{
     border: 1px solid grey;
@@ -23,8 +24,8 @@
 }
 @media (min-width:561px) {
     .bookingWrapper{
-        margin-top: -170px;
-        height: 210px;
+        margin-top: -200px;
+        height: 190px;
     }
-}
+} 
 

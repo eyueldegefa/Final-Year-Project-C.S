@@ -12,7 +12,7 @@ function Header() {
       <section className=''>
         {/* Important updates part */}
         <div className='row d-flex bg-white px-5 pt-3 w-100'>
-            <div className='col-9 d-flex text-wrap'>
+            <div className='col-6 d-flex text-wrap'>
                <ReportGmailerrorredIcon />
                <p className='text-danger'>Important:</p>
                <p className=''>Updates on rail to/from Diredawa and Djibouti</p>

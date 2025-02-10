@@ -121,18 +121,17 @@
 // export default VerifyBooking;
 
 
-import React, { useRef } from "react"; 
+import React, { useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import moment from "moment";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import "./VerifyBooking.css"; // Ensure this file contains the styles
 
 const VerifyBooking = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { bookingDetails } = location.state || {};
 
-  // Fix: Declare the ref at the component level
   const pageRef = useRef();
 
   if (!bookingDetails) {
@@ -141,53 +140,56 @@ const VerifyBooking = () => {
 
   const handleDownload = async () => {
     if (!pageRef.current) return;
-
-    const element = pageRef.current;
-    const canvas = await html2canvas(element);
+    const canvas = await html2canvas(pageRef.current);
     const imgData = canvas.toDataURL("image/png");
-
     const pdf = new jsPDF("p", "mm", "a4");
     const imgWidth = 210;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
     pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-    pdf.save("downloaded-page.pdf");
+    pdf.save("ticket.pdf");
   };
 
   const { bookingReference, passengerDetails, trainDetails, selectedSeats } = bookingDetails;
 
   return (
-    <div ref={pageRef} style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "10px", maxWidth: "400px", margin: "auto" }}>
-      <h2>Booking Confirmed!</h2>
-      <h3>Booking Reference: {bookingReference}</h3>
-      <div>
-        <h4>Passenger Details:</h4>
-        <p><strong>Name:</strong> {passengerDetails.passengerf_name} {passengerDetails.passengerl_name}</p>
-        <p><strong>Phone:</strong> {passengerDetails.passenger_phone}</p>
-        <p><strong>Email:</strong> {passengerDetails.passenger_email}</p>
+    <div className="ticket-container" ref={pageRef}>
+      <div className="ticket-header">Booking Confirmed</div>
+      <div className="ticket-body">
+        <div className="ticket-section">
+          <span>Booking Reference:</span>
+          <strong>{bookingReference}</strong>
+        </div>
+        <div className="ticket-section">
+          <span>Passenger:</span>
+          <strong>{passengerDetails.passengerf_name} {passengerDetails.passengerl_name}</strong>
+        </div>
+        <div className="ticket-section">
+          <span>Phone:</span>
+          <strong>{passengerDetails.passenger_phone}</strong>
+        </div>
+        <div className="ticket-section">
+          <span>Train ID:</span>
+          <strong>{trainDetails.train_id}</strong>
+        </div>
+        {/* <div className="ticket-section">
+          <span>From:</span>
+          <strong>{trainDetails.source}</strong>
+        </div>
+        <div className="ticket-section">
+          <span>To:</span>
+          <strong>{trainDetails.destination}</strong>
+        </div> */}
+        <div className="ticket-section">
+          <span>Selected Seats:</span>
+          <strong>{selectedSeats.join(", ")}</strong>
+        </div>
       </div>
-      <div>
-        <h4>Train Details:</h4>
-        <p><strong>Train ID:</strong> {trainDetails.train_id}</p>
-        <p><strong>Source:</strong>{trainDetails.source}</p>
-        <p><strong>Destination:</strong>{trainDetails.destination}</p>
-        <p>{trainDetails.departure_time.slice(0, 5)}</p>
-        <p>{trainDetails.arrival_time.slice(0, 5)}</p>
-        <p>{new Date(trainDetails.date).toLocaleDateString}</p>
+      <div className="ticket-footer">Thank you for booking with us!</div>
+      <div className="button-container">
+        <button onClick={() => window.print()}>Print Ticket</button>
+        <button onClick={handleDownload}>Download Ticket</button>
+        <button onClick={() => navigate("/payment", { state: bookingDetails })}>Proceed to Payment</button>
       </div>
-      <div>
-        <h4>Selected Seats:</h4>
-        <ul>
-          {selectedSeats.map((seatId, index) => (
-            <li key={index}>Seat {seatId}</li>
-          ))}
-        </ul>
-      </div>
-      <button onClick={() => window.print()}>Print Ticket</button>
-      <button onClick={handleDownload}>Download Ticket</button>
-      <button onClick={() => navigate("/payment", { state: { bookingReference, passengerDetails, trainDetails, selectedSeats } })}>
-        Proceed to Payment
-      </button>
     </div>
   );
 };

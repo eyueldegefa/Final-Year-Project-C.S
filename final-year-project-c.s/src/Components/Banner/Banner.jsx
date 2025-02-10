@@ -6,8 +6,8 @@ import './Banner.css'
 function Banner() {
   return (
     <div className='banner'>
-      <img className='bannerSmall w-100 d-md-none' src={bannerSmalls} alt="#" />
-      <img className='bannerLarge w-100 d-none d-md-block' src={bannerLarges} alt="#" />
+      {/* <img className='bannerSmall d-md-none' src={bannerSmalls} alt="#" /> */}
+      <img className='bannerLarge' src={bannerLarges} alt="#" />
     </div>
   )
 }

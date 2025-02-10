@@ -25,12 +25,16 @@
 }
 .discountPromo .more{
     margin-top: 150px;
+    width: 150px;
+
 }
 /* Class option area */
 .clasLeft img{
     height: 510px;
     box-shadow: 1px 1px 5px grey;
-    float: right;
+    margin-left: 40px;
+    /* float: right; */
+    /* align-items: flex-end; */
 }
 .classRight img{
     height: 252px;

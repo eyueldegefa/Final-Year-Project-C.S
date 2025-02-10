@@ -1,7 +1,12 @@
 .bannerLarge{
-    /* margin-top: -105px; */
     height: 600px;
     width: 100%;
+}
+@media (max-width: 560px) {
+    .bannerLarge{
+        width: 420px;
+        height: 400px;
+    }
 }
 .bannerSmall{
     /* margin-top: -135px; */
