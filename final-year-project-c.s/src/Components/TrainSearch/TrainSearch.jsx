@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import RemoveIcon from '@mui/icons-material/Remove';
+import TrainRoundedIcon from '@mui/icons-material/TrainRounded';
+import "./TrainSearch.css"; // Import the CSS file
 
 const TrainSearch = () => {
   const location = useLocation();
@@ -30,7 +33,7 @@ const TrainSearch = () => {
     fetchResults();
   }, [searchCriteria]);
 
-  const handleBookNow = (train) => {
+  const handleSelect = (train) => {
     if (!train.train_id) { // Updated to match database field
       alert("Unable to proceed. Train ID is missing.");
       return;
@@ -39,48 +42,41 @@ const TrainSearch = () => {
   };
 
   return (
-    <div>
+    <div className="train-search-container">
       <h1>Search Results</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
       {searchResults.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Train Name</th>
-              <th>Source</th>
-              <th>Destination</th>
-              <th>Departure Time</th>
-              <th>Arrival Time</th>
-              <th>Date</th>
-              <th>Price</th>
-              <th>Seats Available</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {searchResults.map((train) => {
-              console.log("Train data:", train); // Debugging log
-              return (
-                <tr key={train.train_id}>
-                  <td>{train.name}</td>
-                  <td>{train.source}</td>
-                  <td>{train.destination}</td>
-                  <td>{train.departure_time.slice(0, 5)}</td>
-                  <td>{train.arrival_time.slice(0, 5)}</td>
-                  <td>{new Date(train.date).toLocaleDateString}</td>
-                  <td>{train.price}</td>
-                  <td>{train.seats_available}</td>
-                  <td>
-                    <button onClick={() => handleBookNow(train)}>Book Now</button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="train-list">
+          {searchResults.map((train) => {
+            console.log("Train data:", train); // Debugging log
+            return (
+              <div key={train.train_id} className="train-card">
+                <div className="train-info d-flex w-75">
+                  <div className="left-side">
+                    <p>{new Date(train.date).toLocaleDateString()}</p>
+                    <p className="fw-bold">{train.source}</p>
+                    <p>{train.departure_time.slice(0, 5)} </p>
+                  </div>
+                  <div><RemoveIcon className="line"/> <TrainRoundedIcon/> <RemoveIcon className="line"/></div>
+                  <div className="right-side">
+                    <p>{new Date(train.date).toLocaleDateString()}</p>
+                    <p className="fw-bold">{train.destination}</p>
+                    <p>{train.arrival_time.slice(0, 5)}</p>
+                  </div>
+                </div>
+                <div className="train-details w-25">
+                  <p className="train-price border border-gray py-5 px-3 fw-bold">Price: {train.price} ETB</p>
+                  <button className="select-button py-3 px-2" onClick={() => handleSelect(train)}>
+                    Select
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       ) : (
-        !error && <p>No trains found for the given criteria.</p>
+        !error && <p className="no-results">No trains found for the given criteria.</p>
       )}
     </div>
   );
