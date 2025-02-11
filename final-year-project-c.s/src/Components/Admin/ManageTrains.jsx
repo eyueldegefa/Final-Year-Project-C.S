@@ -138,7 +138,7 @@ function ManageTrains() {
             <table className="mt-4 border border-gray w-full">
                 <thead>
                     <tr>
-                        <th className="border border-gray p-2">Name</th>
+                        <th className="border border-gray p-2 w-25">Name</th>
                         <th className="border border-gray p-2">Source</th>
                         <th className="border border-gray p-2">Destination</th>
                         <th className="border border-gray p-2">Date</th>
@@ -154,8 +154,10 @@ function ManageTrains() {
                                 <td className="border border-gray p-2">{train.destination}</td>
                                 <td className="border border-gray p-2">{new Date(train.date).toLocaleDateString()}</td>
                                 <td className="border border-gray p-2">
-                                    <button onClick={() => handleEditClick(train)} className="text-success mr-2">Edit</button>
-                                    <button onClick={() => deleteTrain(train.train_id)} className="text-danger">Delete</button>
+                                <div className='d-flex'>
+                                    <button onClick={() => handleEditClick(train)} className="m-1 bg-success">Update</button>
+                                    <button onClick={() => deleteTrain(train.train_id)} className="m-1 bg-danger">Delete</button>
+                                </div>
                                 </td>
                             </tr>
                         ))

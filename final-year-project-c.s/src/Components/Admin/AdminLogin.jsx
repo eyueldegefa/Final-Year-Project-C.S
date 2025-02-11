@@ -26,22 +26,24 @@ const AdminLogin = () => {
   };
 
   return (
-    <div>
-      <h2>Admin Login</h2>
-      <form onSubmit={handleLogin}>
+    <div className="login-container">
+      <h2 className="text-center">Login Page</h2>
+      <form onSubmit={handleLogin} className="text-center">
         <div>
-          <label>Username:</label>
           <input
+            className="w-50 p-2"
             type="text"
+            placeholder="Username *"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
         <div>
-          <label>Password:</label>
           <input
+            className="w-50 p-2"
             type="password"
+            placeholder="Password *"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

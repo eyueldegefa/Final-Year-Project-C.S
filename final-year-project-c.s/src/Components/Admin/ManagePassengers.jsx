@@ -153,7 +153,7 @@ function ManagePassengers() {
                             <td className="border border-gray p-2">{passenger.passenger_phone}</td>
                             <td className="border border-gray p-2">
                                 <div className='d-flex'>
-                                    <button onClick={() => handleEditClick(passenger)} className="m-1 bg-success">Edit</button>
+                                    <button onClick={() => handleEditClick(passenger)} className="m-1 bg-success">Update</button>
                                     <button onClick={() => deletePassenger(passenger.booking_id)} className="m-1 bg-danger">Delete</button>
                                 </div>
                             </td>

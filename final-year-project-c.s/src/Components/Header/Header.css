@@ -10,6 +10,14 @@
     z-index: 1000;
     top: 0;
  }
+ .linkHover{
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+ }
 .linkHover:hover{
-    color: red;
+    color: #22e308;
+}
+.header-wrapper img{
+    width: 45px;
 }

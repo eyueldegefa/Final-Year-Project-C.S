@@ -5,17 +5,18 @@
     border: 3px solid #17ab06;
     border-radius: 10px;
     font-family: Arial, sans-serif;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 5px 5px 10px black;
   }
   
   .ticket-header {
     text-align: center;
     font-size: 24px;
     font-weight: bold;
-    border-bottom: 2px dashed #02bd15;
-    padding-bottom: 10px;
+    background-color: #07bd2b;
   }
-  
+  .ticket-container p{
+    background-color: #07bd2b;
+  }
   .ticket-body {
     padding: 15px 0;
   }

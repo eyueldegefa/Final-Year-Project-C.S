@@ -125,6 +125,8 @@ import React, { useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import PrintIcon from '@mui/icons-material/Print';
+import DownloadIcon from '@mui/icons-material/Download';
 import "./VerifyBooking.css"; // Ensure this file contains the styles
 
 const VerifyBooking = () => {
@@ -152,8 +154,13 @@ const VerifyBooking = () => {
   const { bookingReference, passengerDetails, trainDetails, selectedSeats } = bookingDetails;
 
   return (
+    
     <div className="ticket-container" ref={pageRef}>
-      <div className="ticket-header">Booking Confirmed</div>
+      <div className="d-flex gap-2 justify-content-end w-25">
+        <button onClick={() => window.print()}> <PrintIcon/> </button>
+        <button onClick={handleDownload}> <DownloadIcon/> </button>
+      </div>
+      <div className="ticket-header text-white py-2">Booking Confirmed!</div>
       <div className="ticket-body">
         <div className="ticket-section">
           <span>Booking Reference:</span>
@@ -186,10 +193,9 @@ const VerifyBooking = () => {
       </div>
       <div className="ticket-footer">Thank you for booking with us!</div>
       <div className="button-container">
-        <button onClick={() => window.print()}>Print Ticket</button>
-        <button onClick={handleDownload}>Download Ticket</button>
         <button onClick={() => navigate("/payment", { state: bookingDetails })}>Proceed to Payment</button>
       </div>
+      <p className="bg-success w-100"></p>
     </div>
   );
 };

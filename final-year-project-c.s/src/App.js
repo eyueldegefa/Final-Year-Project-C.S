@@ -7,6 +7,7 @@ import Banner from "./Components/Banner/Banner";
 import Booking from "./Components/Booking/Booking";
 import Home from "./Components/Home/Home";
 import TrainSearch from "./Components/TrainSearch/TrainSearch";
+import ManageTicket from "./Pages/ManageTcket/ManageTicket";
 import PersonalDetails from "./Components/PersonalDetails/PersonalDetails";
 import SeatSelection from "./Components/SeatSelection/SeatSelection"; 
 import VerifyBooking from "./Components/VerifyBooking/VerifyBooking";
@@ -40,6 +41,7 @@ function App() {
           }
         />
         <Route path="/search-results" element={<TrainSearch />} />
+        <Route path="/manage-ticket" element={<ManageTicket />} />
         <Route path="/personal-details/:trainId?" element={<PersonalDetails />} /> 
         <Route path="/seat-selection/:trainId?" element={<SeatSelection />} />
         <Route path="/verify-booking" element={<VerifyBooking />} />

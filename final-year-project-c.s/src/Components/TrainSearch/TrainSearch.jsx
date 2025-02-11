@@ -43,15 +43,15 @@ const TrainSearch = () => {
 
   return (
     <div className="train-search-container">
-      <h1>Search Results</h1>
+      <h1 className="text-center my-1">Available Trains</h1>
       {error && <p className="error-message">{error}</p>}
 
       {searchResults.length > 0 ? (
-        <div className="train-list">
+        <div className="train-list ">
           {searchResults.map((train) => {
             console.log("Train data:", train); // Debugging log
             return (
-              <div key={train.train_id} className="train-card">
+              <div key={train.train_id} className="train-card my-2">
                 <div className="train-info d-flex w-75">
                   <div className="left-side text-end me-2">
                     <h3>{new Date(train.date).toLocaleDateString()}</h3>

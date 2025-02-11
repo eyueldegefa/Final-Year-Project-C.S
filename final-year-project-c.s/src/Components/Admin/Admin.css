@@ -1,6 +1,11 @@
-/* *{
-    color: white;
-} */
+.login-container{
+    width: 50%;
+    height: 400px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #eae6e1;
+    box-shadow: 5px 5px 10px gray;
+}
 .admin-content {
     background-color: #292A2D;
     margin-left: 20%;
@@ -12,8 +17,12 @@
     height: 450px;
     padding: 20px;
 }
+.admin-dashboard .logo{
+    width: 145px;
+    height: 45px;
+}
 .admin-links {
-    background-color: #000;
+    background-color: #141414;
     width: 20%;
     padding: 20px;
     position: fixed;
@@ -43,7 +52,7 @@
 
 /* Dashboard Link Background Changes When Navigating Away */
 .dashboard-inactive {
-    background: #292A2D !important;
+    background: #141414 !important;
 }
 
 .admin-links .nav-link:hover {

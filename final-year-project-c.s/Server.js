@@ -45,6 +45,91 @@ cron.schedule("*/5 * * * *", async () => {
   }
 });
 
+
+
+// Manage Bookings
+// -----------------------------------------------------------------------------
+// Fetch passenger by booking_reference and passengerl_name
+app.get("/api/bookings/get-bookings", async (req, res) => {
+  const { booking_reference, passengerl_name } = req.query; // ✅ Use correct keys
+
+  if (!booking_reference || !passengerl_name) {
+    return res.status(400).json({ message: "Missing required parameters." });
+  }
+
+  try {
+    const connection = await dbPool.getConnection();
+    const [rows] = await connection.execute(
+      "SELECT * FROM bookings WHERE booking_reference = ? AND passengerl_name = ?",
+      [booking_reference, passengerl_name]
+    );
+    connection.release();
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "No booking found." });
+    }
+
+    res.json(rows[0]); // ✅ Send only the first matching result
+  } catch (error) {
+    console.error("Error fetching passenger data:", error);
+    res.status(500).json({ message: "Error fetching passenger data." });
+  }
+});
+
+// Update booked Date
+app.put("/api/bookings/update-date", async (req, res) => {
+  const { booking_reference, passengerl_name, new_date } = req.body;
+
+  if (!booking_reference || !passengerl_name || !new_date) {
+    return res.status(400).json({ success: false, message: "Missing required fields" });
+  }
+
+  try {
+    const updateQuery = `UPDATE bookings SET booked_at = ? WHERE booking_reference = ? AND passengerl_name = ?`;
+    const values = [new_date, booking_reference, passengerl_name];
+
+    const [result] = await dbPool.execute(updateQuery, values);
+
+    if (result.affectedRows > 0) {
+      res.json({ success: true, message: "Date updated successfully!" });
+    } else {
+      res.status(404).json({ success: false, message: "Booking not found" });
+    }
+  } catch (error) {
+    console.error("Error updating date:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+
+// Cancel booking
+app.post("/api/bookings/cancel-ticket", async (req, res) => {
+  const { booking_reference, passengerl_name, canceled_date } = req.body;
+
+  if (!booking_reference || !passengerl_name || !canceled_date) {
+    return res.status(400).json({ success: false, message: "Missing required fields" });
+  }
+
+  try {
+    const connection = await dbPool.getConnection();
+    await connection.execute(
+      "INSERT INTO canceled_tickets (booking_reference, passengerl_name, canceled_at) VALUES (?, ?, ?)",
+      [booking_reference, passengerl_name, canceled_date]
+    );
+    await connection.execute(
+      "DELETE FROM bookings WHERE booking_reference = ? AND passengerl_name = ?",
+      [booking_reference, passengerl_name]
+    );
+    connection.release();
+
+    res.json({ success: true, message: "Ticket canceled successfully" });
+  } catch (error) {
+    console.error("Error canceling ticket:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+// --------------------------------------------------------------------------------------------------------
 // Search Trains
 app.post("/api/search-trains", async (req, res) => {
   const { source, destination, date } = req.body;

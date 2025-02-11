@@ -1,17 +1,14 @@
-.largeFont{
-    font-size: 25px;
-    font-family: "PT Serif", serif;
-    font-weight: bold;
-    font-style: italic;
-    color: white;
+.footer-container img{
+    width: 150px;
 }
-.forBorder{
-    border-bottom: 1px solid grey;
-    margin: 10px 30px;
+.footer-container h2{
+    padding-top: 30px;
 }
-.footerWrapper p{
-    color: grey;
+.footer-container p{
+    font-size: 13px;
+    color: #9f9e9e;
+    cursor: pointer;
 }
-.footerWrapper p:hover{
-    color: white;
+.footer-container p:hover{
+    color: #22e308;
 }
