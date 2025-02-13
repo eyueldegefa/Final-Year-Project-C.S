@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./ManageTicket.css";
 
 const ManageTicket = () => {
   const location = useLocation();
@@ -51,6 +52,7 @@ const ManageTicket = () => {
     try {
       const response = await axios.post("http://localhost:7676/api/bookings/cancel-ticket", {
         booking_reference: passengerData.booking_reference,
+        passengerf_name: passengerData.passengerf_name,
         passengerl_name: passengerData.passengerl_name,
         canceled_date: new Date().toISOString().split("T")[0], // Format YYYY-MM-DD
       });
@@ -66,11 +68,15 @@ const ManageTicket = () => {
   };
 
   return (
-    <div>
-      <h1>Manage Ticket</h1>
+    <div className="manage-ticket-container">
+      <h1 className="text-center fw-bold">Manage Ticket</h1>
+      <p className="text-center">You can change your going date or cancel you ticker!</p>
       <p><strong>Booking Reference:</strong> {passengerData.booking_reference}</p>
-      <p><strong>Passenger Name:</strong> {passengerData.passengerl_name}</p>
-      <p><strong>Date:</strong> {new Date(passengerData.booked_at).toLocaleDateString()}</p> {/* Fix: Display updated date */}
+      <p>
+        <strong>Passenger Name:</strong> {passengerData.passengerf_name} {passengerData.passengerl_name}
+      </p>
+      <p><strong>Date:</strong> {new Date(passengerData.booked_at).toLocaleDateString()}</p> 
+      <p><strong>Source:</strong>{passengerData.source}</p>
 
       {showDateInput ? (
         <div>

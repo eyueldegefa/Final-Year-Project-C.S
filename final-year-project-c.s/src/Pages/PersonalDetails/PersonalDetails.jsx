@@ -8,6 +8,9 @@ const PersonalDetails = () => {
   const { trainId: paramTrainId } = useParams(); // Get trainId from URL if available
   const trainId = location.state?.trainId || paramTrainId; // Prefer state over params
 
+  // Access source, destination, and price from location.state
+  const { source, destination, price } = location.state || {};
+
   if (!trainId) {
     console.error("🚨 Train ID is missing in PersonalDetails");
   }
@@ -26,7 +29,7 @@ const PersonalDetails = () => {
   };
 
   const proceedToSeatSelection = () => {
-    if (!details.passengerf_name || !details.passengerl_name || !details.passenger_phone || !details.passenger_email) {
+    if (!details.passengerf_name || !details.passengerl_name || !details.passenger_dateofbirth || !details.passenger_phone || !details.passenger_email) {
       alert("Please fill in all fields before proceeding.");
       return;
     }
@@ -34,8 +37,16 @@ const PersonalDetails = () => {
       alert("🚨 Train ID is missing. Please select a train first.");
       return;
     }
+
+    // Navigate to the next page (SeatSelection) and pass all required data
     navigate("/seat-selection", {
-      state: { passengerDetails: details, trainId }, // Dynamically pass trainId
+      state: {
+        passengerDetails: details,
+        trainId, //pass trainId
+        source, // Pass source
+        destination, // Pass destination
+        price, // Pass price
+      },
     });
   };
 

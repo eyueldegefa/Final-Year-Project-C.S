@@ -39,33 +39,43 @@ const SeatSelection = () => {
     };
   
     const confirmBooking = async () => {
-        try {
-          const response = await fetch("http://localhost:7676/api/confirm-booking", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
+      try {
+        const response = await fetch("http://localhost:7676/api/confirm-booking", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            train_id: trainId,
+            ...passengerDetails,
+            selectedSeats,
+          }),
+        });
+    
+        const data = await response.json();
+    
+        if (response.ok) {
+          alert("Booking confirmed! Check your email for details.");
+          navigate("/verify-booking", {
+            state: {
+              bookingDetails: {
+                ...data,
+                source: location.state?.source, // Pass source
+                destination: location.state?.destination, // Pass destination
+                price: location.state?.price, // Pass price
+                passengerDetails, // Pass passenger details
+                selectedSeats, // Pass selected seats
+              },
             },
-            body: JSON.stringify({
-              train_id: trainId,
-              ...passengerDetails,
-              selectedSeats,
-            }),
           });
-      
-          const data = await response.json();
-      
-          if (response.ok) {
-            alert("Booking confirmed! Check your email for details.");
-            navigate("/verify-booking", { state: { bookingDetails: data } });
-            console.log({state: {bookingDetails: data}});
-          } else {
-            alert(data.error || "Failed to confirm booking.");
-          }
-        } catch (error) {
-          console.error("Error confirming booking:", error);
-          alert("An error occurred while confirming your booking.");
+        } else {
+          alert(data.error || "Failed to confirm booking.");
         }
-      };
+      } catch (error) {
+        console.error("Error confirming booking:", error);
+        alert("An error occurred while confirming your booking.");
+      }
+    };
   
     return (
       <div className="seat-selection-container">

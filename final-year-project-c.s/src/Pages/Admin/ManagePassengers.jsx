@@ -130,6 +130,28 @@ function ManagePassengers() {
                 </div>
             </div>
 
+            {editingPassenger && (
+                <div className="mt-4 p-4 border border-gray-300 rounded">
+                    <h2 className="text-xl font-bold">Edit Passenger</h2>
+                    <form onSubmit={updatePassenger}>
+                        {Object.keys(formData).map((key) => (
+                            <div key={key} className="mb-2">
+                                <label className="block text-sm font-medium">{key.replace('_', ' ')}</label>
+                                <input
+                                    name={key}
+                                    value={formData[key]}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 p-2 rounded"
+                                    required
+                                />
+                            </div>
+                        ))}
+                        <button type="submit" className="bg-green-500 p-2 rounded">Update Passenger</button>
+                        <button type="button" onClick={() => setEditingPassenger(null)} className="ml-2 bg-gray-500 p-2 rounded">Cancel</button>
+                    </form>
+                </div>
+            )}
+
             {passengers.length === 0 && <p>No passenger found with this booking reference.</p>}
 
             <table className="mt-4 border border-gray">
@@ -161,28 +183,6 @@ function ManagePassengers() {
                     ))}
                 </tbody>
             </table>
-
-            {editingPassenger && (
-                <div className="mt-4 p-4 border border-gray-300 rounded">
-                    <h2 className="text-xl font-bold">Edit Passenger</h2>
-                    <form onSubmit={updatePassenger}>
-                        {Object.keys(formData).map((key) => (
-                            <div key={key} className="mb-2">
-                                <label className="block text-sm font-medium">{key.replace('_', ' ')}</label>
-                                <input
-                                    name={key}
-                                    value={formData[key]}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 p-2 rounded"
-                                    required
-                                />
-                            </div>
-                        ))}
-                        <button type="submit" className="bg-green-500 p-2 rounded">Update Passenger</button>
-                        <button type="button" onClick={() => setEditingPassenger(null)} className="ml-2 bg-gray-500 p-2 rounded">Cancel</button>
-                    </form>
-                </div>
-            )}
         </div>
     );
 }

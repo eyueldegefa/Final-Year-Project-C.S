@@ -26,7 +26,7 @@ const Payment = () => {
 
         console.log("Sending to backend:", {
           bookingReference,
-          amount: passengerDetails.amount, // Check this value
+          amount: passengerDetails.amount, 
           currency: "ETB",
           email: passengerDetails.passenger_email,
           firstName: passengerDetails.passengerf_name,

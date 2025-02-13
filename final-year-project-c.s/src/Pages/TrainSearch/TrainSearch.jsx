@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import RemoveIcon from '@mui/icons-material/Remove';
 import TrainRoundedIcon from '@mui/icons-material/TrainRounded';
 import "./TrainSearch.css"; // Import the CSS file
 
@@ -34,11 +33,19 @@ const TrainSearch = () => {
   }, [searchCriteria]);
 
   const handleSelect = (train) => {
-    if (!train.train_id) { // Updated to match database field
+    if (!train.train_id) {
       alert("Unable to proceed. Train ID is missing.");
       return;
     }
-    navigate(`/personal-details/${train.train_id}`, { state: { train } });
+  
+    navigate(`/personal-details/${train.train_id}`, {
+      state: {
+        train, // Pass the entire train object
+        source: train.source, // Pass source
+        destination: train.destination, // Pass destination
+        price: train.price, // Pass price
+      },
+    });
   };
 
   return (
@@ -51,7 +58,7 @@ const TrainSearch = () => {
           {searchResults.map((train) => {
             console.log("Train data:", train); // Debugging log
             return (
-              <div key={train.train_id} className="train-card my-2">
+              <div key={train.train_id} className="train-card my-4">
                 <div className="train-info d-flex w-75">
                   <div className="left-side text-end me-2">
                     <h3>{new Date(train.date).toLocaleDateString()}</h3>
@@ -77,7 +84,7 @@ const TrainSearch = () => {
           })}
         </div>
       ) : (
-        !error && <p className="no-results">No trains found for the given criteria.</p>
+        !error && <p className="no-results">No available trains found for the given criteria.</p>
       )}
     </div>
   );

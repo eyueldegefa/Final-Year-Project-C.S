@@ -4,6 +4,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const cron = require("node-cron");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const chapa = require("chapa").default;
 const axios = require("axios");
 const { data } = require("react-router-dom");
@@ -13,13 +15,7 @@ const PORT = 7676;
 const CHAPA_SECRET_KEY = process.env.CHAPA_SECRET_KEY || 'CHASECK_TEST-ub2djNjB6gXgWgSJGTPtSHu3BKahzhNV';
 
 // Middleware
-app.use(
-  cors({
-    origin: "http://localhost:7676",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static("build"));
 
@@ -32,6 +28,106 @@ const dbConfig = {
 };
 const dbPool = mysql.createPool(dbConfig);
 
+// ---------------------------------------------------------------------------------------
+// Auth middleware
+const authenticate = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).send('Access denied');
+
+  try {
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const [user] = await dbPool.query('SELECT * FROM users WHERE id = ?', [verified.id]);
+    req.user = user[0];
+    next();
+  } catch (error) {
+    res.status(400).send('Invalid token');
+  }
+};
+
+// Routes
+app.post('/api/register', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const [existing] = await dbPool.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+    
+    if (existing.length > 0) {
+      return res.status(400).send('User already exists');
+    }
+
+    await dbPool.query(
+      'INSERT INTO users (email, password, role) VALUES (?, ?, ?)',
+      [email, hashedPassword, 'user']
+    );
+    
+    res.status(201).send('User created');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// -----------------------------------------------
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password, role } = req.body;
+    console.log('Login attempt:', { email, role }); // Debug log
+
+    // 1. Find user by email
+    const [users] = await dbPool.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+    
+    console.log('DB results:', users); // Debug log
+
+    if (users.length === 0) {
+      console.log('No user found with email:', email);
+      return res.status(400).send('Invalid credentials');
+    }
+
+    const user = users[0];
+    console.log('Found user:', user); // Debug log
+
+    // 2. Verify role
+    if (user.role !== role) {
+      console.log(`Role mismatch: DB role=${user.role} vs requested=${role}`);
+      return res.status(403).send('Access forbidden for this role');
+    }
+
+    // 3. Verify password
+    console.log('Comparing password with hash:', user.password);
+    const validPassword = await bcrypt.compare(password, user.password);
+    
+    if (!validPassword) {
+      console.log('Password comparison failed');
+      return res.status(400).send('Invalid credentials');
+    }
+
+    // 4. Generate token
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    console.log('Login successful for:', email);
+    res.json({ token, role: user.role, email: user.email });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).send(error.message);
+  }
+});
+
+// Protected route example
+app.get('/api/user-data', authenticate, (req, res) => {
+  res.json(req.user);
+});
+// -------------------------------------------------------------------------------------------
 // Cron Job to Expire Unpaid Bookings
 cron.schedule("*/5 * * * *", async () => {
   try {
@@ -44,8 +140,6 @@ cron.schedule("*/5 * * * *", async () => {
     console.error("Cron job error:", error);
   }
 });
-
-
 
 // Manage Bookings
 // -----------------------------------------------------------------------------
@@ -164,10 +258,9 @@ app.get("/seats/:trainId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch seat data." });
   }
 });
-
-// Confirm Booking
 // ----------------------------------------------------------------------------------------
-// confirm booking
+// Confirm Booking 
+// ----------------------------------------------------------------------------------------
 app.post("/api/confirm-booking", async (req, res) => {
   const { train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, selectedSeats } = req.body;
 
@@ -180,16 +273,14 @@ app.post("/api/confirm-booking", async (req, res) => {
     // Set expiry time (e.g., 10 minutes from now)
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    var payment_status = 'pending';
-
     const booked_at = Date.now();
 
-    const amount = "3000"; //fixed amount for now
+    const amount = "3450"; //fixed amount for now
 
     // Step 1: Insert booking details into the bookings table
     const [bookingResult] = await connection.execute(
-      "INSERT INTO bookings (train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, booked_at, booking_reference, expires_at, payment_status, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email,booked_at, bookingReference, expiresAt, payment_status, amount]
+      "INSERT INTO bookings (train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, booked_at, booking_reference, expires_at, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [train_id, passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email, booked_at, bookingReference, expiresAt,  amount]
     );
 
     const bookingId = bookingResult.insertId; // Get the ID of the newly inserted booking
@@ -201,7 +292,7 @@ app.post("/api/confirm-booking", async (req, res) => {
         [bookingId, seatId]
       );
 
-      // Step 3: Update the bookings table with the seat_id
+      // Step 2: Update the bookings table with the seat_id
       await connection.execute(
         "UPDATE bookings SET seat_id = ? WHERE booking_id = ?",
         [seatId, bookingId]
@@ -215,7 +306,7 @@ app.post("/api/confirm-booking", async (req, res) => {
       message: "Booking confirmed.",
       bookingId,
       bookingReference,
-      passengerDetails: { passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email},
+      passengerDetails: { passengerf_name, passengerl_name, passenger_dateofbirth, passenger_phone, passenger_email },
       trainDetails: { train_id },
       selectedSeats,
     });
@@ -225,7 +316,8 @@ app.post("/api/confirm-booking", async (req, res) => {
   }
 });
 
-
+// Initialize Payment
+// ----------------------------------------------------------------------------------------
 app.post("/api/payment", async (req, res) => {
   const { bookingReference, amount, currency, passenger_email, passengerf_name, passengerl_name, passenger_phone } = req.body;
 
@@ -233,13 +325,13 @@ app.post("/api/payment", async (req, res) => {
     const paymentData = {
       amount: amount.toString(), // Convert amount to string
       currency: currency || "ETB", // Default to ETB if not provided
-      email: passenger_email || "firstgroup@gmail.com", // Default email if not provided
-      first_name: passengerf_name || "Group", // Default first name if not provided
-      last_name: passengerl_name || "One", // Default last name if not provided
-      phone_number: passenger_phone || "0912345678", // Default phone number if not provided
+      email: passenger_email || "firstgroup@gmail.com",
+      first_name: passengerf_name || "Group",
+      last_name: passengerl_name || "One",
+      phone_number: passenger_phone || "0912345678",
       tx_ref: bookingReference, // Use booking reference as transaction reference
-      callback_url: "http://localhost:7676/payment/success", // Replace with your callback URL
-      return_url: "http://localhost:7676", // Replace with your return URL
+      callback_url: "http://localhost:7676/api/payment/callback", // Callback URL for payment success
+      return_url: "http://localhost:3000/success", // Redirect to frontend Success page
       customization: {
         title: "Train Booking", // Ensure this is 16 characters or less
         description: "Booking Payment", // Ensure this contains only allowed characters
@@ -248,7 +340,7 @@ app.post("/api/payment", async (req, res) => {
 
     const response = await axios.post(
       "https://api.chapa.co/v1/transaction/initialize",
-      paymentData, 
+      paymentData,
       {
         headers: {
           Authorization: `Bearer ${CHAPA_SECRET_KEY}`,
@@ -268,57 +360,119 @@ app.post("/api/payment", async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------------
-// //  success callback 
-app.post("/api/payment/success", async (req, res) => {
-  const { tx_ref } = req.body; // Extract transaction reference from Chapa
+
+// ----------------------------------------------------------------
+const updateBookingStatus = async (bookingReference, status) => {
+  try {
+    const query = `
+      UPDATE bookings
+      SET status = ?
+      WHERE booking_reference = ?
+    `;
+    const values = [status, bookingReference];
+
+    const [result] = await dbPool.execute(query, values);
+
+    if (result.affectedRows === 0) {
+      throw new Error("Booking not found.");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error updating booking status:", error);
+    throw error;
+  }
+};
+
+// -------------------------------------------------------
+app.post("/api/payment/callback", async (req, res) => {
+  const { tx_ref, status } = req.body;
+  console.log("Received callback:", { tx_ref, status }); // Log the callback data
 
   try {
-    // Step 1: Verify payment with Chapa
-    const chapaResponse = await axios.get(`https://api.chapa.co/v1/transaction/verify/${tx_ref}`, {
-      headers: {
-        Authorization: `Bearer ${CHAPA_SECRET_KEY}`,
-      },
-    });
-
-    if (chapaResponse.data.status === "success") {
-      // Step 2: Update booking status in the database
-      const query = "UPDATE bookings SET status = 'paid' WHERE booking_reference = ?";
-      await dbPool.execute(query, [tx_ref]);
-
-      return res.status(200).json({ message: "Payment verified and status updated." });
+    if (status === "success") {
+      await updateBookingStatus(tx_ref, "paid");
+      res.redirect(`http://localhost:3000/success?bookingReference=${tx_ref}`);
     } else {
-      return res.status(400).json({ error: "Payment verification failed." });
+      res.redirect("http://localhost:3000/payment-failed");
     }
   } catch (error) {
-    console.error("Error verifying payment:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error("Callback error:", error);
+    res.status(500).json({ error: "Failed to process payment callback." });
   }
 });
+// ------------------------------------------------------------------------------------------------
 
-// // Callback 
-// app.post("/payment-callback", async (req, res) => {
-//   const { tx_ref, status } = req.body;
+// Admin Part
 
-//   if (status === "success") {
-//     try {
-//       const connection = await dbPool.getConnection();
-//       await connection.execute(
-//         "UPDATE bookings SET payment_status = 'paid' WHERE booking_reference = ?",
-//         [tx_ref]
-//       );
-//       connection.release();
-//       console.log(`Payment for booking ${tx_ref} was successful. Database updated.`);
-//     } catch (error) {
-//       console.error("Error updating database after payment:", error);
-//     }
-//   } else {
-//     console.log(`Payment for booking ${tx_ref} failed.`);
-//   }
-
-//   res.sendStatus(200);
+// const password = 'Group-1@c.s'; // Your plain text password
+// bcrypt.hash(password, 10, (err, hashedPassword) => {
+//   if (err) throw err;
+//   const email = 'firstgroup@gmail.com';
+//   dbPool.query('INSERT INTO admins (email, password) VALUES (?, ?)', [email, hashedPassword], (err, result) => {
+//     if (err) throw err;
+//     console.log('Admin inserted into the database');
+//   });
 // });
 
+// -----------------------------------------------------------------------------------------------
+// Admin login route
+
+app.post("/admin/login", (req, res) => {
+  const sql = "SELECT * FROM admins WHERE email = ? AND password = ?";
+
+  dbPool.query(sql, [req.body.email, req.body.password], (err, data) => {
+    if(err) return res.json(err);
+    if(data.length > 0){
+      return res.json("Login Successfully!");
+    }else{
+      return res.json("No Data!");
+    }
+  });
+});
+// app.post("/admin/login", (req, res) => {
+//   const { email, password } = req.body;
+
+//   console.log("Login attempt:", email);
+
+//   if (!email || !password) {
+//     return res.status(400).json({ message: "Email and password are required" });
+//   }
+
+//   dbPool.query("SELECT * FROM admins WHERE email = ?", [email], (err, result) => {
+//     if (err) {
+//       console.error("Database error:", err);
+//       return res.status(500).json({ message: "Internal server error" });
+//     }
+
+//     if (result.length === 0) {
+//       console.log("Email not found:", email);
+//       return res.status(401).json({ message: "Invalid email or password" });
+//     }
+
+//     const storedPassword = result[0].password;
+//     console.log("Stored password (hashed):", storedPassword);
+
+//     bcrypt.compare(password, storedPassword, (err, isMatch) => {
+//       if (err) {
+//         console.error("Error comparing password:", err);
+//         return res.status(500).json({ message: "Error verifying password" });
+//       }
+
+//       console.log("Password match result:", isMatch);
+
+//       if (!isMatch) {
+//         console.log("Invalid password attempt for:", email);
+//         return res.status(401).json({ message: "Invalid email or password" });
+//       }
+
+//       console.log("Login successful for:", email);
+//       return res.status(200).json({ message: "Login successful!" });
+//     });
+//   });
+// });
+
+// -----------------------------------------------------------------------------------------------
 // Fetch All Passengers (Admin)
 app.get("/api/admin/passengers", async (req, res) => {
   const { payment_status } = req.query;
@@ -454,23 +608,6 @@ app.put("/api/admin/update-train/:id", async (req, res) => {
 });
 
 // Add a New Train
-// app.post("/api/admin/add-train", async (req, res) => {
-//   const { train_name, source, destination, departure_time, arrival_time, seats_available, price, date, class: train_class } = req.body;
-//   const query = `
-//       INSERT INTO trains (name, source, destination, departure_time, arrival_time, seats_available, price, date, class)
-//       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-//   `;
-//   const values = [train_name, source, destination, departure_time, arrival_time, seats_available, price, date, train_class];
-
-//   try {
-//     await dbPool.query(query, values);
-//     res.status(201).send({ message: "Train added successfully!" });
-//   } catch (err) {
-//     console.error("Error adding train:", err);
-//     res.status(500).send({ error: "Failed to add train" });
-//   }
-// });
-
 app.post('/api/admin/add-train', async (req, res) => {
   console.log("Received Data:", req.body); // Debugging
   const { name, source, destination, departure_time, arrival_time, seats_available, price, date, class: trainClass } = req.body;
