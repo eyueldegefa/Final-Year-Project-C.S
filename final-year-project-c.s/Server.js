@@ -29,18 +29,42 @@ const dbConfig = {
 const dbPool = mysql.createPool(dbConfig);
 
 // ---------------------------------------------------------------------------------------
-// Auth middleware
 const authenticate = async (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).send('Access denied');
-
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    const [user] = await dbPool.query('SELECT * FROM users WHERE id = ?', [verified.id]);
-    req.user = user[0];
+    // 1️⃣ Retrieve token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Access denied. No token provided' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    // 2️⃣ Verify token
+    let verified;
+    try {
+      verified = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        return res.status(403).json({ message: 'Token expired. Please log in again.' });
+      }
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    console.log('Verified Token:', verified);
+
+    // 3️⃣ Find user in the database
+    const [users] = await dbPool.query('SELECT * FROM users WHERE id = ?', [verified.id]);
+
+    // 4️⃣ Check if user exists
+    if (users.length === 0) {
+      return res.status(401).json({ message: 'Invalid token: User not found' });
+    }
+
+    req.user = users[0]; // Attach user info to request object
     next();
   } catch (error) {
-    res.status(400).send('Invalid token');
+    console.error('Auth error:', error.message);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -71,43 +95,43 @@ app.post('/api/register', async (req, res) => {
 });
 
 // -----------------------------------------------
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', async (req, res) => { 
   try {
     const { email, password, role } = req.body;
-    console.log('Login attempt:', { email, role }); // Debug log
+    console.log('Login attempt:', { email, role });
 
-    // 1. Find user by email
+    // 1️⃣ Find user by email
     const [users] = await dbPool.query(
       'SELECT * FROM users WHERE email = ?',
       [email]
     );
-    
-    console.log('DB results:', users); // Debug log
+
+    console.log('DB results:', users);
 
     if (users.length === 0) {
       console.log('No user found with email:', email);
-      return res.status(400).send('Invalid credentials');
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     const user = users[0];
-    console.log('Found user:', user); // Debug log
+    console.log('Found user:', user);
 
-    // 2. Verify role
+    // 2️⃣ Verify role
     if (user.role !== role) {
       console.log(`Role mismatch: DB role=${user.role} vs requested=${role}`);
-      return res.status(403).send('Access forbidden for this role');
+      return res.status(403).json({ message: 'Access forbidden for this role' });
     }
 
-    // 3. Verify password
-    console.log('Comparing password with hash:', user.password);
-    const validPassword = await bcrypt.compare(password, user.password);
+    // 3️⃣ Directly compare passwords
+    console.log('Entered password:', password);
+    console.log('Stored password:', user.password);
     
-    if (!validPassword) {
+    if (password !== user.password) {
       console.log('Password comparison failed');
-      return res.status(400).send('Invalid credentials');
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // 4. Generate token
+    // 4️⃣ Generate token
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
@@ -119,7 +143,7 @@ app.post('/api/login', async (req, res) => {
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).send(error.message);
+    res.status(500).json({ message: error.message });
   }
 });
 

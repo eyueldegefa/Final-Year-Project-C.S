@@ -2,49 +2,44 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleRegularLogin = async (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post('http://localhost:7676/api/login', {
         email,
         password,
-        role: 'user' // Default role for regular login
+        role: 'admin' // Force admin role
       });
-      
+
+      // Store user details in local storage
       localStorage.setItem('user', JSON.stringify({
         email: res.data.email,
-        role: res.data.role
+        role: 'admin'
       }));
-      
-      // Redirect based on role
-      if (res.data.role === 'admin') {
-        navigate('/admin');
-      } else if (res.data.role === 'conductor') {
-        navigate('/conductor');
-      } else {
-        navigate('/');
-      }
+
+      alert("Admin Login Successful");
+      navigate('/admin');
+
     } catch (error) {
-      setError('Login failed: ' + (error.response?.data || error.message));
+      setError('Admin login failed: ' + (error.response?.data.message || error.message));
     }
   };
 
   return (
     <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Login</h2>
+      <h2>Admin Login</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       
-      {/* Regular Login Form */}
-      <form onSubmit={handleRegularLogin}>
+      <form onSubmit={handleAdminLogin}>
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Admin Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -52,7 +47,7 @@ const Login = () => {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Admin Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -63,39 +58,21 @@ const Login = () => {
           style={{
             width: '100%',
             padding: '10px',
-            backgroundColor: '#4CAF50',
+            backgroundColor: '#dc3545',
             color: 'white',
             border: 'none',
             borderRadius: '4px'
           }}
         >
-          Login
+          Login as Admin
         </button>
       </form>
 
-      {/* Admin Login Button */}
-      <div style={{ marginTop: '20px' }}>
-        <button
-          onClick={() => navigate('/admin/login')}
-          style={{
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#dc3545',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Login as Administrator
-        </button>
-      </div>
-
       <p style={{ marginTop: '20px' }}>
-        Don't have an account? <a href="/register">Register here</a>
+        <a href="/login">← Back to regular login</a>
       </p>
     </div>
   );
 };
 
-export default Login;
+export default AdminLogin;

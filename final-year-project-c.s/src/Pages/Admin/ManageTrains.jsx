@@ -97,23 +97,22 @@ function ManageTrains() {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold text-center">Manage Trains</h1>
+            <h1 className=" font-bold text-center">Manage Trains</h1>
 
             <button onClick={() => {
                 setShowAddForm(!showAddForm);
                 setEditingTrain(null);
                 setFormData({ name: '', source: '', destination: '', departure_time: '', arrival_time: '', price: '', seats_available: '', date: '', class: '' });
-            }} className="bg-primary text-white p-2 my-3 w-25">
+            }} className="bg-green-500 p-2 my-3 w-25">
                 <AddTwoToneIcon /> {showAddForm ? "Close Form" : "Add New Train"}
             </button>
 
             {showAddForm && (
-                <div className="mt-4 border border-gray p-4">
-                    <h2 className="text-xl font-bold text-primary text-center">{editingTrain ? "Edit Train" : "Add New Train"}</h2>
-                    <form onSubmit={editingTrain ? handleEditTrain : handleAddTrain} className="space-y-4">
+                <div className="mt-4 border border-dark p-4 w-50">
+                    <h2 className="text-xl fw-bold text-success text-center mb-4">{editingTrain ? "Edit Train" : "Add New Train"}</h2>
+                    <form onSubmit={editingTrain ? handleEditTrain : handleAddTrain} className="text-center">
                         {Object.keys(formData).map((key) => (
-                            <div key={key} className='d-flex my-3'>
-                                <label className="block text-sm font-medium">{key.replace('_', ' ')}</label>
+                            <div key={key} className='d-flex my-3 w-75'>
                                 <input
                                     type={
                                         key === "date" ? "date" :
@@ -123,9 +122,10 @@ function ManageTrains() {
                                     name={key}
                                     value={formData[key] || ''}
                                     onChange={handleChange}
-                                    className="w-full border border-gray-300 p-2 rounded"
+                                    className="border border-dark p-2 rounded"
                                     required
                                 />
+                                <label className="block text-start ps-3">{key.replace('_', ' ')}</label>
                             </div>
                         ))}
                         <button type="submit" className="py-2 bg-green-500 text-white p-2 rounded">
@@ -135,28 +135,28 @@ function ManageTrains() {
                 </div>
             )}
 
-            <table className="mt-4 border border-gray w-full">
+            <table className="mt-4 border border-dark text-start">
                 <thead>
-                    <tr>
-                        <th className="border border-gray p-2 w-25">Name</th>
-                        <th className="border border-gray p-2">Source</th>
-                        <th className="border border-gray p-2">Destination</th>
-                        <th className="border border-gray p-2">Date</th>
-                        <th className="border border-gray p-2">Actions</th>
+                    <tr className=''>
+                        <th className="border border-dark bg-white text-dark  p-2">Name</th>
+                        <th className="border border-dark bg-white text-dark  p-2">Source</th>
+                        <th className="border border-dark bg-white text-dark  p-2">Destination</th>
+                        <th className="border border-dark bg-white text-dark  p-2">Date</th>
+                        <th className="border border-dark bg-white text-dark  p-2">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className=''>
                     {trains.length > 0 ? (
                         trains.map((train) => (
                             <tr key={train.train_id}>
-                                <td className="border border-gray p-2">{train.name}</td>
-                                <td className="border border-gray p-2">{train.source}</td>
-                                <td className="border border-gray p-2">{train.destination}</td>
-                                <td className="border border-gray p-2">{new Date(train.date).toLocaleDateString()}</td>
-                                <td className="border border-gray p-2">
-                                <div className='d-flex'>
-                                    <button onClick={() => handleEditClick(train)} className="m-1 bg-success">Update</button>
-                                    <button onClick={() => deleteTrain(train.train_id)} className="m-1 bg-danger">Delete</button>
+                                <td className="border border-dark p-2">{train.name}</td>
+                                <td className="border border-dark p-2">{train.source}</td>
+                                <td className="border border-dark p-2">{train.destination}</td>
+                                <td className="border border-dark p-2">{new Date(train.date).toLocaleDateString()}</td>
+                                <td className="border border-dark p-2">
+                                <div className='d-flex text-white'>
+                                    <p onClick={() => handleEditClick(train)} className="bg-success m-1 p-2 rounded">Update</p>
+                                    <p onClick={() => deleteTrain(train.train_id)} className="bg-danger m-1 p-2 rounded">Delete</p>
                                 </div>
                                 </td>
                             </tr>

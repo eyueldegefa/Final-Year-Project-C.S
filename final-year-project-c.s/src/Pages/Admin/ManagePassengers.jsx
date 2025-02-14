@@ -67,11 +67,11 @@ function ManagePassengers() {
     const handleEditClick = (passenger) => {
         setEditingPassenger(passenger.booking_id);
         setFormData({
-            passengerf_name: passenger.passengerf_name,
-            passenger_l_name: passenger.passenger_l_name,
-            passenger_dateofbirth: passenger.passenger_dateofbirth,
-            passenger_phone: passenger.passenger_phone,
-            passenger_email: passenger.passenger_email
+            Passenger_First_name: passenger.passengerf_name,
+            Passenger_Last_name: passenger.passengerl_name,
+            Passenger_Date_of_birth: new Date(passenger.passenger_dateofbirth).toLocaleDateString(),
+            Passenger_Phone: passenger.passenger_phone,
+            Passenger_Email: passenger.passenger_email
         });
     };
 
@@ -95,7 +95,7 @@ function ManagePassengers() {
     };
 
     return (
-        <div className="p-4 bg-dark text-white">
+        <div className="p-4">
             <h1 className="text-2xl font-bold text-center">Manage Passengers</h1>
 
             <div className="mt-4 d-flex">
@@ -107,7 +107,7 @@ function ManagePassengers() {
                         id="paymentStatusFilter"
                         value={paymentStatusFilter}
                         onChange={(e) => setPaymentStatusFilter(e.target.value)}
-                        className="mt-1 py-3 block w-full p-2 border border-primary bg-white text-dark"
+                        className="mt-1 py-3 p-2 border border-success rounded bg-white text-dark"
                     >
                         <option value="">All</option>
                         <option value="paid">Paid</option>
@@ -119,35 +119,42 @@ function ManagePassengers() {
                     <label htmlFor="search">Search by booking reference</label>
                     <div className='d-flex'>
                         <input
-                            className='bg-white p-3 text-dark border border-primary mt-1'
+                            className='bg-white p-3 text-dark border border-success rounded mt-1'
                             type="text"
                             placeholder='Search by Booking-reference'
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <button className='w-25 m-1 bg-primary' onClick={searchPassenger}><SearchIcon /></button>
+                        <button className='w-25 m-1 bg-green-500' onClick={searchPassenger}><SearchIcon /></button>
                     </div>
                 </div>
             </div>
 
             {editingPassenger && (
-                <div className="mt-4 p-4 border border-gray-300 rounded">
+                <div className="mt-4 p-4 border border-dark rounded w-50">
                     <h2 className="text-xl font-bold">Edit Passenger</h2>
                     <form onSubmit={updatePassenger}>
                         {Object.keys(formData).map((key) => (
-                            <div key={key} className="mb-2">
-                                <label className="block text-sm font-medium">{key.replace('_', ' ')}</label>
-                                <input
-                                    name={key}
-                                    value={formData[key]}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 p-2 rounded"
-                                    required
-                                />
-                            </div>
+                            <div key={key} className='d-flex my-3 w-75'>
+                            <input
+                                type={
+                                    key === "date" ? "date" :
+                                    key.includes("time") ? "time" :
+                                    key.includes("price") || key.includes("seats") ? "number" : "text"
+                                }
+                                name={key}
+                                value={formData[key] || ''}
+                                onChange={handleChange}
+                                className="border border-dark p-2 rounded"
+                                required
+                            />
+                            <label className="block text-start ps-3">{key.replace('_', ' ')}</label>
+                        </div>
                         ))}
-                        <button type="submit" className="bg-green-500 p-2 rounded">Update Passenger</button>
-                        <button type="button" onClick={() => setEditingPassenger(null)} className="ml-2 bg-gray-500 p-2 rounded">Cancel</button>
+                        <div className='d-flex'>
+                           <button type="submit" className="bg-green-500 py-3 rounded">Update Passenger</button>
+                           <button type="button" onClick={() => setEditingPassenger(null)} className="ml-2 bg-gray-500 p-2 rounded">Cancel</button>
+                        </div>
                     </form>
                 </div>
             )}
@@ -157,26 +164,26 @@ function ManagePassengers() {
             <table className="mt-4 border border-gray">
                 <thead>
                     <tr>
-                        <th className="border border-gray p-2">First Name</th>
-                        <th className="border border-gray p-2">Last Name</th>
-                        <th className="border border-gray p-2">Date of Birth</th>
-                        <th className="border border-gray p-2">Email</th>
-                        <th className="border border-gray p-2">Phone</th>
-                        <th className="border border-gray p-2">Actions</th>
+                        <th className="border border-dark bg-white text-dark p-2">Given Name</th>
+                        <th className="border border-dark bg-white text-dark p-2">Last Name</th>
+                        <th className="border border-dark bg-white text-dark p-2">Date of Birth</th>
+                        <th className="border border-dark bg-white text-dark p-2">Email</th>
+                        <th className="border border-dark bg-white text-dark p-2">Phone</th>
+                        <th className="border border-dark bg-white text-dark p-2">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className='admin-inner-contents'>
                     {passengers.map(passenger => (
                         <tr key={passenger.booking_id}>
-                            <td className="border border-gray p-2">{passenger.passengerf_name}</td>
-                            <td className="border border-gray p-2">{passenger.passengerl_name}</td>
-                            <td className="border border-gray p-2">{new Date(passenger.passenger_dateofbirth).toLocaleDateString()}</td>
-                            <td className="border border-gray p-2">{passenger.passenger_email}</td>
-                            <td className="border border-gray p-2">{passenger.passenger_phone}</td>
-                            <td className="border border-gray p-2">
-                                <div className='d-flex'>
-                                    <button onClick={() => handleEditClick(passenger)} className="m-1 bg-success">Update</button>
-                                    <button onClick={() => deletePassenger(passenger.booking_id)} className="m-1 bg-danger">Delete</button>
+                            <td className="border border-dark p-2">{passenger.passengerf_name}</td>
+                            <td className="border border-dark p-2">{passenger.passengerl_name}</td>
+                            <td className="border border-dark p-2">{new Date(passenger.passenger_dateofbirth).toLocaleDateString()}</td>
+                            <td className="border border-dark p-2">{passenger.passenger_email}</td>
+                            <td className="border border-dark p-2">{passenger.passenger_phone}</td>
+                            <td className="border border-dark p-2">
+                                <div className='d-flex text-white'>
+                                    <p onClick={() => handleEditClick(passenger)} className="m-1 rounded bg-success p-2 admin-buttons">Update</p>
+                                    <p onClick={() => deletePassenger(passenger.booking_id)} className="m-1 rounded bg-danger p-2 admin-buttons">Delete</p>
                                 </div>
                             </td>
                         </tr>

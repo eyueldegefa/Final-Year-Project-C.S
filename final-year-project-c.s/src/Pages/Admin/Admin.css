@@ -3,38 +3,37 @@
     height: 400px;
     margin: 30px auto;
     padding: 20px;
-    background-color: #eae6e1;
+    /* background-color: #eae6e1; */
     box-shadow: 5px 5px 10px gray;
 }
 .admin-content {
-    background-color: #292A2D;
+    /* background-color: #292A2D; */
     margin-left: 20%;
     width: 80%;
-    color: white;
+    /* color: black; */
+    /* color: white; */
 }
-
+.admin-inner-contents{
+    background-color: #eae6e1;
+}
 .admin-dashboard img {
     height: 450px;
     padding: 20px;
 }
-.admin-dashboard .logo{
-    width: 145px;
-    height: 45px;
-}
 .admin-links {
-    background-color: #141414;
+    box-shadow: 5px 5px 3px #c6c5c5;
     width: 20%;
     padding: 20px;
     position: fixed;
     height: 600px;
-    color: white;
+    /* color: white; */
 }
 
 .admin-links .nav-link {
     display: block;
     font-size: 15px;
     text-decoration: none;
-    color: white;
+    color: #000;
     padding: 15px;
 }
 .admin-links .logout{
@@ -46,21 +45,24 @@
 }
 /* Change background and text color when active */
 .admin-links .nav-link.active {
-    background: #0D6EFD; /* Green background */
+    background: #07bc34; /* Green background */
     border-radius: 10px;
 }
 
 /* Dashboard Link Background Changes When Navigating Away */
 .dashboard-inactive {
-    background: #141414 !important;
+    background: #fff !important;
 }
 
 .admin-links .nav-link:hover {
-    background: #0D6EFD !important;
+    background: #07bc34 !important;
     border-radius: 10px;
 }
 
 .forms{
     width: 50%;
     margin: auto;
+}
+.admin-buttons{
+    cursor: pointer;
 }

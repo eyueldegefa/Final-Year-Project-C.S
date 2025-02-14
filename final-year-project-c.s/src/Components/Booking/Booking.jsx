@@ -2,6 +2,7 @@
 import React, { useState } from "react"; 
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import axios for API calls
+import { Link } from 'react-router-dom';
 import TrainIcon from '@mui/icons-material/Train';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import DoubleArrowRoundedIcon from '@mui/icons-material/DoubleArrowRounded';
@@ -80,7 +81,7 @@ const handleManageBooking = async () => {
         <p className={`col-4 py-4 bottomRed${activeTab === "manage" ? "bottomRed" : ""}`} onClick={() => setActiveTab("manage")}>
           <BookmarksIcon /> Manage booking
         </p>
-        <p className='col-4 py-4 bottomRed'><DoubleArrowRoundedIcon /> What's on your train rail</p>
+        <Link to="/ontrain" className='col-4 py-4 text-dark mb-3 bottomRed text-decoration-none'><DoubleArrowRoundedIcon /> What's on your train rail</Link>
       </div>
 
       {activeTab === "search" ? (

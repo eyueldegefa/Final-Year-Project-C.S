@@ -71,3 +71,8 @@
         width: 100px;
     }
 }
+.video-container video{
+    height: 400px;
+    width: 700px;
+    margin-bottom: 100px;
+}

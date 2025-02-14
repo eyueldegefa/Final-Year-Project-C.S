@@ -22,10 +22,10 @@ function Header() {
         <div className='row d-flex bg-dark text-white px-5 py-2'>
             <div className='col-4 ps-5'><img src={headerlogo} alt="Header logo" /> ETHIOPIAN RAILWAYS</div>
             <div className='col-5 d-flex gap-5 pt-3'>
-                <p className='linkHover'>BOOK</p>
-                <p className='linkHover'>MANAGE</p>
+                <Link to="/" className='linkHover'>BOOK</Link>
+                <Link to="/" className='linkHover'>MANAGE</Link>
                 <Link to="/about-us" className='linkHover'>ABOUT</Link>
-                <p className='linkHover'>CONTACT US</p>
+                <Link to="/contact-us" className='linkHover'>CONTACT US</Link>
             </div>
             <div className='col-3 text-end pt-3'>
             <Link to="/login" className='linkHover'>LOG IN <AccountCircleIcon/></Link> 

@@ -1,8 +1,9 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import awash from '../../Images/Awash-Woldia1.jpg';
 import djbouti from '../../Images/Djbouti1.jpg';
 import studentSmall from '../../Images/students1a.jpg';
-import students from '../../Images/students2.jpg';
+import about from '../../Vedios/AboutEthipianRailways.mp4'
 import classs from '../../Images/class.jpg';
 import classSmall from '../../Images/class1aSmall.jpg'
 import food1 from '../../Images/F1.jpg';
@@ -84,19 +85,18 @@ function Home() {
         </div>
         
         {/* Special Discount */}
-        <div className='text-center'>
-            <img className='d-none d-xl-block' src={students} alt="" />
-            <img className='friendSmall w-100 d-xl-none' src={studentSmall} alt="#" />
-            <div className='discountPromo pt-3'>
-                <p className=''>SPECIAL OFFER FOR STUDENTS</p>
-                <h3 className='largeFont fs-1 fh-75'>Students enjoy discounts and extras with us</h3>
-                <p className=''>Book your travel with Ethiopian rail to enjoy special discount, extra baggage allowance and more</p>
-                <button className='more px-4 py-2'>Learn more</button>
+        {/* <div className='text-center video-container my-2'>
+            <video autoPlay loop muted playsInline width="700">
+             <source src={about} type="video/mp4" />
+            </video>
+            <div className='discountPromo pt-3 text-dark mb-5'>
+                <p className=''>About Us</p>
+                <h3 className='largeFont fs-1 fh-75'>Enjoy in extra bagage with us</h3>
             </div>
-        </div>
+        </div> */}
 
         {/* Train Class Area */}
-        <div className='class row'>
+        <div className='class row mt-5'>
             <div className='clasLeft col-md-12 col-lg-6'>
                 <img className='d-none d-lg-block homeShadow border' src={classs} alt="#" />
                 <img className='d-lg-none homeShadow border' src={classSmall} alt="#" />

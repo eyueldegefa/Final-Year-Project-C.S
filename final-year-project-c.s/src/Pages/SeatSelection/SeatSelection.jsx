@@ -10,7 +10,7 @@ const SeatSelection = () => {
     const trainId = location.state?.trainId || paramTrainId;
     const navigate = useNavigate();
 
-    const { passengerDetails, trainDetails } = location.state;
+    const { passengerDetails } = location.state;
     const [seats, setSeats] = useState([]);
     const [selectedSeats, setSelectedSeats] = useState([]);
   
