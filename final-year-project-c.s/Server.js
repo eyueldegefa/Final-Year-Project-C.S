@@ -72,7 +72,7 @@ const authenticate = async (req, res, next) => {
 app.post('/api/register', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const passWord = await (passWord);
     
     const [existing] = await dbPool.query(
       'SELECT * FROM users WHERE email = ?',
@@ -85,9 +85,9 @@ app.post('/api/register', async (req, res) => {
 
     await dbPool.query(
       'INSERT INTO users (email, password, role) VALUES (?, ?, ?)',
-      [email, hashedPassword, 'user']
+      [email, passWord, 'user']
     );
-    
+    alert("You are registered successfully!");
     res.status(201).send('User created');
   } catch (error) {
     res.status(500).send(error.message);

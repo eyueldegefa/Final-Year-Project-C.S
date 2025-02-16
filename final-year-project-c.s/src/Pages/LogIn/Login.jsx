@@ -28,6 +28,7 @@ const Login = () => {
       } else if (res.data.role === 'conductor') {
         navigate('/conductor');
       } else {
+        alert("Login Successsful!");
         navigate('/');
       }
     } catch (error) {

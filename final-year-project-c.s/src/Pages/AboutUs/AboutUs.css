@@ -70,11 +70,11 @@ body {
 /* Section Titles and Descriptions */
 .section-title {
     font-size: 2rem;
-    margin: 20px 0;
+    margin: 8px 0;
 }
 
 .section-description {
-    font-size: 1.1rem;
+    font-size: 12px;
     color: #555;
 }
 
@@ -126,18 +126,12 @@ body {
 /* Our Team Section */
 .team-member-image {
     width: 160px;
-    /* Fixed width */
     height: 150px;
-    /* Fixed height to match width */
     border-radius: 50%;
-    /* Now this will make perfect circle */
-    border: 2px solid #c8102e;
+    border: 2px solid #16c810;
     object-fit: cover;
-    /* Ensures image fills circle without distortion */
     display: block;
-    /* Removes inline spacing */
     margin: 0 auto;
-    /* Centers the image */
 }
 
 .team-member {
@@ -154,8 +148,7 @@ body {
 
 /* Call to Action Section */
 .call-to-action {
-    background-color: #c8102e;
-    /* Emirates red */
+    background-color: #10c838;
     color: white;
     padding: 30px 0;
     text-align: center;
@@ -172,7 +165,7 @@ body {
 }
 
 .cta-button {
-    background-color: #f1c40f;
+    background-color: #ecbf0b;
     /* Yellow */
     color: #333;
     border: none;
@@ -204,5 +197,5 @@ body {
     width: 45%;
     height: auto;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px #0000001a;
 }

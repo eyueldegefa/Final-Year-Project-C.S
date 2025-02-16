@@ -12,7 +12,8 @@ function ManagePassengers() {
         passengerl_name: '',
         passenger_dateofbirth: '',
         passenger_phone: '',
-        passenger_email: ''
+        passenger_email: '',
+        booking_reference: ''
     });
     const [paymentStatusFilter, setPaymentStatusFilter] = useState('');
 
@@ -165,10 +166,11 @@ function ManagePassengers() {
                 <thead>
                     <tr>
                         <th className="border border-dark bg-white text-dark p-2">Given Name</th>
-                        <th className="border border-dark bg-white text-dark p-2">Last Name</th>
-                        <th className="border border-dark bg-white text-dark p-2">Date of Birth</th>
+                        <th className="border border-dark bg-white text-dark p-2">LastName</th>
+                        <th className="border border-dark bg-white text-dark p-2">DateOfBirth</th>
                         <th className="border border-dark bg-white text-dark p-2">Email</th>
                         <th className="border border-dark bg-white text-dark p-2">Phone</th>
+                        <th className="border border-dark bg-white text-dark p-2">BookingReference</th>
                         <th className="border border-dark bg-white text-dark p-2">Actions</th>
                     </tr>
                 </thead>
@@ -180,6 +182,7 @@ function ManagePassengers() {
                             <td className="border border-dark p-2">{new Date(passenger.passenger_dateofbirth).toLocaleDateString()}</td>
                             <td className="border border-dark p-2">{passenger.passenger_email}</td>
                             <td className="border border-dark p-2">{passenger.passenger_phone}</td>
+                            <td className="border border-dark p-2">{passenger.booking_reference}</td>
                             <td className="border border-dark p-2">
                                 <div className='d-flex text-white'>
                                     <p onClick={() => handleEditClick(passenger)} className="m-1 rounded bg-success p-2 admin-buttons">Update</p>
