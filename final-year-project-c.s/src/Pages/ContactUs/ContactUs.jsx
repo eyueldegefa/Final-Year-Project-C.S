@@ -4,19 +4,18 @@ import contactImage from '../../image/image/cityofadis.jpg'; // Replace with you
 
 function ContactUs() {
   return (
-    <section className="about-us-section mt-4">
+    <section className="about-us-section mt-5">
       {/* Header Section */}
-      <div className="header text-center">
+      <div className="header text-center mt-5">
         <h1 className="header-title">Contact Us</h1>
         <p className="header-subtitle">Get in touch with our team for any inquiries or support.</p>
-        <img className="cityimage" src={contactImage} alt="Contact header" />
       </div>
 
       {/* Contact Information Section */}
       <div className="our-story text-center my-5">
         <div className="story-container d-flex justify-content-between align-items-center">
           <div className="story-text">
-            <h2 className="section-title">Our Office</h2>
+            <h2 className="section-title text-center">Our Office</h2>
             <div className="contact-info">
               <div className="contact-item">
                 <span role="img" aria-label="location">📍</span>

@@ -3,6 +3,8 @@ import headerLogo from '.././../Images/headerLogo.png';
 import FacebookTwoToneIcon from '@mui/icons-material/FacebookTwoTone';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import PhoneIcon from '@mui/icons-material/Phone';
+import EmailIcon from '@mui/icons-material/Email';
 import './Footer.css'
 
 function Footer() {
@@ -29,8 +31,8 @@ function Footer() {
 
         <div className='col-4'>
             <h2 className='fw-bold'>Contact info</h2>
-            <p>support@etrailways.com</p>
-            <p>+251986544345</p>
+            <p><PhoneIcon className='me-2 text-white'/>+251 123 456 789</p>
+            <p><EmailIcon className='me-2 text-white'/>finalProject.com</p>
         </div>
     </section>
   )

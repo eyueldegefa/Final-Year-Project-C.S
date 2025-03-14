@@ -9,6 +9,8 @@
 }
 .homeShadow:hover{
     box-shadow: 1px 10px 10px #bfbfbf;
+    cursor: pointer;
+    transform: scale(1.03);
 }
 /* For larger fonts */
 .largeFont{
@@ -16,17 +18,6 @@
     font-family: "PT Serif", serif;
     font-weight: bold;
     font-style: italic;
-}
-/* Discount area */
-.discountPromo{
-    margin-top: -350px;
-    color: white;
-    margin-bottom: 150px;
-}
-.discountPromo .more{
-    margin-top: 150px;
-    width: 150px;
-
 }
 /* Class option area */
 .clasLeft img{
@@ -42,9 +33,6 @@
 }
 /* Discount and Class responsive */
 @media (min-width:672px) {
-    .friendSmall{
-        height: 480px;
-    }
     .classRight .o{
         width: 200px;
     }
@@ -59,20 +47,16 @@
     padding: 20px 200px;
     justify-content: center;
 }
+.team-member:hover{
+    transform: scale(1.1);
+    cursor: pointer;
+}
 /* Adjusting For another screen size that did not show as we want */
 @media (max-width:920px) {
     img {
         width: 310px;
     }
-    .homeAbout{
-        overflow-x: scroll;
-    }
     .homeAbout img{
         width: 100px;
     }
-}
-.video-container video{
-    height: 400px;
-    width: 700px;
-    margin-bottom: 100px;
 }

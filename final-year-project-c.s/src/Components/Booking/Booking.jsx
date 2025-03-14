@@ -75,12 +75,12 @@ const handleManageBooking = async () => {
   return (
     <section className='bookingWrapper bg-white text-dark pb-5 text-center'>
       <div className='d-flex row ms-1'>
-        <p className={`col-4 py-4 bottomRed ${activeTab === "search" ? "bottomRed" : ""}`} onClick={() => setActiveTab("search")}>
+        <Link className={`col-4 py-4 bottomRed text-dark mb-3 text-decoration-none ${activeTab === "search" ? "bottomRed" : ""}`} onClick={() => setActiveTab("search")}>
           <TrainIcon /> Search trains
-        </p>
-        <p className={`col-4 py-4 bottomRed${activeTab === "manage" ? "bottomRed" : ""}`} onClick={() => setActiveTab("manage")}>
+        </Link>
+        <Link className={`col-4 py-4 bottomRed text-dark mb-3 text-decoration-none ${activeTab === "manage" ? "bottomRed" : ""}`} onClick={() => setActiveTab("manage")}>
           <BookmarksIcon /> Manage booking
-        </p>
+        </Link>
         <Link to="/ontrain" className='col-4 py-4 text-dark mb-3 bottomRed text-decoration-none'><DoubleArrowRoundedIcon /> What's on your train rail</Link>
       </div>
 

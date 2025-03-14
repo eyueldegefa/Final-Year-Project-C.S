@@ -1,17 +1,17 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 import awash from '../../Images/Awash-Woldia1.jpg';
 import djbouti from '../../Images/Djbouti1.jpg';
-import studentSmall from '../../Images/students1a.jpg';
-import about from '../../Vedios/AboutEthipianRailways.mp4'
 import classs from '../../Images/class.jpg';
 import classSmall from '../../Images/class1aSmall.jpg'
 import food1 from '../../Images/F1.jpg';
 import food2 from '../../Images/F2.jpg';
 import food3 from '../../Images/F3.jpg';
 import food4 from '../../Images/F4.jpg';
-import ourTeam from '../../Images/our-team-circle.png';
-import ourTrain from '../../Images/our-train-circle.png';
+import team from '../../image/image/team.png'; 
+import meating from '../../image/image/meating.png'; 
+import capitain from '../../image/image/capitain.png'; 
+import image12 from '../../image/image/image12.png'; 
+import team2 from '../../image/image/team2.png';
 import '../../App.css';
 import './Home.css';
 
@@ -84,19 +84,21 @@ function Home() {
             </div>
         </div>
         
-        {/* Special Discount */}
-        {/* <div className='text-center video-container my-2'>
-            <video autoPlay loop muted playsInline width="700">
-             <source src={about} type="video/mp4" />
-            </video>
-            <div className='discountPromo pt-3 text-dark mb-5'>
-                <p className=''>About Us</p>
-                <h3 className='largeFont fs-1 fh-75'>Enjoy in extra bagage with us</h3>
+        {/* Special Discount
+        <div className='text-center video-container '>
+            <div className='discountPromo pt-3 text-dark my-5'>
+                <video autoPlay loop muted playsInline>
+                   <source src={about} type="video/mp4" />
+                </video>
             </div>
         </div> */}
 
         {/* Train Class Area */}
-        <div className='class row mt-5'>
+        <div className='class row'>
+        <div className='text-center mb-3'>
+                <h3 className='largeFont text-dark fw-bold'>Choose Your Class</h3>
+                <p>The Packages includes...</p>
+            </div>
             <div className='clasLeft col-md-12 col-lg-6'>
                 <img className='d-none d-lg-block homeShadow border' src={classs} alt="#" />
                 <img className='d-lg-none homeShadow border' src={classSmall} alt="#" />
@@ -115,25 +117,37 @@ function Home() {
                 <h3 className='largeFont text-dark'>About us</h3>
                 <p>Learn more about our history, our business and sustainability initiatives</p>
             </div>
-            <div className='homeAbout d-flex gap-5'>
-                <div className=''>
-                    <img className='' src={ourTrain} alt="#" />
-                    <p>Our Business</p>
-                </div>
-                <div className=''>
-                    <img className='' src={ourTeam} alt="#" />
-                    <p>Our Team</p>
-                </div>
-                <div className=''>
-                    <img className='' src={ourTrain} alt="#" />
-                    <p>Our Train</p>
-                </div>
-                 <div className=''>
-                    <img className='' src={ourTeam} alt="#" />
-                    <p>Our Team</p>
-                </div>
+      {/* Our Team Section Container */}
+      <div className="our-team text-center my-5 overflow-scroll">
+          <div className=" d-flex justify-content-center">
+            <div className="team-member">
+               <img src={team} alt="Team Member 2" className="team-member-image" />
+               <h4 className='fw-bold pt-2'>Hostess </h4>
+               <p>EMB</p>
+            </div>
+            <div className="team-member">
+               <img src={meating} alt="Team Member 2" className="team-member-image" />
+               <h4 className='fw-bold pt-2'>Management</h4>
+               <p>ADMIN</p>
+            </div>
+            <div className="team-member">
+              <img src={capitain} alt="Team Member 2" className="team-member-image" />
+              <h4 className='fw-bold pt-2'>Captains</h4>
+              <p>locomotive engineers</p>
+            </div>
+            <div className="team-member">
+              <img src={image12} alt="Team Member 2" className="team-member-image" />
+              <h4 className='fw-bold pt-2'>Ato Alemu Sime</h4>
+              <p>Ministry of Transport and Logistics</p>
+            </div>
+            <div className="team-member">
+              <img src={team2} alt="Team Member 2" className="team-member-image" />
+              <h4 className='fw-bold pt-2'>Hostess </h4>
+              <p>EMB</p>
             </div>
         </div>
+      </div>
+    </div>
     </section>
   )
 }
