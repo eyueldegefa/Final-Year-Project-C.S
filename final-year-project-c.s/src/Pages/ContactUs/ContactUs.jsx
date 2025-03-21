@@ -1,9 +1,11 @@
 import React from 'react';
 import './ContactUs.css';
-import contactImage from '../../image/image/cityofadis.jpg'; // Replace with your preferred contact image
+import contactImage from '../../Images/cityofadis.jpg'; 
+import Layout from '../../Components/Layout/Layout';
 
 function ContactUs() {
   return (
+    <Layout>
     <section className="about-us-section mt-5">
       {/* Header Section */}
       <div className="header text-center mt-5">
@@ -70,6 +72,7 @@ function ContactUs() {
         </div>
       </div>
     </section>
+    </Layout>
   );
 }
 

@@ -31,6 +31,7 @@ import LogIn from "./Pages/LogIn/LogIn";
 import AdminLogin from './Pages/LogIn/AdminLogin';
 import Register from "../src/Pages/LogIn/Register";
 import ConductorDashboard from './Pages/Conductor/Conductor';
+import Landing from "./Pages/Landing/Landing";
 
 
 
@@ -43,42 +44,14 @@ function App() {
         <Route path="/login" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        
         {/* Main layout route */}
-        <Route path="/" element={
-          <>
-            <Header />
-            <Banner />
-            <Booking />
-            <Home />
-            <Footer />
-          </>
-        }/>
+        <Route path="/" element={<Landing />}/>
 
         {/* Regular public routes */}
-        <Route path="/about-us" element={
-          <>
-            <Header />
-            <AboutUs />
-            <Footer />
-          </>
-        } />
-
-        <Route path="/contact-us" element={
-          <>
-            <Header />
-            <Contact />
-            <Footer />
-          </>
-        } />
-
-        <Route path="/ontrain" element={
-          <>
-            <Header />
-            <Ontrain />
-            <Footer />
-          </>
-        } />
-
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/contact-us" element={<Contact />} />
+        <Route path="/ontrain" element={<Ontrain />} />
         <Route path="/search-results" element={<TrainSearch />} />
         <Route path="/manage-ticket" element={<ManageTicket />} />
         <Route path="/personal-details/:trainId?" element={<PersonalDetails />} />
@@ -95,6 +68,7 @@ function App() {
           <Route path="manage-trains" element={<ManageTrains />} />
           <Route path="manage-conductors" element={<ManageConductor />} />
         </Route>
+
         {/* Conductor routes */}
         <Route path="/conductor" element={<ConductorDashboard/>} />
       </Routes>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./ManageTicket.css";
+import Layout from "../../Components/Layout/Layout";
 
 const ManageTicket = () => {
   const location = useLocation();
@@ -68,6 +69,7 @@ const ManageTicket = () => {
   };
 
   return (
+    <Layout>
     <div className="manage-ticket-container">
       <h1 className="text-center fw-bold">Manage Ticket</h1>
       <p className="text-center">You can change your going date or cancel you ticker!</p>
@@ -93,6 +95,7 @@ const ManageTicket = () => {
 
       <button onClick={handleCancelTicket}>Cancel Ticket</button>
     </div>
+    </Layout>
   );
 };
 

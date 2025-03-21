@@ -1,11 +1,13 @@
 import React from 'react';
-import './WhatIsontrain.css'; // Ensure you have appropriate styles in about.css
-import trainInterior from '../../image/image/train1.jpg'; // Replace with an image of train interior
-import hardSeat from '../../image/image/hardseat1.png'; // Add an image for Hard Seat class
-import hardSleep from '../../image/image/hardsleep1.png'; // Add an image for Hard Sleep class
+import './WhatIsontrain.css'; 
+import trainInterior from '../../Images/train1.jpg'; 
+import hardSeat from '../../Images/hardseat1.png'; 
+import hardSleep from '../../Images/hardsleep1.png'; 
+import Layout from '../../Components/Layout/Layout';
 
 function WhatIsontrain() {
   return (
+    <Layout>
     <section className="about-us-section mt-5">
       {/* Header Section */}
       <div className="header text-center mt-5">
@@ -94,6 +96,7 @@ function WhatIsontrain() {
         </div>
       </div>
     </section>
+    </Layout>
   );
 }
 

@@ -1,19 +1,20 @@
 import React from 'react';
-import './AboutUs.css'; // Ensure you have appropriate styles in about.css
+import './AboutUs.css'; 
 import { Link } from 'react-router-dom';
-import cityofadis from '../../image/image/cityofadis.jpg'; // Ensure you have appropriate image in your project
-import train1 from '../../image/image/train1.jpg'; // Ensure you have appropriate image in your project
-import djibouti from '../../image/image/djibuticity.jpg'; // Ensure you have appropriate image in your project
-import cityofd from '../../image/image/cityofd.jpg'; // Ensure you have appropriate image in your project
-import image1424 from '../../image/image/image1424.png'; // Ensure you have appropriate image in your project
-import team from '../../image/image/team.png'; // Ensure you have appropriate image in your project
-import meating from '../../image/image/meating.png'; // Ensure you have appropriate image in your project
-import capitain from '../../image/image/capitain.png'; // Ensure you have appropriate image in your project
-import image12 from '../../image/image/image12.png'; // Ensure you have appropriate image in your project
-import team2 from '../../image/image/team2.png'; // Ensure you have appropriate image in your project
+import train1 from '../../Images/train1.jpg'; 
+import djibouti from '../../Images/djibuticity.jpg'; 
+import cityofd from '../../Images/cityofd.jpg'; 
+import image1424 from '../../Images/image1424.png'; 
+import team from '../../Images/team.png'; 
+import meating from '../../Images/meating.png'; 
+import capitain from '../../Images/capitain.png'; 
+import image12 from '../../Images/image12.png'; 
+import team2 from '../../Images/team2.png'; 
+import Layout from '../../Components/Layout/Layout';
 
 function AboutUs() {
   return (
+    <Layout>
     <section className="about-us-section mt-5">
       {/* Header Section */}
       <div className="header text-center pt-4">
@@ -133,7 +134,7 @@ function AboutUs() {
         <Link to="/"  className="cta-button bg-warning text-decoration-none text-dark border border-white">Book Now</Link>
       </div>
     </section>
-    
+    </Layout>
   );
 }
 

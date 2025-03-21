@@ -7,11 +7,11 @@ import food1 from '../../Images/F1.jpg';
 import food2 from '../../Images/F2.jpg';
 import food3 from '../../Images/F3.jpg';
 import food4 from '../../Images/F4.jpg';
-import team from '../../image/image/team.png'; 
-import meating from '../../image/image/meating.png'; 
-import capitain from '../../image/image/capitain.png'; 
-import image12 from '../../image/image/image12.png'; 
-import team2 from '../../image/image/team2.png';
+import team from '../../Images/team.png'; 
+import meating from '../../Images/meating.png'; 
+import capitain from '../../Images/capitain.png'; 
+import image12 from '../../Images/image12.png'; 
+import team2 from '../../Images/team2.png';
 import '../../App.css';
 import './Home.css';
 
