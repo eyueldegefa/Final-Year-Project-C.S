@@ -1,0 +1,39 @@
+body{
+    background-color: #f4f9f9;
+}
+.loginLogo {
+    width: 12%;
+    margin: 1% 44%;
+    box-sizing: border-box;
+}
+.container{
+    background-color: white;
+    width: 35%;
+    margin: 1% auto;
+    border: 1px solid gray;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px;
+}
+.container h2{
+    font-weight: bold;
+    padding: 10px;
+}
+.container form {
+    padding: 10px 20px;
+}
+.container input {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+.container p{
+    text-align: center;
+}
+@media (max-width: 720px) {
+    .container {
+        width: 80%;
+    }
+    .loginLogo{
+        width: 20%;
+    }
+}

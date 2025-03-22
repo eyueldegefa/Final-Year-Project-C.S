@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import classes from './Auth.module.css';
+import logo from '../../Images/headerLogo.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -28,7 +30,7 @@ const Login = () => {
       } else if (res.data.role === 'conductor') {
         navigate('/conductor');
       } else {
-        alert("Login Successsful!");
+        alert("Login Successful!");
         navigate('/');
       }
     } catch (error) {
@@ -37,9 +39,11 @@ const Login = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+    <section>
+    <img className={classes.loginLogo} src={logo} alt="" />
+    <div className={classes.container}>
       <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className='text-danger'>{error}</p>}
       
       {/* Regular Login Form */}
       <form onSubmit={handleRegularLogin}>
@@ -49,7 +53,6 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
         />
         <input
           type="password"
@@ -57,45 +60,13 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
         />
-        <button 
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px'
-          }}
-        >
-          Login
-        </button>
+        <button type="submit">Login</button>
+        {/* <button onClick={() => navigate('/admin/login')}>Admin</button> */}
       </form>
-
-      {/* Admin Login Button */}
-      <div style={{ marginTop: '20px' }}>
-        <button
-          onClick={() => navigate('/admin/login')}
-          style={{
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#dc3545',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Login as Administrator
-        </button>
-      </div>
-
-      <p style={{ marginTop: '20px' }}>
-        Don't have an account? <a href="/register">Register here</a>
-      </p>
+        <p>Don't have an account? <a href="/register">Register here</a></p>
     </div>
+    </section>
   );
 };
 

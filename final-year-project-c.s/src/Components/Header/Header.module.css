@@ -1,0 +1,42 @@
+*{
+    font-size: 12px;
+    font-weight: 700;
+    line-height: normal;
+    width: 100%;
+}
+ nav section{
+    position: fixed ;
+    z-index: 1000;
+    top: 0;
+ }
+ nav .headerWrapper {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    color: white;
+ }
+ .linkHover{
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+ }
+.linkHover:hover{
+    color: #22e308;
+}
+nav .headerWrapper img{
+    width: 45px;
+}
+.listShow{
+    background-color: #232F3E;
+    position: fixed !important;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    cursor: pointer;
+    padding: 10px 40px;
+    opacity: 0.9;
+}

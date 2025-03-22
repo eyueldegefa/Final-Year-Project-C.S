@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../Components/Layout/Layout';
+import classes from './Auth.module.css';
+import logo from '../../Images/headerLogo.png';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -20,9 +22,11 @@ const Register = () => {
   };
 
   return (
-        <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+        <section>
+        <img className={classes.loginLogo} src={logo} alt="" />
+        <div className={classes.container}>
         <h2>Register</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p className='text-danger'>{error}</p>}
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -30,7 +34,6 @@ const Register = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
           />
           <input
             type="password"
@@ -38,26 +41,14 @@ const Register = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
           />
-          <button
-            type="submit"
-            style={{
-              width: '100%',
-              padding: '10px',
-              backgroundColor: '#2196F3',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px'
-            }}
-          >
-            Register
-          </button>
+          <button type="submit">Register</button>
         </form>
-        <p style={{ marginTop: '10px' }}>
+        <p>
           Already have an account? <a href="/login">Login here</a>
         </p>
       </div>
+      </section>
   );
 };
 

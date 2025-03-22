@@ -20,17 +20,17 @@
 }
 @media (max-width:560px) {
     .bookingWrapper{
-        margin-top: -110px;
+        margin-top: -120px;
         width: 360px;
         height: 100px;
     }
 }
-@media (min-width:561px) {
+/* @media (min-width:561px) {
     .bookingWrapper{
         margin-top: -200px;
         height: 190px;
     }
-} 
+}  */
 Link {
     text-decoration: none;
 }

@@ -86,12 +86,12 @@ const handleManageBooking = async () => {
 
       {activeTab === "search" ? (
         <div className='search-input-container text-center'>
-          <div className='row ms-1 gap-2'>
-            <input className='col-3 py-3 px-5 inputs' name="source" type="text" placeholder='From station' value={formData.source} onChange={handleChange} />
+          <div className='row d-flex ms-1 gap-2'>
+            <input className='col-sm-4 py-3 px-5 inputs' name="source" type="text" placeholder='From station' value={formData.source} onChange={handleChange} />
             <CompareArrowsIcon className='col-1'/>
-            <input className='col-3 py-3 px-5 inputs' name="destination" type="text" placeholder='To station' value={formData.destination} onChange={handleChange}/>
-            <input className='col-3 py-3 px-5 ms-4 text-secondary inputs' type="date" name="date" value={formData.date} onChange={handleChange} />
-            <button className='col-2 buttons py-3 text-white rounded fs-5 inputs' onClick={handleSearch}>Search</button>
+            <input className='col-sm-4 py-3 px-5 inputs' name="destination" type="text" placeholder='To station' value={formData.destination} onChange={handleChange}/>
+            <input className='col-sm-4 py-3 px-5 ms-4 text-secondary inputs' type="date" name="date" value={formData.date} onChange={handleChange} />
+            <button className='col-sm-6 buttons py-3 text-white rounded fs-5 inputs' onClick={handleSearch}>Search</button>
           </div>
         </div>
       ) : (

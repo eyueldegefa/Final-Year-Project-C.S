@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import classes from './Auth.module.css';
+import logo from '../../Images/headerLogo.png';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -32,9 +34,11 @@ const AdminLogin = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+    <section>
+    <img className={classes.loginLogo} src={logo} alt="" />
+    <div className={classes.container}>
       <h2>Admin Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className='text-danger'>{error}</p>}
       
       <form onSubmit={handleAdminLogin}>
         <input
@@ -43,7 +47,6 @@ const AdminLogin = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
         />
         <input
           type="password"
@@ -51,27 +54,15 @@ const AdminLogin = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
         />
-        <button 
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#dc3545',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px'
-          }}
-        >
-          Login as Admin
-        </button>
+        <button type="submit">Login as an Admin</button>
       </form>
 
-      <p style={{ marginTop: '20px' }}>
+      <p>
         <a href="/login">← Back to regular login</a>
       </p>
     </div>
+    </section>
   );
 };
 
