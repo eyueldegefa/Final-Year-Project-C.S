@@ -1,0 +1,48 @@
+.bookingWrapper{
+  background-color: white;
+  position: sticky;
+  width: 100%;
+  margin-left: 20px;
+  margin-top: -15vh;
+  box-shadow: 2px 2px 5px;
+  border-radius: 10px;
+}
+/* Booking Part Links */
+.linksWrapper{
+    display: flex;
+ }
+.bookingPrtLinks{
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    padding: 15px 1px;
+    border: 1px solid silver;
+}
+.bookingPrtLinks:hover{
+    cursor: pointer;
+    color: green;
+    border-bottom: 2px solid green;
+}
+/* Inputs part */
+.inputsWrapper{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    gap: 8px;
+}
+.inputsWrapper div{
+    display: flex;
+}
+input {
+    padding: 8px;
+    border-radius: 8px;
+}
+.inputs:hover{
+    box-shadow: 3px 3px 6px grey; 
+}
+.arrow{
+    justify-content: center;
+    text-align: center;
+    max-width: 30px;
+    padding: 16px 0;
+}

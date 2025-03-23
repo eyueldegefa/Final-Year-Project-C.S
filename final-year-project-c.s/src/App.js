@@ -2,11 +2,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Header from "./Components/Header/Header";
-import Footer from "./Components/Footer/Footer";
-import Banner from "./Components/Banner/Banner";
-import Booking from "./Components/Booking/Booking";
-import Home from "./Components/Home/Home";
 
 import AboutUs from "./Pages/AboutUs/AboutUs";
 import Contact from "./Pages/ContactUs/ContactUs";

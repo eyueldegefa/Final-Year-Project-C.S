@@ -8,7 +8,7 @@ import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import DoubleArrowRoundedIcon from '@mui/icons-material/DoubleArrowRounded';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import '../../App.css';
-import './Booking.css';
+import classes from './Booking.module.css';
 
 function Booking() {
   const [activeTab, setActiveTab] = useState("search"); 
@@ -73,32 +73,34 @@ const handleManageBooking = async () => {
   };
 
   return (
-    <section className='bookingWrapper bg-white text-dark pb-5 text-center'>
-      <div className='d-flex row ms-1'>
-        <Link className={`col-4 py-4 bottomRed text-dark mb-3 text-decoration-none ${activeTab === "search" ? "bottomRed" : ""}`} onClick={() => setActiveTab("search")}>
+    <section className={classes.bookingWrapper}>
+      <div className={classes.linksWrapper}>
+        <Link className={`${classes.bookingPrtLinks} ${activeTab === "search" ? "bottomRed" : ""}`} onClick={() => setActiveTab("search")}>
           <TrainIcon /> Search trains
         </Link>
-        <Link className={`col-4 py-4 bottomRed text-dark mb-3 text-decoration-none ${activeTab === "manage" ? "bottomRed" : ""}`} onClick={() => setActiveTab("manage")}>
+        <Link className={`${classes.bookingPrtLinks} ${activeTab === "manage" ? "bottomRed" : ""}`} onClick={() => setActiveTab("manage")}>
           <BookmarksIcon /> Manage booking
         </Link>
-        <Link to="/ontrain" className='col-4 py-4 text-dark mb-3 bottomRed text-decoration-none'><DoubleArrowRoundedIcon /> What's on your train rail</Link>
+        <Link to="/ontrain" className={classes.bookingPrtLinks}><DoubleArrowRoundedIcon /> What's on Train</Link>
       </div>
 
       {activeTab === "search" ? (
-        <div className='search-input-container text-center'>
-          <div className='row d-flex ms-1 gap-2'>
-            <input className='col-sm-4 py-3 px-5 inputs' name="source" type="text" placeholder='From station' value={formData.source} onChange={handleChange} />
-            <CompareArrowsIcon className='col-1'/>
-            <input className='col-sm-4 py-3 px-5 inputs' name="destination" type="text" placeholder='To station' value={formData.destination} onChange={handleChange}/>
-            <input className='col-sm-4 py-3 px-5 ms-4 text-secondary inputs' type="date" name="date" value={formData.date} onChange={handleChange} />
-            <button className='col-sm-6 buttons py-3 text-white rounded fs-5 inputs' onClick={handleSearch}>Search</button>
-          </div>
+        <div className={classes.inputsWrapper}>
+            <div>
+              <div className=''><input name="source" type="text" placeholder='From station' value={formData.source} onChange={handleChange} /></div>
+              <div className={classes.arrow}><CompareArrowsIcon /></div>
+              <div className=''><input name="destination" type="text" placeholder='To station' value={formData.destination} onChange={handleChange}/></div>
+            </div>
+            <div>
+              <div className=''><input type="date" name="date" value={formData.date} onChange={handleChange} /></div>            
+              <div className='ms-4'><button onClick={handleSearch}>Search</button></div>
+            </div>
         </div>
       ) : (
-        <div className='search-input-container text-center d-flex gap-2 p-2'>
+        <div className='d-flex p-3 gap-3'>
           <input className="p-3 inputs" type="text" name="lastName" placeholder="Last Name" value={manageData.lastName} onChange={handleChange} />
           <input className="p-3 inputs" type="text" name="bookingReference" placeholder="Booking Reference" value={manageData.bookingReference} onChange={handleChange} />
-          <button className="buttons inputs py-3 fs-5" onClick={handleManageBooking}>Fetch Booking</button>
+          <button className="buttons inputs py-3 fs-5" onClick={handleManageBooking}>Fetch</button>
 
           {bookingDetails && (
             <div>
