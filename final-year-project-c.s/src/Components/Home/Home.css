@@ -2,36 +2,58 @@
 *{
     font-size: 12px;
 }
-/* Giving shadow */
+/* For larger fonts */
+.largeFont{
+    font-size: 38px;
+    font-family: "PT Serif", serif;
+    font-weight: bold;
+    font-style: italic;
+}
+/* ------------------------------------- */
+/* 1. Feature destination */
 .homeShadow{
     box-shadow: 1px 2px 3px #d1d1d1;
-    /* width: 365px; */
 }
 .homeShadow:hover{
     box-shadow: 1px 10px 10px #bfbfbf;
     cursor: pointer;
     transform: scale(1.03);
 }
-/* For larger fonts */
-.largeFont{
-    font-size: 25px;
-    font-family: "PT Serif", serif;
-    font-weight: bold;
-    font-style: italic;
+/* -------------------------------------------- */
+/* 2. Discount Area */
+.special{
+    background-image: url('../../Images/students1.jpg');
+    height: 390px;
+    color: white;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
-/* Class option area */
-.clasLeft img{
+.special div{
+    padding: 10% 2px;
+}
+.special button{
+    width: 180px;
+}
+/* ------------------------------------------------- */
+/* 3. Class option area */
+.classLeft img{
     height: 510px;
     box-shadow: 1px 1px 5px grey;
     margin-left: 40px;
-    /* float: right; */
-    /* align-items: flex-end; */
 }
 .classRight img{
     height: 252px;
     width: auto;
 }
-/* Discount and Class responsive */
+@media (max-width: 720px) {
+    .classLeft img {
+        height: 390px;
+    }
+    .largeFont{
+        font-size: 30px;
+    }
+}
 @media (min-width:672px) {
     .classRight .o{
         width: 200px;
@@ -42,7 +64,8 @@
         width: 250px;
     }
 }
-/* About section */
+/* --------------------------------------------- */
+/* 4. About section */
 .homeAbout{
     padding: 20px 200px;
     justify-content: center;
@@ -51,11 +74,11 @@
     transform: scale(1.1);
     cursor: pointer;
 }
-/* Adjusting For another screen size that did not show as we want */
+/* Adjusting For another screen size for that did not show as we want */
 @media (max-width:920px) {
     img {
         width: 310px;
-    }
+    } 
     .homeAbout img{
         width: 100px;
     }

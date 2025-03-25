@@ -1,13 +1,10 @@
 import React from 'react'
-import bannerSmalls from '../../Images/Banner1.jpg';
-import bannerLarges from '../../Images/banner2.jpg';
-import './Banner.module.css'
+import banner from '../../Images/cc.jpg'
 
 function Banner() {
   return (
-    <div className='banner'>
-      <img className='bannerSmall d-md-none' src={bannerSmalls} alt="#" />
-      <img className='d-none d-md-block bannerLarge' src={bannerLarges} alt="#" />
+    <div className='mt-5 pt-1 ms-4'>
+      <img className='w-100 mt-5 pt-5' src={banner} alt="#" />
     </div>
   )
 }

@@ -25,7 +25,7 @@ function Header() {
         {/* The header links */}
         <div className={classes.headerWrapper}>
             <div className=''><img src={headerlogo} alt="Header logo" />  ETHIOPIAN RAILWAYS</div>
-            <div className='d-none d-md-flex pt-4'>
+            <div className='d-none d-md-flex pt-3'>
                 <Link to="/" className={classes.linkHover}>BOOK</Link>
                 <Link to="/" className={classes.linkHover}>MANAGE</Link>
                 <Link to="/about-us" className={classes.linkHover}>ABOUT</Link>
