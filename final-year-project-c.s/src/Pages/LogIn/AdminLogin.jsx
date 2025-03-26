@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import classes from './Auth.module.css';
 import logo from '../../Images/headerLogo.png';
+import { Link } from 'react-router-dom';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -35,7 +36,7 @@ const AdminLogin = () => {
 
   return (
     <section>
-    <img className={classes.loginLogo} src={logo} alt="" />
+    <Link to="/"><img className={classes.loginLogo} src={logo} alt="Ethiopian Railways Logo" /></Link>
     <div className={classes.container}>
       <h2>Admin Login</h2>
       {error && <p className='text-danger'>{error}</p>}

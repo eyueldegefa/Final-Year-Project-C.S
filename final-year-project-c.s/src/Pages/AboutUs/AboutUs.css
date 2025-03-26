@@ -23,15 +23,12 @@ body {
     width: 100%;
     height: auto;
     max-height: 400px;
-    /* Adjust as needed */
     object-fit: cover;
 }
 
 .header-title {
     font-size: 2.5rem;
     margin: 20px 0;
-    color: #c8102e;
-    /* Emirates red */
 }
 
 .header-subtitle {
@@ -52,21 +49,24 @@ body {
 
 .story-image {
     width: 45%;
-    /* Adjust width as needed */
     height: auto;
     object-fit: cover;
 }
 
 .story-text {
     width: 50%;
-    /* Adjust width as needed */
     text-align: left;
 }
 
 .flex-row-reverse {
-    flex-direction: row-reverse;
+    /* flex-direction: row-reverse; */
 }
-
+/* @media (max-width: 720px) {
+    .flex-row-reverse {
+        display: flex;
+        flex-direction: column;
+    }
+} */
 /* Section Titles and Descriptions */
 .section-title {
     font-size: 2rem;
@@ -148,7 +148,7 @@ body {
 
 /* Call to Action Section */
 .call-to-action {
-    background-color: #10c838;
+    background-color: #c6c903;
     color: white;
     padding: 30px 0;
     text-align: center;
@@ -164,22 +164,6 @@ body {
     margin: 10px 0;
 }
 
-.cta-button {
-    background-color: #ecbf0b;
-    /* Yellow */
-    color: #333;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.cta-button:hover {
-    background-color: #e0b90f;
-    /* Darker yellow on hover */
-}
 /* Our Story Section Styles */
 .our-story .story-text {
     max-width: 600px;

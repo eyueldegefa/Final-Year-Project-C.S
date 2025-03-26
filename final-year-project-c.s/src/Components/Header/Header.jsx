@@ -7,6 +7,7 @@ import '../../App.css';
 import classes from './Header.module.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+// import 'https://fonts.googleapis.com/css2?family=Pacifico&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap';
 
 function Header() {
   const [status, setStatus] = useState(false);
@@ -24,8 +25,8 @@ function Header() {
 
         {/* The header links */}
         <div className={classes.headerWrapper}>
-            <div className=''><img src={headerlogo} alt="Header logo" />  ETHIOPIAN RAILWAYS</div>
-            <div className='d-none d-md-flex pt-3'>
+            <Link to="/" className='headerLogo d-flex text-decoration-none text-white'><img src={headerlogo} alt="Header logo" /> <h2 className='fw-bold pt-3 px-3'>Ethiopian Railways</h2></Link>
+            <div className='d-none d-md-flex pt-4'>
                 <Link to="/" className={classes.linkHover}>BOOK</Link>
                 <Link to="/" className={classes.linkHover}>MANAGE</Link>
                 <Link to="/about-us" className={classes.linkHover}>ABOUT</Link>
@@ -33,8 +34,8 @@ function Header() {
             </div>
             
             <div className={classes.listAndSignin}>
-              <div onClick={()=> setStatus(!status)} className='d-md-none'><MenuIcon/></div>
-              <Link to="/login" className={classes.linkHover}>SIGN IN <AccountCircleIcon/></Link> 
+              <Link to="/login" className={classes.linkHover}><button className='buttons'>SIGN IN <AccountCircleIcon/></button></Link> 
+              <div onClick={()=> setStatus(!status)} className='d-md-none pt-3'><MenuIcon/></div>
             </div>
 
                     {/* Only show on mobile (small devices) */}

@@ -8,8 +8,8 @@ function ContactUs() {
     <Layout>
     <section className="about-us-section mt-5">
       {/* Header Section */}
-      <div className="header text-center mt-5">
-        <h1 className="header-title">Contact Us</h1>
+      <div className="header text-center pt-5 text-success">
+        <h1 className="header-title mt-5 fw-bold">Contact Us</h1>
         <p className="header-subtitle">Get in touch with our team for any inquiries or support.</p>
       </div>
 

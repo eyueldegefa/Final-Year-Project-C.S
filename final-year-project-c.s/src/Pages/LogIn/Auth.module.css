@@ -6,6 +6,9 @@ body{
     margin: 1% 44%;
     box-sizing: border-box;
 }
+.loginLogo:hover{
+    cursor: pointer;
+}
 .container{
     background-color: white;
     width: 35%;

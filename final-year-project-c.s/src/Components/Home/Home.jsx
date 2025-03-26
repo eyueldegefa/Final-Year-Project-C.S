@@ -1,6 +1,10 @@
 import React from 'react'
-import awash from '../../Images/Awash-Woldia1.jpg';
-import djbouti from '../../Images/Djbouti1.jpg';
+import one from '../../Images/home1.jpg';
+import two from '../../Images/home2.jpg';
+import three from '../../Images/home3.jpg';
+import four from '../../Images/home4.jpg';
+import five from '../../Images/home5.jpg';
+import six from '../../Images/home1.jpg';
 import classs from '../../Images/class.jpg';
 import classSmall from '../../Images/class1aSmall.jpg'
 import food1 from '../../Images/F1.jpg';
@@ -16,35 +20,35 @@ import './Home.css';
 
 function Home() {
   return (
-    <section>
+    <section className='homeBg'>
         {/* Featured Destination*/}
         <div className='my-5'>
             <h3 className='largeFont text-center text-dark'>Featured destinations from Addis Ababa</h3>
             <div className='row d-flex gap-5 m-5 justify-content-lg-center'>
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
-                    <img  className='w-100' src={awash}  alt="#" />
+                    <img  className='w-100' src={five}  alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <p className='text-secondary'>Ethiopian Rail</p>
-                        <p className='largeFont text-dark'>Awash-weldia</p>
-                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
+                        <p className='largeFontm text-dark'>Awash-weldia</p>
+                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 25</p>
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
-                    <img  className='w-100' src={djbouti} alt="#" />
+                    <img  className='w-100' src={one} alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <p className='text-secondary'>Ethiopian Rail</p>
-                        <p className='largeFont text-dark'>Djibouti</p>
-                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
+                        <p className='largeFontm text-dark'>Djibouti</p>
+                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 25</p>
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
-                    <img  className='w-100' src={awash}  alt="#" />
+                    <img  className='w-100' src={three}  alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <p className='text-secondary'>Ethiopian Rail</p>
-                        <p className='largeFont text-dark'>Awash-weldia</p>
-                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
+                        <p className='largeFontm text-dark'>Diredawa</p>
+                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 25</p>
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
@@ -53,29 +57,29 @@ function Home() {
             {/* Second row */}
             <div className='row d-flex gap-5 m-5 justify-content-lg-center'>
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
-                    <img  className='w-100' src={awash}  alt="#" />
+                    <img  className='w-100' src={two}  alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <p className='text-secondary'>Ethiopian Rail</p>
-                        <p className='largeFont text-dark'>Awash-weldia</p>
-                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
+                        <p className='largeFontm text-dark'>Hareri</p>
+                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 25</p>
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
-                    <img  className='w-100' src={djbouti} alt="#" />
+                    <img  className='w-100' src={four} alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <p className='text-secondary'>Ethiopian Rail</p>
-                        <p className='largeFont text-dark'>Djibouti</p>
-                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
+                        <p className='largeFontm text-dark'>Hossana</p>
+                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 25</p>
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
                 <div className='col-md-12 col-lg-3 rounded homeShadow'>
-                    <img  className='w-100' src={awash}  alt="#" />
+                    <img  className='w-100' src={five}  alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <p className='text-secondary'>Ethiopian Rail</p>
-                        <p className='largeFont text-dark'>Awash-weldia</p>
-                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 24</p>
+                        <p className='largeFontm text-dark'>Awash-weldia</p>
+                        <p className='text-secondary'>Book Economy Class Return until 30 Nov 25</p>
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
@@ -108,7 +112,7 @@ function Home() {
             </div>
             <div className='classLeft col-md-12 col-lg-6'>
                 <img className='d-none d-lg-block homeShadow border' src={classs} alt="#" />
-                <img className='d-lg-none homeShadow border' src={classSmall} alt="#" />
+                <img className='d-lg-none homeShadow border w-100' src={classSmall} alt="#" />
             </div>
             <div className='classRight col-md-12 col-lg-6 row gap-2 justify-content-center'>
                 <img className='o col-md-6 p-1 homeShadow border' src={food1} alt="#" />

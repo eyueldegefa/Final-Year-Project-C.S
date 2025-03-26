@@ -20,8 +20,8 @@
 }
 .bookingPrtLinks:hover{
     cursor: pointer;
-    color: green;
-    border-bottom: 2px solid green;
+    color: #000;
+    border-bottom: 2px solid #fc0505;
 }
 /* ----------------------------------------- */
 /* Inputs part */
