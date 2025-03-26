@@ -1,14 +1,18 @@
 .footer-container img{
-    width: 120px;
+    width: 140px;
 }
 .footer-container h2{
     padding-top: 30px;
+}
+.footer-container .linkHover{
+   cursor: pointer;
 }
 .footer-container p{
     font-size: 13px;
     color: #9f9e9e;
     cursor: pointer;
 }
-.footer-container p:hover{
+.footer-container p:hover,
+.footer-container .linkHover:hover{
     color: #22e308;
 }

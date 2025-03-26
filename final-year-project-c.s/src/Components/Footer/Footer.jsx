@@ -22,14 +22,14 @@ function Footer() {
             </div>
         </div>
 
-        <div className='col-sm-12 col-md-4'>
+        <div className='col-sm-12 col-md-5'>
             <h2 className='fw-bold'>Useful Links</h2>
             <p>Destinations</p>
             <p>Train Station</p>
             <p>Sites</p>
         </div>
 
-        <div className='col-sm-12 col-md-4'>
+        <div className='col-sm-12 col-md-3'>
             <h2 className='fw-bold'>Contact info</h2>
             <p><PhoneIcon className='me-2 text-white'/>+251 123 456 789</p>
             <p><EmailIcon className='me-2 text-white'/>finalProject.com</p>
