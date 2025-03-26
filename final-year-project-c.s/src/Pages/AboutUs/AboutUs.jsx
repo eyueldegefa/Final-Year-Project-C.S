@@ -5,7 +5,6 @@ import train1 from '../../Images/train1.jpg';
 import djibouti from '../../Images/djibuticity.jpg'; 
 import cityofd from '../../Images/cityofd.jpg'; 
 import image1424 from '../../Images/image1424.png'; 
-import team from '../../Images/team.png'; 
 import meating from '../../Images/meating.png'; 
 import capitain from '../../Images/capitain.png'; 
 import image12 from '../../Images/image12.png'; 
@@ -100,11 +99,8 @@ function AboutUs() {
       {/* Our Team Section */}
       <div className="our-team text-center my-5">
           <div className="team-container d-flex justify-content-center">
-            <div className="team-member mx-3">
-            <img src={team} alt="Team Member 2" className="team-member-image" />
-            <h4 className='fw-bold pt-2'>Hostess </h4>
-            <p>EMB</p>
-          </div>
+            <div className="team-member mx-3 d-md-none">
+            </div>
          <div className="team-member mx-3">
             <img src={meating} alt="Team Member 2" className="team-member-image" />
             <h4 className='fw-bold pt-2'>Management</h4>
