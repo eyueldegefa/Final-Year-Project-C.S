@@ -34,7 +34,7 @@ nav .headerWrapper img{
     width: 45px;
 }
 .listShow{
-    background-color: #232F3E;
+    background-color: #121315;
     position: fixed !important;
     top: 0;
     z-index: 100;
@@ -42,10 +42,13 @@ nav .headerWrapper img{
     height: 60%;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 50px;
     cursor: pointer;
     padding: 10px 40px;
-    opacity: 0.9;
+    opacity: 0.98;
+}
+.close{
+   text-align: end;
 }
 @media (max-width: 720px) {
    .listAndSignin button {

@@ -58,3 +58,8 @@ tr:nth-child(even) {
 .cta-button:hover {
     background-color: #0dc103;
 }
+@media (min-width: 820px){
+   .hardSleep{
+       flex-direction: row-reverse;
+   }
+}

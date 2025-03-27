@@ -39,7 +39,7 @@ function WhatIsontrain() {
 
       {/* Hard Sleep Class Section */}
       <div className="our-story text-center my-5">
-        <div className="story-container d-flex justify-content-between align-items-center flex-row-reverse">
+        <div className="story-container d-flex justify-content-between align-items-center hardSleep">
           <img className="story-image" src={hardSleep} alt="Hard Sleep Class" />
           <div className="story-text text-center">
             <h1 className="section-title fw-bold text-success">Hard Sleep Class</h1>

@@ -3,7 +3,7 @@
     font-size: 12px;
 }
 .homeBg{
-    background-color: #edfbfd;
+    background-color: #f7fdfe;
 }
 /* For larger fonts */
 .largeFont{
@@ -21,6 +21,7 @@
 /* ------------------------------------- */
 /* 1. Feature destination */
 .homeShadow{
+    border-radius: 10px;
     background-color: white;
     box-shadow: 3px 3px 5px #afaeae;
 }

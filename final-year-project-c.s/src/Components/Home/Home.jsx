@@ -24,7 +24,7 @@ function Home() {
         <div className='my-5'>
             <h3 className='largeFont text-center text-dark'>Featured destinations from Addis Ababa</h3>
             <div className='row d-flex gap-5 m-5 justify-content-center'>
-                <div className='col-md-12 col-lg-3 rounded homeShadow'>
+                <div className='col-md-12 col-lg-3 homeShadow'>
                     <img  className='w-100' src={five}  alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <div className='text-secondary'>Ethiopian Rail</div>
@@ -33,7 +33,7 @@ function Home() {
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
-                <div className='col-md-12 col-lg-3 rounded homeShadow'>
+                <div className='col-md-12 col-lg-3 homeShadow'>
                     <img  className='w-100' src={one} alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <div className='text-secondary'>Ethiopian Rail</div>
@@ -42,7 +42,7 @@ function Home() {
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
-                <div className='col-md-12 col-lg-3 rounded homeShadow'>
+                <div className='col-md-12 col-lg-3 homeShadow'>
                     <img  className='w-100' src={three}  alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <div className='text-secondary'>Ethiopian Rail</div>
@@ -55,7 +55,7 @@ function Home() {
 
             {/* Second row */}
             <div className='row d-flex gap-5 m-5 justify-content-lg-center'>
-                <div className='col-md-12 col-lg-3 rounded homeShadow'>
+                <div className='col-md-12 col-lg-3 homeShadow'>
                     <img  className='w-100' src={two}  alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <div className='text-secondary'>Ethiopian Rail</div>
@@ -64,7 +64,7 @@ function Home() {
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
-                <div className='col-md-12 col-lg-3 rounded homeShadow'>
+                <div className='col-md-12 col-lg-3 homeShadow'>
                     <img  className='w-100' src={four} alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <div className='text-secondary'>Ethiopian Rail</div>
@@ -73,7 +73,7 @@ function Home() {
                         <p>from 1,230 ETB</p>
                     </div>
                 </div>
-                <div className='col-md-12 col-lg-3 rounded homeShadow'>
+                <div className='col-md-12 col-lg-3 homeShadow'>
                     <img  className='w-100' src={five}  alt="#" />
                     <div className='text-center pt-3 px-3'>
                         <div className='text-secondary'>Ethiopian Rail</div>
@@ -87,7 +87,7 @@ function Home() {
             {/* See more part */}
             <div className=' see d-flex row text-center m-5 justify-content-lg-center'>
                 <p className='col-md-12 col-lg-3 py-3 text-secondary'>Explore more destination</p>
-                <p className='col-md-12 col-lg-3 py-3 border rounded homeShadow'>See more fares</p>
+                <p className='col-md-12 col-lg-3 py-3 border homeShadow'>See more fares</p>
                 <p className='col-md-12 col-lg-3 py-3 text-secondary'>Be inspired by our route map</p>
             </div>
         </div>
@@ -122,7 +122,7 @@ function Home() {
         </div>
 
         {/* About Area */}
-        <div className='text-center my-5 container'>
+        <div className='text-center my-5 container bg-white'>
             <div className=''>
                 <h1 className='largeFont text-dark'>About us</h1>
                 <p className='text-secondary'>Learn more about our history, our business and sustainability initiatives</p>

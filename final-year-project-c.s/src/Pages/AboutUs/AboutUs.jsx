@@ -37,7 +37,8 @@ function AboutUs() {
 
       {/* Second Section with Right Image */}
       <div className="our-story text-center my-5">
-        <div className="story-container d-flex justify-content-between align-items-center">
+        <div className="story-container d-flex justify-content-between align-items-center flexReverse">
+          <img className="story-image" src={train1} alt="Train" />
           <div className="story-text">
             <h1 className="section-title fw-bold text-center">Our Vision</h1>
             <p className="section-description">
@@ -46,8 +47,6 @@ function AboutUs() {
               enhancing connectivity, promoting sustainability, and empowering communities.
             </p>
           </div>
-          <img className="story-image" src={train1} alt="Train" />
-          
         </div>
       </div>
 
@@ -66,14 +65,14 @@ function AboutUs() {
 
       {/* Fourth Section with Right Image */}
       <div className="our-story text-center my-5">
-        <div className="story-container d-flex justify-content-between align-items-center">
+        <div className="story-container d-flex justify-content-between align-items-center flexReverse">
+          <img className="story-image" src={cityofd} alt="City of Dreams" />
           <div className="story-text">
             <h1 className="section-title fw-bold text-center">Our Future</h1>
             <p className="section-description">
               The future of the Ethio-Djibouti Railway looks promising, with potential for increased freight and passenger traffic, further boosting regional trade and integration.  Planned infrastructure improvements, coupled with growing economies in both Ethiopia and Djibouti, suggest the railway will play an even greater role in facilitating efficient and cost-effective transport, solidifying its position as a crucial link in the Horn of Africa's development.
             </p>
           </div>
-          <img className="story-image" src={cityofd} alt="City of Dreams" />
         </div>
       </div>
 
