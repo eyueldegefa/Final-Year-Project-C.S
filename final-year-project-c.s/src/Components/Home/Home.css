@@ -25,6 +25,11 @@
     background-color: white;
     box-shadow: 3px 3px 5px #afaeae;
 }
+.homeShadow img{
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding-top: 2px;
+}
 .homeShadow:hover{
     box-shadow: 1px 10px 10px #bfbfbf;
     cursor: pointer;
